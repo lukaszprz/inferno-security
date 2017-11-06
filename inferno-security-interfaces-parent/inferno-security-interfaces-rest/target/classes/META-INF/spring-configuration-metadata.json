@@ -1,0 +1,26 @@
+{
+  "hints": [],
+  "groups": [],
+  "properties": [
+    {
+      "name": "spring.database.superuser.name",
+      "description": "A description for 'spring.database.superuser.name'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.database.superuser.password",
+      "description": "A description for 'spring.database.superuser.password'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.queries.roles-query",
+      "description": "A description for 'spring.queries.roles-query'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.queries.users-query",
+      "description": "A description for 'spring.queries.users-query'",
+      "type": "java.lang.String"
+    }
+  ]
+}

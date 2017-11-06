@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>inferno-security-parent</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
+	</natures>
+	<variableList>
+		<variable>
+			<name>ETC_DIR</name>
+			<value>file:/etc</value>
+		</variable>
+		<variable>
+			<name>LOG_DIR</name>
+			<value>file:/var/log</value>
+		</variable>
+		<variable>
+			<name>MAVEN_HOME</name>
+			<value>file:/usr/share/maven</value>
+		</variable>
+		<variable>
+			<name>OPT_DIR</name>
+			<value>file:/opt</value>
+		</variable>
+		<variable>
+			<name>SYSTEM_ROOT</name>
+			<value>file:/</value>
+		</variable>
+		<variable>
+			<name>USER_HOME</name>
+			<value>file:/home/lukasz-adm</value>
+		</variable>
+	</variableList>
+</projectDescription>

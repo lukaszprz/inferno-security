@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: Example JUnit4 SpringBoot System Test
+Implementation-Version: 0.9.3
+Built-By: lukasz-adm
+Implementation-Vendor-Id: org.testifyproject.archetypes
+Build-Jdk: 1.8.0_144
+Implementation-URL: https://github.com/testify-project/examples/tree/m
+ aster/junit4/junit-springboot-systemtest-archetype
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+

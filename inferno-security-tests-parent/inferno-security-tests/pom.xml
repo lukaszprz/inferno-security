@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+    <artifactId>inferno-security-tests-parent</artifactId>
+    <groupId>pl.inferno.security</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+    <artifactId>inferno-security-tests</artifactId>
+
+    <groupId>pl.inferno.security.test</groupId>
+
+    <name>Tests queue</name>
+    <description>Creates a new quickstart project to system test Spring Boot Application with Testify, JUnit4, Mockito, and AssertJ.</description>
+
+    <properties>
+        <!-- Global Properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>                
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>1.5.2.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
+
+        
+
+</project>

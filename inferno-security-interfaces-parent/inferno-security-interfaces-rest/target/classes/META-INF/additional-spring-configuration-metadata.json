@@ -1,0 +1,22 @@
+{"properties": [
+  {
+    "name": "spring.queries.users-query",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.queries.users-query'"
+  },
+  {
+    "name": "spring.queries.roles-query",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.queries.roles-query'"
+  },
+  {
+    "name": "spring.database.superuser.name",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.database.superuser.name'"
+  },
+  {
+    "name": "spring.database.superuser.password",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.database.superuser.password'"
+  }
+]}
