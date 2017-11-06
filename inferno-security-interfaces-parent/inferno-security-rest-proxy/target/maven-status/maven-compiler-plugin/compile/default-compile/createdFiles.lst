@@ -1,0 +1,6 @@
+pl/inferno/security/proxy/dto/RoleDTO.class
+pl/inferno/security/proxy/service/impl/UserProxyServiceImpl.class
+pl/inferno/security/proxy/service/UserProxyService.class
+pl/inferno/security/proxy/dto/UserDTO.class
+pl/inferno/security/proxy/mapper/ObjectMapper.class
+pl/inferno/security/InfernoRestProxyRunner.class

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: pl.inferno.security.InfernoRestProxyRunnerTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.055 sec - in pl.inferno.security.InfernoRestProxyRunnerTest

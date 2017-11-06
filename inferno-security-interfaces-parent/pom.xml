@@ -11,5 +11,6 @@
   <modules>
   	<module>inferno-security-interfaces-rest</module>
   	<module>inferno-security-interfaces-web-html</module>
+  	<module>inferno-security-rest-proxy</module>
   </modules>
 </project>

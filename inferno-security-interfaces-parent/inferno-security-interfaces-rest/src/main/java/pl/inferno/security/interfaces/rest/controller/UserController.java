@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@CrossOrigin
 	@RequestMapping(value = "/user/", method = RequestMethod.GET)
 	public ResponseEntity<List<User>> listAllUsers() {
 		List<User> users = userService.getAllUsers();
@@ -46,6 +48,7 @@ public class UserController {
 		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "/user/name/{username}", method = RequestMethod.GET)
 	public ResponseEntity<?> findUser(@PathVariable("username") String username) {
 		LOGGER.info("Fetching User with username {}", username);
@@ -58,6 +61,7 @@ public class UserController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
 		LOGGER.info("Fetching User with id {}", id);
@@ -70,6 +74,7 @@ public class UserController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
+	@CrossOrigin
 	@RequestMapping(value = "/user/", method = RequestMethod.POST)
 	public ResponseEntity<?> createUser(@RequestBody User user, UriComponentsBuilder builder) {
 		LOGGER.info("Creating user : {}", user);
