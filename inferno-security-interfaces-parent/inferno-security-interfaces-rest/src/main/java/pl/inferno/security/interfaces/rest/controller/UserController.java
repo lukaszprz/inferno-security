@@ -5,16 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import pl.inferno.security.core.model.User;
 import pl.inferno.security.core.service.UserService;
@@ -37,8 +34,9 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@CrossOrigin
-	@RequestMapping(value = "/user/", method = RequestMethod.GET)
+	// @CrossOrigin
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	public ResponseEntity<List<User>> listAllUsers() {
 		List<User> users = userService.getAllUsers();
 		if (users.isEmpty()) {
@@ -48,7 +46,8 @@ public class UserController {
 		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 	}
 
-	@CrossOrigin
+	// @CrossOrigin
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/user/name/{username}", method = RequestMethod.GET)
 	public ResponseEntity<?> findUser(@PathVariable("username") String username) {
 		LOGGER.info("Fetching User with username {}", username);
@@ -61,7 +60,8 @@ public class UserController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
-	@CrossOrigin
+	// @CrossOrigin
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
 		LOGGER.info("Fetching User with id {}", id);
@@ -74,22 +74,29 @@ public class UserController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 
-	@CrossOrigin
-	@RequestMapping(value = "/user/", method = RequestMethod.POST)
-	public ResponseEntity<?> createUser(@RequestBody User user, UriComponentsBuilder builder) {
-		LOGGER.info("Creating user : {}", user);
-		if (userService.isUserExist(user)) {
-			LOGGER.error("Unable to create. A User with username {} already exist", user.getUsername());
-			return new ResponseEntity<>(
-			        new CustomErrorType(
-			                "Unable to create. A User with username " + user.getUsername() + " already exist"),
-			        HttpStatus.CONFLICT);
-		}
-		userService.saveUser(user);
+	// @CrossOrigin
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+		User user = userService.findById(id);
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(builder.path("/api/user/{id}").buildAndExpand(user.getId()).toUri());
-		return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+		if (user == null) {
+			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+		} else {
+			userService.deleteUser(user);
+			return new ResponseEntity<User>(user, HttpStatus.OK);
+		}
+
+	}
+
+	// @CrossOrigin
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/users", method = RequestMethod.POST)
+	public ResponseEntity<User> createUser(@RequestBody User user) {
+		if (userService.getUserByUserName(user.getUsername()) != null) {
+			throw new RuntimeException("Username already exist.");
+		}
+		return new ResponseEntity<User>(userService.saveUser(user), HttpStatus.CREATED);
 	}
 
 }

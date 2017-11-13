@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Implementation-Title: [CONFIG] Configuration of Inferno Security
+Implementation-Version: 1.0.0-SNAPSHOT
+Built-By: lukasz-adm
+Implementation-Vendor-Id: pl.inferno.security
+Build-Jdk: 1.8.0_151
+Implementation-URL: http://projects.spring.io/spring-boot/inferno-secu
+ rity-parent/inferno-security-configs-parent/inferno-security-configur
+ ation/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+

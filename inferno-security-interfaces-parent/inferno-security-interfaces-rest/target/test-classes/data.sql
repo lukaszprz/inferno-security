@@ -27,8 +27,8 @@ SELECT pg_catalog.setval('hibernate_sequence', 4, true);
 -- Data for Name: inferno_roles; Type: TABLE DATA; Schema: inferno_authorization_schema; Owner: inferno-app
 --
 
-INSERT INTO inferno_roles VALUES (1, 'ADMIN');
-INSERT INTO inferno_roles VALUES (2, 'USER');
+INSERT INTO inferno_roles VALUES (1, 'ROLE_ADMIN');
+INSERT INTO inferno_roles VALUES (2, 'ROLE_USER');
 
 
 --
@@ -42,8 +42,8 @@ SELECT pg_catalog.setval('inferno_roles_role_id_seq', 1, false);
 -- Data for Name: inferno_users; Type: TABLE DATA; Schema: inferno_authorization_schema; Owner: inferno-app
 --
 
-INSERT INTO inferno_users VALUES (3, true, '2017-11-06 08:44:02.148', 'inferno123', 'inferno-admin', NULL);
-INSERT INTO inferno_users VALUES (4, true, '2017-11-06 08:44:02.215', 'inferno123', 'inferno-user', '2017-12-06 08:44:02.3');
+INSERT INTO inferno_users VALUES (3, true, '2017-11-06 08:44:02.148', '$2a$10$BV17qYNsgCT3WlK8nserz.Re2XiEgxT9nnhgY44km0Yuir73wYAWO', 'inferno-admin', NULL);
+INSERT INTO inferno_users VALUES (4, true, '2017-11-06 08:44:02.215', '$2a$10$Yus5FoBSKHmf4udUeQa1f.Ap9ozUnLJn0kW52DjaWqWteQWPsHk.m', 'inferno-user', '2017-12-06 08:44:02.3');
 
 
 --

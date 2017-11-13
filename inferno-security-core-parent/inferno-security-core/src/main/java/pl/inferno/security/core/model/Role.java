@@ -10,13 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+
 /**
  * @author lukasz-adm
  *
  */
 @Entity
 @Table(schema = "inferno_authorization_schema", name = "inferno_roles")
-public class Role {
+public class Role implements GrantedAuthority {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -112,6 +114,16 @@ public class Role {
 	@Override
 	public String toString() {
 		return String.format("Role [id=%s, name=%s]", id, name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.springframework.security.core.GrantedAuthority#getAuthority()
+	 */
+	@Override
+	public String getAuthority() {
+		return name;
 	}
 
 }

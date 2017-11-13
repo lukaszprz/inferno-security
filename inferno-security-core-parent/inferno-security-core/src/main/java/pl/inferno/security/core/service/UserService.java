@@ -19,8 +19,12 @@ public interface UserService {
 
 	boolean isUserExist(User user);
 
-	void saveUser(User user);
+	User saveUser(User user);
 
 	User findById(long id);
+
+	User getCurrentUser(String username);
+
+	void deleteUser(User user);
 
 }

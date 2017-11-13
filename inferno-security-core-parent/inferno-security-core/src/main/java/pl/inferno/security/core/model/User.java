@@ -4,6 +4,8 @@
 package pl.inferno.security.core.model;
 
 import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,13 +19,17 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+
 /**
  * @author lukasz-adm
  *
  */
 @Entity
 @Table(schema = "inferno_authorization_schema", name = "inferno_users")
-public class User {
+public class User implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -67,6 +73,7 @@ public class User {
 	/**
 	 * @return the username
 	 */
+	@Override
 	public String getUsername() {
 		return username;
 	}
@@ -82,6 +89,7 @@ public class User {
 	/**
 	 * @return the password
 	 */
+	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -247,6 +255,63 @@ public class User {
 	public String toString() {
 		return String.format("User [id=%s, username=%s, password=%s, active=%s, validTo=%s, created=%s, roles=%s]", id,
 		        username, password, active, validTo, created, roles);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.springframework.security.core.userdetails.UserDetails#getAuthorities()
+	 */
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Collection<Role> authorities = AuthorityUtils.
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired
+	 * ()
+	 */
+	@Override
+	public boolean isAccountNonExpired() {
+		return (this.validTo != null) && this.validTo.before(new Date());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.springframework.security.core.userdetails.UserDetails#isAccountNonLocked(
+	 * )
+	 */
+	@Override
+	public boolean isAccountNonLocked() {
+		return this.isActive();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.springframework.security.core.userdetails.UserDetails#
+	 * isCredentialsNonExpired()
+	 */
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return (this.validTo != null) && this.validTo.before(new Date());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.springframework.security.core.userdetails.UserDetails#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled() {
+		return this.isActive();
 	}
 
 }

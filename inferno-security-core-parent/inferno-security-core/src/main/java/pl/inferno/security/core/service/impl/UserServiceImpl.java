@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserByUserName(String username) {
 
-		return userRepository.findByUsername(username);
+		return userRepository.findOneByUsername(username);
 	}
 
 	/*
@@ -66,18 +66,43 @@ public class UserServiceImpl implements UserService {
 	 * core.model.User)
 	 */
 	@Override
-	public void saveUser(User user) {
-		userRepository.save(user);
+	public User saveUser(User user) {
+		return userRepository.save(user);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see pl.inferno.security.core.service.UserService#findById(long)
 	 */
 	@Override
 	public User findById(long id) {
 		return userRepository.findOne(id);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * pl.inferno.security.core.service.UserService#getCurrentUser(java.lang.String)
+	 */
+	@Override
+	public User getCurrentUser(String username) {
+		// TODO Auto-generated method stub
+		return userRepository.findOneByUsername(username);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * pl.inferno.security.core.service.UserService#deleteUser(pl.inferno.security.
+	 * core.model.User)
+	 */
+	@Override
+	public void deleteUser(User user) {
+		userRepository.delete(user);
+
 	}
 
 }
