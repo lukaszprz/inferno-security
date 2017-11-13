@@ -5,22 +5,20 @@ package pl.inferno.security.core.model;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -31,6 +29,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(schema = "inferno_authorization_schema", name = "inferno_users")
 public class User implements UserDetails {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6040407139493365688L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "user_id")
@@ -39,21 +42,36 @@ public class User implements UserDetails {
 	@Column(name = "username", nullable = false, unique = true)
 	private String username;
 
-	@Column(name = "password")
+	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "active")
-	private boolean active;
+	@Column(name = "enabled", nullable = false)
+	private boolean enabled;
 
-	@Column(name = "valid_to")
-	private Timestamp validTo;
+	@Column(name = "expires", nullable = false)
+	private Timestamp expires;
+
+	@Column(name = "is_expired", nullable = false)
+	private boolean accountExpired;
+
+	@Column(name = "is_locked", nullable = false)
+	private boolean accountLocked;
+
+	@Column(name = "credentials_expired", nullable = false)
+	private boolean credentialsExpired;
 
 	@Column(name = "created", nullable = false, updatable = false)
 	private Timestamp created = new Timestamp(System.currentTimeMillis());;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(schema = "inferno_authorization_schema", name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	// @ManyToMany(cascade = CascadeType.ALL)
+	// @JoinTable(schema = "inferno_authorization_schema", name = "user_role",
+	// joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns =
+	// @JoinColumn(name = "role_id"))
+	@Transient
 	private Set<Role> roles;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+	private Set<UserRoles> assignedAuthorities;
 
 	/**
 	 * @return the id
@@ -103,48 +121,79 @@ public class User implements UserDetails {
 	}
 
 	/**
-	 * @return the roles
+	 * @return the accountEnabled
 	 */
-	public Set<Role> getRoles() {
-		return roles;
+	@Override
+	public boolean isEnabled() {
+		return enabled;
 	}
 
 	/**
-	 * @param roles
-	 *            the roles to set
+	 * @param accountEnabled
+	 *            the accountEnabled to set
 	 */
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	/**
-	 * @return the active
+	 * @return the expires
 	 */
-	public boolean isActive() {
-		return active;
+	public Timestamp getExpires() {
+		return expires;
 	}
 
 	/**
-	 * @param active
-	 *            the active to set
+	 * @param expires
+	 *            the expires to set
 	 */
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setExpires(Timestamp expires) {
+		this.expires = expires;
 	}
 
 	/**
-	 * @return the validTo
+	 * @return the accountExpired
 	 */
-	public Timestamp getValidTo() {
-		return validTo;
+	public boolean isAccountExpired() {
+		return accountExpired;
 	}
 
 	/**
-	 * @param validTo
-	 *            the validTo to set
+	 * @param accountExpired
+	 *            the accountExpired to set
 	 */
-	public void setValidTo(Timestamp validTo) {
-		this.validTo = validTo;
+	public void setAccountExpired(boolean accountExpired) {
+		this.accountExpired = accountExpired;
+	}
+
+	/**
+	 * @return the accountLocked
+	 */
+	public boolean isAccountLocked() {
+		return accountLocked;
+	}
+
+	/**
+	 * @param accountLocked
+	 *            the accountLocked to set
+	 */
+	public void setAccountLocked(boolean accountLocked) {
+		this.accountLocked = accountLocked;
+	}
+
+	/**
+	 * @return the credentialsExpired
+	 */
+	public boolean isCredentialsExpired() {
+		return credentialsExpired;
+	}
+
+	/**
+	 * @param credentialsExpired
+	 *            the credentialsExpired to set
+	 */
+	public void setCredentialsExpired(boolean credentialsExpired) {
+		this.credentialsExpired = credentialsExpired;
 	}
 
 	/**
@@ -162,28 +211,108 @@ public class User implements UserDetails {
 		this.created = created;
 	}
 
+	/**
+	 * @return the roles
+	 */
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	/**
+	 * @param roles
+	 *            the roles to set
+	 */
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
+	 * @see
+	 * org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired
+	 * ()
+	 */
+	@Override
+	public boolean isAccountNonExpired() {
+		return !accountExpired;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.springframework.security.core.userdetails.UserDetails#isAccountNonLocked(
+	 * )
+	 */
+	@Override
+	public boolean isAccountNonLocked() {
+		return !accountLocked;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.springframework.security.core.userdetails.UserDetails#
+	 * isCredentialsNonExpired()
+	 */
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return !credentialsExpired;
+	}
+
+	/**
+	 * @return the assignedAuthorities
+	 */
+	public Set<UserRoles> getAssignedAuthorities() {
+		return assignedAuthorities;
+	}
+
+	/**
+	 * @param assignedAuthorities
+	 *            the assignedAuthorities to set
+	 */
+	public void setAssignedAuthorities(Set<UserRoles> assignedAuthorities) {
+		this.assignedAuthorities = assignedAuthorities;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.springframework.security.core.userdetails.UserDetails#getAuthorities()
+	 */
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return assignedAuthorities;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = (prime * result) + (active ? 1231 : 1237);
+		result = (prime * result) + (accountExpired ? 1231 : 1237);
+		result = (prime * result) + (accountLocked ? 1231 : 1237);
+		result = (prime * result) + ((assignedAuthorities == null) ? 0 : assignedAuthorities.hashCode());
 		result = (prime * result) + ((created == null) ? 0 : created.hashCode());
+		result = (prime * result) + (credentialsExpired ? 1231 : 1237);
+		result = (prime * result) + (enabled ? 1231 : 1237);
+		result = (prime * result) + ((expires == null) ? 0 : expires.hashCode());
 		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
 		result = (prime * result) + ((password == null) ? 0 : password.hashCode());
 		result = (prime * result) + ((roles == null) ? 0 : roles.hashCode());
 		result = (prime * result) + ((username == null) ? 0 : username.hashCode());
-		result = (prime * result) + ((validTo == null) ? 0 : validTo.hashCode());
 		return result;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -198,7 +327,17 @@ public class User implements UserDetails {
 			return false;
 		}
 		User other = (User) obj;
-		if (active != other.active) {
+		if (accountExpired != other.accountExpired) {
+			return false;
+		}
+		if (accountLocked != other.accountLocked) {
+			return false;
+		}
+		if (assignedAuthorities == null) {
+			if (other.assignedAuthorities != null) {
+				return false;
+			}
+		} else if (!assignedAuthorities.equals(other.assignedAuthorities)) {
 			return false;
 		}
 		if (created == null) {
@@ -206,6 +345,19 @@ public class User implements UserDetails {
 				return false;
 			}
 		} else if (!created.equals(other.created)) {
+			return false;
+		}
+		if (credentialsExpired != other.credentialsExpired) {
+			return false;
+		}
+		if (enabled != other.enabled) {
+			return false;
+		}
+		if (expires == null) {
+			if (other.expires != null) {
+				return false;
+			}
+		} else if (!expires.equals(other.expires)) {
 			return false;
 		}
 		if (id == null) {
@@ -236,82 +388,20 @@ public class User implements UserDetails {
 		} else if (!username.equals(other.username)) {
 			return false;
 		}
-		if (validTo == null) {
-			if (other.validTo != null) {
-				return false;
-			}
-		} else if (!validTo.equals(other.validTo)) {
-			return false;
-		}
 		return true;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return String.format("User [id=%s, username=%s, password=%s, active=%s, validTo=%s, created=%s, roles=%s]", id,
-		        username, password, active, validTo, created, roles);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.springframework.security.core.userdetails.UserDetails#getAuthorities()
-	 */
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<Role> authorities = AuthorityUtils.
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired
-	 * ()
-	 */
-	@Override
-	public boolean isAccountNonExpired() {
-		return (this.validTo != null) && this.validTo.before(new Date());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.springframework.security.core.userdetails.UserDetails#isAccountNonLocked(
-	 * )
-	 */
-	@Override
-	public boolean isAccountNonLocked() {
-		return this.isActive();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.springframework.security.core.userdetails.UserDetails#
-	 * isCredentialsNonExpired()
-	 */
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return (this.validTo != null) && this.validTo.before(new Date());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.springframework.security.core.userdetails.UserDetails#isEnabled()
-	 */
-	@Override
-	public boolean isEnabled() {
-		return this.isActive();
+		return String.format(
+		        "User [id=%s, username=%s, password=%s, enabled=%s, expires=%s, accountExpired=%s, accountLocked=%s, credentialsExpired=%s, created=%s, roles=%s, assignedAuthorities=%s]",
+		        id, username, password, enabled, expires, accountExpired, accountLocked, credentialsExpired, created,
+		        roles, assignedAuthorities);
 	}
 
 }

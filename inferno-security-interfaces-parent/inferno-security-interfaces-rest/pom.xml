@@ -8,23 +8,20 @@
 	</parent>
 	<artifactId>inferno-security-interfaces-rest</artifactId>
 	<name>REST Interfaces</name>
-	
+
 	<properties>
-	   <jjwt.version>0.9.0</jjwt.version>
+		<jjwt.version>0.9.0</jjwt.version>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>pl.inferno.security</groupId>
-			<artifactId>inferno-security-configuration</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>pl.inferno.security</groupId>
-			<artifactId>inferno-security-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
 
+		<dependency>
+            <groupId>pl.inferno.security</groupId>
+            <artifactId>inferno-security-core</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -53,11 +50,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.1.4</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -95,23 +88,33 @@
 
 	<build>
 		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.0.2</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<addParentPoms>true</addParentPoms>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- <configuration>
-					<executable>true</executable>
-					<fork>true</fork>
-					<addResources>true</addResources>
+				<configuration>
+
+					<!-- <executable>true</executable> <fork>true</fork> <addResources>true</addResources> -->
 				</configuration>
-				<executions>
-					<execution>
-						<id>test-run</id>
-						<phase>integration-test</phase>
-						<goals>
-							<goal>start</goal>
-						</goals>
-					</execution>
-				</executions> -->
+				<!-- <executions> <execution> <id>test-run</id> <phase>integration-test</phase> 
+					<goals> <goal>start</goal> </goals> </execution> </executions> -->
 			</plugin>
 			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>exec-maven-plugin</artifactId> 
 				<executions> <execution> <phase>install</phase> <goals> <goal>java</goal> 
@@ -120,4 +123,6 @@
 				</arguments> </configuration> </execution> </executions> </plugin> -->
 		</plugins>
 	</build>
+	
+	
 </project>
