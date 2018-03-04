@@ -6,7 +6,6 @@ package pl.inferno.security.core.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -115,8 +114,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	 * loadUserByUsername(java.lang.String)
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public User loadUserByUsername(String username) throws UsernameNotFoundException {
 		return userRepository.findOneByUsername(username);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * pl.inferno.security.core.service.UserService#getCurrentUser(java.lang.Long)
+	 */
+	@Override
+	public User getCurrentUser(Long id) {
+		return userRepository.findOne(id);
 	}
 
 }

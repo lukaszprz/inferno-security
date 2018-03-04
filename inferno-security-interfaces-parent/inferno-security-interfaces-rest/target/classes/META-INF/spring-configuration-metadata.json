@@ -3,23 +3,28 @@
   "groups": [],
   "properties": [
     {
-      "name": "spring.database.superuser.name",
-      "description": "A description for 'spring.database.superuser.name'",
+      "name": "eureka.client.serviceUrl.defaultZone",
+      "description": "A description for 'eureka.client.serviceUrl.defaultZone'",
       "type": "java.lang.String"
     },
     {
-      "name": "spring.database.superuser.password",
-      "description": "A description for 'spring.database.superuser.password'",
+      "name": "inferno.token.secret",
+      "description": "A description for 'inferno.token.secret'",
       "type": "java.lang.String"
     },
     {
-      "name": "spring.queries.roles-query",
-      "description": "A description for 'spring.queries.roles-query'",
+      "name": "spring.boot.admin.password",
+      "description": "A description for 'spring.boot.admin.password'",
       "type": "java.lang.String"
     },
     {
-      "name": "spring.queries.users-query",
-      "description": "A description for 'spring.queries.users-query'",
+      "name": "spring.boot.admin.url",
+      "description": "A description for 'spring.boot.admin.url'",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "spring.boot.admin.username",
+      "description": "A description for 'spring.boot.admin.username'",
       "type": "java.lang.String"
     }
   ]

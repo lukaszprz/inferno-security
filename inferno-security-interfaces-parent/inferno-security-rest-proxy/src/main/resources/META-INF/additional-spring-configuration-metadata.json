@@ -1,0 +1,78 @@
+{"properties": [
+    {
+        "name": "api.server.port",
+        "type": "java.lang.String",
+        "description": "Port for API server"
+    },
+    {
+        "name": "api.server.protocol",
+        "type": "java.lang.String",
+        "description": "A protocol for API server",
+        "defaultValue": "http"
+    },
+    {
+        "name": "api.server.host",
+        "type": "java.lang.String",
+        "description": "A host for API server",
+        "defaultValue": "localhost"
+    },
+    {
+        "name": "api.server.context",
+        "type": "java.lang.String",
+        "description": "A context for API server",
+        "defaultValue": "/api"
+    },
+    {
+        "name": "api.server.admin.context",
+        "type": "java.lang.String",
+        "description": "A context for admin's API server",
+        "defaultValue": "/admin/api"
+    },
+    {
+        "name": "api.server.url",
+        "type": "java.lang.String",
+        "description": "API server full URL address",
+        "defaultValue": "${api.server.protocol}://${api.server.host}:${api.server.port}${api.server.context}"    
+    },
+    {
+        "name": "api.server.admin.url",
+        "type": "java.lang.String",
+        "description": "API server full URL address",
+        "defaultValue": "${api.server.protocol}://${api.server.host}:${api.server.port}${api.server.admin.context}"
+    }
+], "hints": [
+    {
+        "name": "api.server.protocol",
+        "values": [
+            {
+                "value": "http",
+                "description": "Standard HTTP protocol"
+            },
+            {
+                "value": "https",
+                "description": "Secured HTTPS protocol"
+            },
+            {
+                "value": "ftp",
+                "description": "Standard FTP (file transfer) protocol"
+            },
+            {
+                "value": "ftps",
+                "description": "Secured FTPS (file transfer) protocol"
+            },
+            {
+                "value": "socket",
+                "description": "Socket protocol"
+            },
+            {
+                "value": "file",
+                "description": "File protocol"
+            },
+            {
+                "value": "classpath",
+                "description": "Classpath protocol"
+            }
+        ]
+        
+    }
+]}

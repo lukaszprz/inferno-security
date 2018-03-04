@@ -58,7 +58,7 @@ public class DatabaseInitialization {
 
 			if (isConnectionOpenned && isConnectionValid && isConnectionReadable) {
 				LOGGER.info("Syperuser with name {} exists.", dbAdmin);
-				LOGGER.info("No need to iniotialize database. (SKIP_INIT_DB)");
+				LOGGER.info("No need to initialize database. (SKIP_INIT_DB)");
 			} else {
 				LOGGER.warn("Missing superuser in database!");
 				LOGGER.info("Initializing database...");

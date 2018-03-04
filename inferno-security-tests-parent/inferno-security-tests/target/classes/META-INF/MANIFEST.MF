@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: Tests queue
 Implementation-Version: 1.0.0-SNAPSHOT
-Built-By: lukasz-adm
+Built-By: ￅﾁukasz Przesmycki (lukasz.przesmycki@gmail.com)
 Implementation-Vendor-Id: pl.inferno.security.test
-Build-Jdk: 1.8.0_151
+Build-Jdk: 1.8.0_161
 Implementation-URL: http://projects.spring.io/spring-boot/inferno-secu
  rity-parent/inferno-security-tests-parent/inferno-security-tests/
 Created-By: Maven Integration for Eclipse

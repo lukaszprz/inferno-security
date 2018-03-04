@@ -10,11 +10,11 @@
     <packaging>pom</packaging>
     <name>[PARENT] Inferno Config Modules</name>
 
+    
+
     <modules>
         <module>inferno-security-configuration</module>
     </modules>
-
-    
 
     
 </project>

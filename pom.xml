@@ -22,11 +22,22 @@
 
 	<modules>
 		<module>inferno-security-configs-parent</module>
-		<module>inferno-security-core-parent</module>			
+		<module>inferno-security-core-parent</module>
 		<module>inferno-security-interfaces-parent</module>
 		<!-- <module>inferno-security-tests-parent</module> -->
 	</modules>
 
-	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 
 </project>

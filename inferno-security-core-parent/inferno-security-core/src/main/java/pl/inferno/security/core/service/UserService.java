@@ -25,6 +25,8 @@ public interface UserService {
 
 	User getCurrentUser(String username);
 
+	User getCurrentUser(Long id);
+
 	void deleteUser(User user);
 
 }

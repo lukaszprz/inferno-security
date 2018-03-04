@@ -1,16 +1,20 @@
 package pl.inferno.security.interfaces.rest.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pl.inferno.security.core.model.User;
@@ -23,80 +27,128 @@ import pl.inferno.security.interfaces.rest.utils.CustomErrorType;
 
 /**
  * @author lukasz-adm
- *
  */
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	// @CrossOrigin
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	public ResponseEntity<List<User>> listAllUsers() {
-		List<User> users = userService.getAllUsers();
-		if (users.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			// You many decide to return HttpStatus.NOT_FOUND
-		}
-		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
-	}
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	// @CrossOrigin
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/user/name/{username}", method = RequestMethod.GET)
-	public ResponseEntity<?> findUser(@PathVariable("username") String username) {
-		LOGGER.info("Fetching User with username {}", username);
-		User user = userService.getUserByUserName(username);
-		if (user == null) {
-			LOGGER.error("User with username {} not found.", username);
-			return new ResponseEntity<>(new CustomErrorType("User with username " + username + " not found."),
-			        HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<User>(user, HttpStatus.OK);
-	}
+    // @CrossOrigin
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/user/name/{username}", method = RequestMethod.GET)
+    public ResponseEntity<?> findUser(@PathVariable("username") String username) {
+        LOGGER.info("Fetching User with username {}", username);
+        User user = userService.getUserByUserName(username);
+        if (user == null) {
+            LOGGER.error("User with username {} not found.", username);
+            return new ResponseEntity<>(new CustomErrorType("User with username " + username + " not found."), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
 
-	// @CrossOrigin
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
-		LOGGER.info("Fetching User with id {}", id);
-		User user = userService.findById(id);
-		if (user == null) {
-			LOGGER.error("User with id {} not found.", id);
-			return new ResponseEntity<>(new CustomErrorType("User with id " + id + " not found."),
-			        HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<User>(user, HttpStatus.OK);
-	}
+    // @CrossOrigin
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<?> getUserById(@PathVariable("id") Long id) {
+        LOGGER.info("Fetching User with id {}", id);
+        User user = userService.findById(id);
+        if (user == null) {
+            LOGGER.error("User with id {} not found.", id);
+            return new ResponseEntity<>(new CustomErrorType("User with id " + id + " not found."), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
 
-	// @CrossOrigin
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<User> deleteUser(@PathVariable Long id) {
-		User user = userService.findById(id);
+    // @CrossOrigin
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+        User user = userService.findById(id);
 
-		if (user == null) {
-			return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
-		} else {
-			userService.deleteUser(user);
-			return new ResponseEntity<User>(user, HttpStatus.OK);
-		}
+        if (user == null) {
+            return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+        } else {
+            userService.deleteUser(user);
+            return new ResponseEntity<User>(user, HttpStatus.OK);
+        }
 
-	}
+    }
 
-	// @CrossOrigin
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/users", method = RequestMethod.POST)
-	public ResponseEntity<User> createUser(@RequestBody User user) {
-		if (userService.getUserByUserName(user.getUsername()) != null) {
-			throw new RuntimeException("Username already exist.");
-		}
-		return new ResponseEntity<User>(userService.saveUser(user), HttpStatus.CREATED);
-	}
+    // @CrossOrigin
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        if (userService.getUserByUserName(user.getUsername()) != null) {
+            throw new RuntimeException("Username already exist.");
+        }
+        return new ResponseEntity<User>(userService.saveUser(user), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/users/current", method = RequestMethod.GET)
+    public ResponseEntity<Authentication> getCurrent(Authentication authentication) {
+        HttpStatus httpStatus = HttpStatus.TEMPORARY_REDIRECT;
+        if ((authentication != null) && authentication.isAuthenticated()) {
+            LOGGER.debug("CONTROLLER getCurrent(), authentication param: {}", authentication);
+            httpStatus = HttpStatus.FOUND;
+            return new ResponseEntity<>(authentication, httpStatus);
+        } else {
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                httpStatus = HttpStatus.ACCEPTED;
+                return new ResponseEntity<Authentication>(authentication, httpStatus);
+            } else {
+                SecurityContextHolder.getContext().setAuthentication(null);
+                httpStatus = HttpStatus.NETWORK_AUTHENTICATION_REQUIRED;
+                return new ResponseEntity<Authentication>(SecurityContextHolder.getContext().getAuthentication(), httpStatus);
+            }
+
+        }
+
+    }
+    // LOGGER.info("getCurrent()");
+    // final Authentication authentication =
+    // SecurityContextHolder.getContext().getAuthentication();
+    // if (authentication instanceof UserAuthentication) {
+    // LOGGER.info("Authentication: {}", authentication);
+    // return ((UserAuthentication) authentication).getDetails();
+    // }
+    // User user = new User();
+    // user.setUsername(authentication.getName());
+    // return principal..;
+    // }
+
+    @RequestMapping(value = "/users/current", method = RequestMethod.PATCH)
+    public ResponseEntity<String> changePassword(@RequestBody final User user) {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final User currentUser = userService.getUserByUserName(authentication.getName());
+
+        if ((user.getNewPassword() == null) || (user.getNewPassword().length() < 4)) {
+            return new ResponseEntity<String>("New password to short.", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (!passwordEncoder.matches(user.getPassword(), currentUser.getPassword())) {
+            return new ResponseEntity<String>("Old password mismatch.", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        currentUser.setPassword(passwordEncoder.encode(user.getNewPassword()));
+        userService.saveUser(currentUser);
+        return new ResponseEntity<String>("Password changed.", HttpStatus.OK);
+    }
+
+    // public ResponseEntity<?> getToken()
+
+    @RequestMapping(value = "/encrypt", method = RequestMethod.GET)
+    public ResponseEntity<String> encryptPassword(@RequestParam(name = "rawPassword") String rawPassword) {
+
+        return new ResponseEntity<String>(passwordEncoder.encode(rawPassword), HttpStatus.OK);
+    }
 
 }
