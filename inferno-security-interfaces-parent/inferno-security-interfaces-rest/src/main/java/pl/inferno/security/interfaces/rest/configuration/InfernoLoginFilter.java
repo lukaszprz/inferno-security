@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -86,14 +88,19 @@ public class InfernoLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         LOGGER.debug("username: {}, password: {}, encrypted password: {}", username, password, encryptedPassword);
         UsernamePasswordAuthenticationToken loginToken = new UsernamePasswordAuthenticationToken(username, encryptedPassword);
+        loginToken.setDetails(authenticationDetailsSource.buildDetails(request));
 
         LOGGER.debug("LOGIN TOKEN: {}", loginToken);
-        try {
-            return getAuthenticationManager().authenticate(loginToken);
-        } catch (Exception e) {
-            LOGGER.error("ERROR: {}", e.getLocalizedMessage());
-        }
-        return null;
+        Authentication authentication = null;// tokenAuthenticationService.getAuthentication(request);
+        // LOGGER.debug("Authentication from token service: {}", authentication);
+        // try {
+        authentication = getAuthenticationManager().authenticate(loginToken);
+        // } catch (Exception e) {
+        // LOGGER.error("Authorization failed for user: {}", username);
+        // }
+
+        return authentication;
+
     }
 
     /**
@@ -124,6 +131,10 @@ public class InfernoLoginFilter extends AbstractAuthenticationProcessingFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)
             throws IOException, ServletException {
 
+        response.setStatus(HttpStatus.ACCEPTED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setCharacterEncoding("UTF-8");
+
         // Lookup the complete User object from the database and create an
         // Authentication for it
         final User authenticatedUser = userDetailsService.getUserByUserName(authResult.getName());
@@ -150,6 +161,21 @@ public class InfernoLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.security.web.authentication.
+     * AbstractAuthenticationProcessingFilter#unsuccessfulAuthentication(javax.
+     * servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
+     * org.springframework.security.core.AuthenticationException)
+     */
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setCharacterEncoding("UTF-8");
+        response.sendError(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Invalid Credentials");
     }
 
 }

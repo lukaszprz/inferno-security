@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public User getUserByUserName(String username) {
-
         return userRepository.findOneByUsername(username);
     }
 
@@ -84,7 +83,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public User getCurrentUser(String username) {
-        // TODO Auto-generated method stub
         return userRepository.findOneByUsername(username);
     }
 
@@ -107,7 +105,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findOneByUsername(username);
+        User user = userRepository.findOneByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return user;
     }
 
     /*

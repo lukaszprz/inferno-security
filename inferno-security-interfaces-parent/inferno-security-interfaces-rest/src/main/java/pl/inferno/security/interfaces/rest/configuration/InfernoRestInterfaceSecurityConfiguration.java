@@ -8,9 +8,6 @@
  */
 package pl.inferno.security.interfaces.rest.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +21,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.CacheControlHeadersWriter;
 
-import pl.inferno.security.core.model.User;
-import pl.inferno.security.core.model.UserRoles;
 import pl.inferno.security.core.service.UserService;
 import pl.inferno.security.interfaces.rest.service.InfernoTokenAuthenticationService;
 
@@ -103,6 +97,7 @@ public class InfernoRestInterfaceSecurityConfiguration extends WebSecurityConfig
 			.antMatchers(HttpMethod.POST, "/api/login").permitAll()
 //			.antMatchers(HttpMethod.GET, "/api/login").permitAll()
 
+
 			//allow anonymous GETs to API
 			.antMatchers(HttpMethod.GET, "/api/**").permitAll()
 
@@ -153,34 +148,36 @@ public class InfernoRestInterfaceSecurityConfiguration extends WebSecurityConfig
     @Bean
     @Override
     protected UserDetailsService userDetailsService() {
-        return username -> {
-            User user = userDetailsService.getUserByUserName(username);
-            if (user != null) {
-                User foundUser = new User();
-                foundUser.setAccountExpired(user.isAccountExpired());
-                foundUser.setAccountLocked(user.isAccountLocked());
-                foundUser.setCreatedBy(user.getCreatedBy());
-                foundUser.setCreatedDate(user.getCreatedDate());
-                foundUser.setCredentialsExpired(user.isCredentialsExpired());
-                foundUser.setEnabled(user.isEnabled());
-                foundUser.setExpires(user.getExpires());
-                foundUser.setId(user.getId());
-                foundUser.setLastModifiedBy(user.getLastModifiedBy());
-                foundUser.setLastModifiedDate(user.getLastModifiedDate());
-                foundUser.setNewPassword(user.getNewPassword());
-                foundUser.setPassword(user.getPassword());
-                foundUser.setPerson(user.getPerson());
-                List<String> authorities = new ArrayList<>();
-                for (UserRoles assignedRole : user.getRoles()) {
-                    authorities.add(assignedRole.getAuthority());
-                }
-                foundUser.setRoles(user.getRoles());
-                foundUser.setUsername(user.getUsername());
-                return foundUser;
-            } else {
-                throw new UsernameNotFoundException("Could not find the user " + username);
-            }
-        };
+        return (UserDetailsService) userDetailsService;
+        // return username -> {
+        // User user = userDetailsService.getUserByUserName(username);
+        //
+        // if (userDetailsService.isUserExist(user)) {
+        // User foundUser = new User();
+        // foundUser.setAccountExpired(user.isAccountExpired());
+        // foundUser.setAccountLocked(user.isAccountLocked());
+        // foundUser.setCreatedBy(user.getCreatedBy());
+        // foundUser.setCreatedDate(user.getCreatedDate());
+        // foundUser.setCredentialsExpired(user.isCredentialsExpired());
+        // foundUser.setEnabled(user.isEnabled());
+        // foundUser.setExpires(user.getExpires());
+        // foundUser.setId(user.getId());
+        // foundUser.setLastModifiedBy(user.getLastModifiedBy());
+        // foundUser.setLastModifiedDate(user.getLastModifiedDate());
+        // foundUser.setNewPassword(user.getNewPassword());
+        // foundUser.setPassword(user.getPassword());
+        // foundUser.setPerson(user.getPerson());
+        // List<String> authorities = new ArrayList<>();
+        // for (UserRoles assignedRole : user.getRoles()) {
+        // authorities.add(assignedRole.getAuthority());
+        // }
+        // foundUser.setRoles(user.getRoles());
+        // foundUser.setUsername(user.getUsername());
+        // return foundUser;
+        // } else {
+        // throw new UsernameNotFoundException("Could not find the user " + username);
+        // }
+        // };
 
     }
 

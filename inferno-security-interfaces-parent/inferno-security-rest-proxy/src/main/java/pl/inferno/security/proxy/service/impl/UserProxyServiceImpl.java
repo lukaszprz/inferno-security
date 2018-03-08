@@ -191,11 +191,12 @@ public class UserProxyServiceImpl implements UserProxyService {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> loginRequest = new HttpEntity<>("{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}", httpHeaders);
         ResponseEntity<UserDTO> results = restTemplate.postForEntity(url, loginRequest, UserDTO.class);
-        if (results.getStatusCode().equals(HttpStatus.OK)) {
+
+        if (results.getHeaders().containsKey(HEADER_X_AUTH_TOKEN)) {
             user.setToken(results.getHeaders().getFirst(HEADER_X_AUTH_TOKEN));
             return new ResponseEntity<String>(user.getToken(), HttpStatus.ACCEPTED);
         }
-        return new ResponseEntity<String>(results.getStatusCode());
+        return new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
 
     }
 

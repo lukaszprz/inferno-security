@@ -8,6 +8,7 @@
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/InfernoRestProxyRunner.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/errors/InfernoApiError.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/mapper/ObjectMapper.java
+/home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/errors/InfernoAuthorizationFailedException.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/errors/InfernoAbstractApiSubError.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/dto/RoleDTO.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/service/UserProxyService.java

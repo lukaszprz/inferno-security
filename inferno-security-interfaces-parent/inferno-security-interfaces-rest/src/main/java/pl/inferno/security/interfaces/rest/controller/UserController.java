@@ -96,7 +96,6 @@ public class UserController {
 
     @RequestMapping(value = "/users/current", method = RequestMethod.GET)
     public ResponseEntity<User> getCurrent() {
-        HttpStatus httpStatus = HttpStatus.TEMPORARY_REDIRECT;
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof UserAuthentication) {
             LOGGER.debug("CONTROLLER getCurrent(), authentication param: {}", authentication);
@@ -107,17 +106,6 @@ public class UserController {
         }
 
     }
-    // LOGGER.info("getCurrent()");
-    // final Authentication authentication =
-    // SecurityContextHolder.getContext().getAuthentication();
-    // if (authentication instanceof UserAuthentication) {
-    // LOGGER.info("Authentication: {}", authentication);
-    // return ((UserAuthentication) authentication).getDetails();
-    // }
-    // User user = new User();
-    // user.setUsername(authentication.getName());
-    // return principal..;
-    // }
 
     @RequestMapping(value = "/users/current", method = RequestMethod.PATCH)
     public ResponseEntity<String> changePassword(@RequestBody final User user) {
@@ -137,8 +125,6 @@ public class UserController {
         userService.saveUser(currentUser);
         return new ResponseEntity<String>("Password changed.", HttpStatus.OK);
     }
-
-    // public ResponseEntity<?> getToken()
 
     @RequestMapping(value = "/encrypt", method = RequestMethod.GET)
     public ResponseEntity<String> encryptPassword(@RequestParam(name = "rawPassword") String rawPassword) {

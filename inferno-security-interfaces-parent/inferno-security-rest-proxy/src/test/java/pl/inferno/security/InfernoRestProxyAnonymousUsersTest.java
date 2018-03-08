@@ -9,9 +9,15 @@
 package pl.inferno.security;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -26,6 +32,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import pl.inferno.security.proxy.dto.UserDTO;
 import pl.inferno.security.proxy.service.UserProxyService;
@@ -83,6 +91,34 @@ public class InfernoRestProxyAnonymousUsersTest {
         } finally {
             assertNull("User response entity was not null.", currentUser);
         }
+    }
+
+    @Test
+    public void testWrongUserLogin() {
+        UserDTO user = new UserDTO();
+        user.setUsername("anon");
+        user.setPassword("qwerty");
+        ResponseEntity<String> tokenResponse = null;
+        try {
+            tokenResponse = userProxyService.login(user);
+        } catch (HttpClientErrorException e) {
+            LOGGER.error("Exception Response Body content is: {}", e.getResponseBodyAsString());
+            tokenResponse = new ResponseEntity<String>(e.getResponseBodyAsString(), e.getResponseHeaders(), e.getStatusCode());
+        }
+        assertEquals("User should not be found.", HttpStatus.UNPROCESSABLE_ENTITY, tokenResponse.getStatusCode());
+        assertFalse("Token response headers should not be empty.", tokenResponse.getHeaders().isEmpty());
+        assertNull("Authentication token should be missing in headers.", tokenResponse.getHeaders().get(userProxyService.HEADER_X_AUTH_TOKEN));
+        assertTrue("Content in response expected.", tokenResponse.hasBody());
+        assertNotNull("Body in response expected.", tokenResponse.getBody());
+        Map<String, Object> bodyResponse = new HashMap<>();
+        try {
+            bodyResponse = new ObjectMapper().readValue(tokenResponse.getBody(), HashMap.class);
+        } catch (IOException e) {
+            LOGGER.error("JSON parse error: {}", e.getMessage());
+        }
+        assertEquals("Invalid credentials message should be returned in body.", "Invalid Credentials", bodyResponse.get("message"));
+        assertEquals("HTTP Status Code value should be the same in body.", HttpStatus.UNPROCESSABLE_ENTITY.value(), bodyResponse.get("status"));
+        assertEquals("Expocted error should be the same in body.", HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), bodyResponse.get("error"));
     }
 
 }
