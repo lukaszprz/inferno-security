@@ -1,1 +1,5 @@
+pl/inferno/security/InfernoRestProxyAnonymousUsersTest.class
+pl/inferno/security/InfernoTestSuite.class
+pl/inferno/security/InfernoRestProxyTestRule.class
 pl/inferno/security/InfernoRestProxyRunnerTest.class
+pl/inferno/security/InfernoRestProxyTestRule$InfernoTestStatement.class

@@ -25,6 +25,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonDeserialize(as = UserDTO.class)
 public class UserDTO implements UserDetails, Authentication, Principal {
 
+    /**
+     * long serialVersionUID
+     */
+    private static final long serialVersionUID = 7752880848734486161L;
+
     private String username;
 
     private String password;
@@ -35,9 +40,17 @@ public class UserDTO implements UserDetails, Authentication, Principal {
 
     private DateTime created;
 
-    private Set<RoleDTO> roles;
+    private Set<UserRolesDTO> roles;
 
     private String token;
+
+    private boolean authenticated;
+
+    private boolean accountExpired;
+
+    private boolean accountLocked;
+
+    private boolean credentialsExpired;
 
     /**
      *
@@ -59,7 +72,7 @@ public class UserDTO implements UserDetails, Authentication, Principal {
      * @param password
      * @param roles
      */
-    public UserDTO(String username, String password, Set<RoleDTO> roles) {
+    public UserDTO(String username, String password, Set<UserRolesDTO> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -71,7 +84,7 @@ public class UserDTO implements UserDetails, Authentication, Principal {
      * @param active
      * @param roles
      */
-    public UserDTO(String username, String password, boolean active, Set<RoleDTO> roles) {
+    public UserDTO(String username, String password, boolean active, Set<UserRolesDTO> roles) {
         this.username = username;
         this.password = password;
         this.active = active;
@@ -86,7 +99,7 @@ public class UserDTO implements UserDetails, Authentication, Principal {
      * @param created
      * @param roles
      */
-    public UserDTO(String username, String password, boolean active, DateTime validTo, DateTime created, Set<RoleDTO> roles) {
+    public UserDTO(String username, String password, boolean active, DateTime validTo, DateTime created, Set<UserRolesDTO> roles) {
         this.username = username;
         this.password = password;
         this.active = active;
@@ -175,7 +188,7 @@ public class UserDTO implements UserDetails, Authentication, Principal {
     /**
      * @return the roles
      */
-    public Set<RoleDTO> getRoles() {
+    public Set<UserRolesDTO> getRoles() {
         return roles;
     }
 
@@ -183,8 +196,181 @@ public class UserDTO implements UserDetails, Authentication, Principal {
      * @param roles
      *            the roles to set
      */
-    public void setRoles(Set<RoleDTO> roles) {
+    public void setRoles(Set<UserRolesDTO> roles) {
         this.roles = roles;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.security.Principal#getName()
+     */
+    @Override
+    public String getName() {
+        return username;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.security.core.Authentication#getCredentials()
+     */
+    @Override
+    public Object getCredentials() {
+        return password;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.security.core.Authentication#getDetails()
+     */
+    @Override
+    public Object getDetails() {
+        return this;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.security.core.Authentication#getPrincipal()
+     */
+    @Override
+    public Object getPrincipal() {
+        return username;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.security.core.Authentication#isAuthenticated()
+     */
+    @Override
+    public boolean isAuthenticated() {
+        return this.authenticated;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.security.core.Authentication#setAuthenticated(boolean)
+     */
+    @Override
+    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+        this.authenticated = isAuthenticated;
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.security.core.userdetails.UserDetails#getAuthorities()
+     */
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(roles.size());
+        for (UserRolesDTO role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+        }
+
+        return authorities;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired
+     * ()
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return !accountExpired;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.security.core.userdetails.UserDetails#isAccountNonLocked(
+     * )
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return !accountLocked;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.security.core.userdetails.UserDetails#
+     * isCredentialsNonExpired()
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return !credentialsExpired;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.security.core.userdetails.UserDetails#isEnabled()
+     */
+    @Override
+    public boolean isEnabled() {
+        return active;
+    }
+
+    /**
+     * @return the token
+     */
+    public String getToken() {
+        return token;
+    }
+
+    /**
+     * @param token
+     *            the token to set
+     */
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    /**
+     * @return the accountExpired
+     */
+    public boolean isAccountExpired() {
+        return accountExpired;
+    }
+
+    /**
+     * @param accountExpired
+     *            the accountExpired to set
+     */
+    public void setAccountExpired(boolean accountExpired) {
+        this.accountExpired = accountExpired;
+    }
+
+    /**
+     * @return the accountLocked
+     */
+    public boolean isAccountLocked() {
+        return accountLocked;
+    }
+
+    /**
+     * @param accountLocked
+     *            the accountLocked to set
+     */
+    public void setAccountLocked(boolean accountLocked) {
+        this.accountLocked = accountLocked;
+    }
+
+    /**
+     * @return the credentialsExpired
+     */
+    public boolean isCredentialsExpired() {
+        return credentialsExpired;
+    }
+
+    /**
+     * @param credentialsExpired
+     *            the credentialsExpired to set
+     */
+    public void setCredentialsExpired(boolean credentialsExpired) {
+        this.credentialsExpired = credentialsExpired;
     }
 
     /*
@@ -195,10 +381,15 @@ public class UserDTO implements UserDetails, Authentication, Principal {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = (prime * result) + (accountExpired ? 1231 : 1237);
+        result = (prime * result) + (accountLocked ? 1231 : 1237);
         result = (prime * result) + (active ? 1231 : 1237);
+        result = (prime * result) + (authenticated ? 1231 : 1237);
         result = (prime * result) + ((created == null) ? 0 : created.hashCode());
+        result = (prime * result) + (credentialsExpired ? 1231 : 1237);
         result = (prime * result) + ((password == null) ? 0 : password.hashCode());
         result = (prime * result) + ((roles == null) ? 0 : roles.hashCode());
+        result = (prime * result) + ((token == null) ? 0 : token.hashCode());
         result = (prime * result) + ((username == null) ? 0 : username.hashCode());
         result = (prime * result) + ((validTo == null) ? 0 : validTo.hashCode());
         return result;
@@ -216,11 +407,20 @@ public class UserDTO implements UserDetails, Authentication, Principal {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof UserDTO)) {
             return false;
         }
         UserDTO other = (UserDTO) obj;
+        if (accountExpired != other.accountExpired) {
+            return false;
+        }
+        if (accountLocked != other.accountLocked) {
+            return false;
+        }
         if (active != other.active) {
+            return false;
+        }
+        if (authenticated != other.authenticated) {
             return false;
         }
         if (created == null) {
@@ -228,6 +428,9 @@ public class UserDTO implements UserDetails, Authentication, Principal {
                 return false;
             }
         } else if (!created.equals(other.created)) {
+            return false;
+        }
+        if (credentialsExpired != other.credentialsExpired) {
             return false;
         }
         if (password == null) {
@@ -242,6 +445,13 @@ public class UserDTO implements UserDetails, Authentication, Principal {
                 return false;
             }
         } else if (!roles.equals(other.roles)) {
+            return false;
+        }
+        if (token == null) {
+            if (other.token != null) {
+                return false;
+            }
+        } else if (!token.equals(other.token)) {
             return false;
         }
         if (username == null) {
@@ -263,139 +473,34 @@ public class UserDTO implements UserDetails, Authentication, Principal {
 
     /*
      * (non-Javadoc)
-     * @see java.security.Principal#getName()
+     * @see java.lang.Object#toString()
      */
     @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.security.core.Authentication#getCredentials()
-     */
-    @Override
-    public Object getCredentials() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.security.core.Authentication#getDetails()
-     */
-    @Override
-    public Object getDetails() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.security.core.Authentication#getPrincipal()
-     */
-    @Override
-    public Object getPrincipal() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.security.core.Authentication#isAuthenticated()
-     */
-    @Override
-    public boolean isAuthenticated() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.security.core.Authentication#setAuthenticated(boolean)
-     */
-    @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.security.core.userdetails.UserDetails#getAuthorities()
-     */
-    @Override
-    @JsonIgnore
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(roles.size());
-        for (RoleDTO role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("UserDTO [");
+        if (username != null) {
+            builder.append("username=").append(username).append(", ");
         }
-
-        return authorities;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired
-     * ()
-     */
-    @Override
-    public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.security.core.userdetails.UserDetails#isAccountNonLocked(
-     * )
-     */
-    @Override
-    public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.security.core.userdetails.UserDetails#
-     * isCredentialsNonExpired()
-     */
-    @Override
-    public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.springframework.security.core.userdetails.UserDetails#isEnabled()
-     */
-    @Override
-    public boolean isEnabled() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    /**
-     * @return the token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * @param token
-     *            the token to set
-     */
-    public void setToken(String token) {
-        this.token = token;
+        if (password != null) {
+            builder.append("password=").append(password).append(", ");
+        }
+        builder.append("active=").append(active).append(", ");
+        if (validTo != null) {
+            builder.append("validTo=").append(validTo).append(", ");
+        }
+        if (created != null) {
+            builder.append("created=").append(created).append(", ");
+        }
+        if (roles != null) {
+            builder.append("roles=").append(roles).append(", ");
+        }
+        if (token != null) {
+            builder.append("token=").append(token).append(", ");
+        }
+        builder.append("authenticated=").append(authenticated).append(", accountExpired=").append(accountExpired).append(", accountLocked=").append(accountLocked)
+                .append(", credentialsExpired=").append(credentialsExpired).append("]");
+        return builder.toString();
     }
 
 }

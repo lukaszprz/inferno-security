@@ -3,6 +3,7 @@
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/errors/InfernoUnauthorizedUserException.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/errors/handlers/InfernoRestExceptionHandler.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/dto/UserDTO.java
+/home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/dto/UserRolesDTO.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/service/impl/UserProxyServiceImpl.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/InfernoRestProxyRunner.java
 /home/lukasz-adm/workspace-prototypes/inferno-security-parent/inferno-security-interfaces-parent/inferno-security-rest-proxy/src/main/java/pl/inferno/security/proxy/errors/InfernoApiError.java

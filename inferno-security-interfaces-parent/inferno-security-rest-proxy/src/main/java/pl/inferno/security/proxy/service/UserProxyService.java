@@ -54,13 +54,13 @@ public interface UserProxyService {
 
     HttpEntity<UserDTO> getToken(HttpHeaders headers);
 
-    List<UserDTO> getAllUsers();
+    List<UserDTO> getAllUsers(String token);
 
     void setServerUrl(String url);
 
     void setServerAdminUrl(String url);
 
-    ResponseEntity<?> login(UserDTO user);
+    ResponseEntity<String> login(UserDTO user);
 
     HttpEntity<String> encryptPassword(String rawPassword);
 

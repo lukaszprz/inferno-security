@@ -3,18 +3,23 @@
  */
 package pl.inferno.security;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,56 +43,54 @@ public class InfernoRestProxyRunnerTest {
     @Autowired
     private UserProxyService userProxyService;
 
+    private Map<String, UserDTO> users = new HashMap<>();
+
+    @Rule
+    public InfernoRestProxyTestRule infernoRule = new InfernoRestProxyTestRule();
+
     @Test
     public void testUserApi_login() {
-        UserDTO user = new UserDTO();
-        user.setUsername(USERNAME);
-        user.setPassword("test123");
-        user.setActive(true);
-        // HttpEntity<String> encryptedPassword =
-        // userProxyService.encryptPassword(user.getPassword());
-        // user.setPassword(encryptedPassword.getBody());
+        UserDTO user = createUserTemplate();
+
         LOGGER.debug("USER: {}", user);
 
-        ResponseEntity<?> response = performLogin(user);
-
-        LOGGER.debug("LOGGIN AS {}", user.getUsername());
-        if ((response != null) && (response.getHeaders() != null) && !response.getHeaders().isEmpty()) {
-            LOGGER.debug("RESPONSE: {}", response);
-        } else {
-            LOGGER.error("RESPONSE ERROR: {}", response);
-        }
-        assertNotNull("Zalogowano? ", response);
+        ResponseEntity<String> response = performLogin(user);
+        assertNotNull("Login response is null. ", response);
+        assertEquals("Login failed. Login has not been accepted.", HttpStatus.ACCEPTED, response.getStatusCode());
+        assertNotNull("No token returned.", response.getBody());
     }
 
     @Test
     public void testToken() {
-        UserDTO user = new UserDTO();
-        user.setUsername(USERNAME);
-        user.setPassword("test123");
-        user.setActive(true);
-        HttpEntity<?> tokenRequest;
-        ResponseEntity<?> loginRequest = null;
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(UserProxyService.HEADER_X_AUTH_TOKEN, user.getToken());
-        HttpEntity<UserDTO> response = getToken(httpHeaders);
-        user.setAuthenticated(true);
-        LOGGER.debug("TOKEN RESPONSE: {}", response);
-        org.springframework.util.Assert.hasText(response.getHeaders().entrySet().toArray().toString(), UserProxyService.HEADER_X_AUTH_TOKEN);
-        if (!response.getHeaders().containsKey(UserProxyService.HEADER_X_AUTH_TOKEN)) {
+        UserDTO user = null;
+        ResponseEntity<String> loginRequest = null;
+        String token = getToken(USERNAME);
+        if (token != null) {
+            user = users.get(USERNAME);
+            loginRequest = new ResponseEntity<String>(user.getToken(), HttpStatus.ALREADY_REPORTED);
+        } else if (users.isEmpty()) {
+            user = createUserTemplate();
             loginRequest = performLogin(user);
+            token = getToken(USERNAME);
         }
-        user.setToken(response.getHeaders().getFirst(UserProxyService.HEADER_X_AUTH_TOKEN));
-        loginRequest.status(HttpStatus.CREATED).body(user);
 
+        ResponseEntity<?> response = userProxyService.getCurrentUser(token);
+        UserDTO currentUser = (UserDTO) response.getBody();
+        LOGGER.debug("CURR USER: {}", currentUser);
+        assertNotNull("Current user response failed.", response);
+        assertEquals("Not found.", HttpStatus.FOUND, response.getStatusCode());
+        assertFalse("Not authorized.", response.getStatusCode().equals(HttpStatus.UNAUTHORIZED));
+        assertEquals("Token missmatch.", loginRequest.getBody(), user.getToken());
+        assertEquals("Username not the same.", user.getUsername(), currentUser.getUsername());
+        assertEquals("Principal is different.", user.getPrincipal(), currentUser.getPrincipal());
+        assertEquals("Current user token is different.", user.getToken(), currentUser.getToken());
     }
 
     /**
      * Test method for
      * {@link pl.inferno.security.InfernoRestProxyRunner#main(java.lang.String[])}.
      */
-    // @Test
+    @Test
     public final void testUserByName() {
         UserDTO user = userProxyService.getUserByUsername(USERNAME);
 
@@ -98,23 +101,62 @@ public class InfernoRestProxyRunnerTest {
      * Test method for
      * {@link pl.inferno.security.InfernoRestProxyRunner#main(java.lang.String[])}.
      */
-    // @Test
+    @Test
     public final void testAllUsers() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserDTO> authorize = getToken(httpHeaders);
-        List<UserDTO> users = userProxyService.getAllUsers();
-        LOGGER.info("USERS : {}", users);
+        if (!users.isEmpty()) {
+            UserDTO loggedInUser = users.get(USERNAME);
+            httpHeaders.add(UserProxyService.HEADER_X_AUTH_TOKEN, loggedInUser.getToken());
+        } else {
+            ResponseEntity<String> loginResponse = performLogin(createUserTemplate());
+            httpHeaders.add(UserProxyService.HEADER_X_AUTH_TOKEN, loginResponse.getBody());
+        }
+
+        List<UserDTO> users = userProxyService.getAllUsers(httpHeaders.getFirst(UserProxyService.HEADER_X_AUTH_TOKEN));
         Assert.assertNotNull(users);
     }
 
-    private ResponseEntity<?> performLogin(UserDTO user) {
-        ResponseEntity<?> response = userProxyService.login(user);
+    @Before
+    public void before() {
+        UserDTO userTemplate = createUserTemplate();
+        if (users.isEmpty()) {
+            performLogin(userTemplate);
+        }
+        LOGGER.debug("Authenticated users count: {}", users.size());
+    }
+
+    private ResponseEntity<String> performLogin(UserDTO user) {
+        ResponseEntity<String> response = userProxyService.login(user);
+        assertNotNull("Login response not null test failed.", response);
+
+        if (response.getStatusCode().equals(HttpStatus.ACCEPTED)) {
+            LOGGER.debug("User zalogowany to: {}", response);
+
+            if (!users.containsKey(user.getUsername())) {
+                user.setToken(response.getBody());
+                users.put(USERNAME, user);
+            } else {
+                UserDTO authenticatedUser = users.get(USERNAME);
+                authenticatedUser.setToken(response.getBody());
+            }
+        }
         return response;
     }
 
-    private HttpEntity<UserDTO> getToken(HttpHeaders headers) {
-        return userProxyService.getToken(headers);
+    private String getToken(String username) {
+        UserDTO user = users.get(username);
+        if (user != null) {
+            return user.getToken();
+        }
+        return null;
+    }
+
+    private UserDTO createUserTemplate() {
+        UserDTO user = new UserDTO();
+        user.setUsername(USERNAME);
+        user.setPassword("test123");
+        return user;
     }
 
 }

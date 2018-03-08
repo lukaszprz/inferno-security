@@ -18,7 +18,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -88,14 +87,15 @@ public class UserProxyServiceImpl implements UserProxyService {
         url = getUrl(UserProxyServiceType.USER) + URL_PATH_SEPARATOR + URL_PATH_USERS + URL_PATH_SEPARATOR + URL_PATH_CURRENT;
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity<UserDTO> results = new ResponseEntity<UserDTO>(null);
-        httpHeaders.add(HEADER_X_AUTH_TOKEN, results.getHeaders().getFirst(authorizationToken));
-        HttpEntity<String> testRequest = new HttpEntity<>(httpHeaders);
-        ResponseEntity<UserDTO> currentPrincipal = restTemplate.exchange(url, HttpMethod.GET, testRequest, UserDTO.class);
-        if (currentPrincipal != null) {
-            return new ResponseEntity<UserDTO>(currentPrincipal.getBody(), currentPrincipal.getHeaders(), HttpStatus.FOUND);
+        httpHeaders.add(HEADER_X_AUTH_TOKEN, authorizationToken);
+        HttpEntity<String> request = new HttpEntity<>(httpHeaders);
+        ResponseEntity<UserDTO> currentPrincipal = restTemplate.exchange(url, HttpMethod.GET, request, UserDTO.class);
+        if (currentPrincipal.getStatusCode().equals(HttpStatus.FOUND)) {
+            UserDTO currentUser = currentPrincipal.getBody();
+            currentUser.setToken(authorizationToken);
+            return new ResponseEntity<UserDTO>(currentUser, currentPrincipal.getHeaders(), HttpStatus.FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        return currentPrincipal;
 
     }
 
@@ -104,20 +104,25 @@ public class UserProxyServiceImpl implements UserProxyService {
      * @see pl.inferno.security.proxy.service.UserProxyService#getAllUsers()
      */
     @Override
-    public List<UserDTO> getAllUsers() {
+    public List<UserDTO> getAllUsers(String token) {
         RestTemplate restTemplate = new RestTemplate();
         String url = getUrl(UserProxyServiceType.ADMIN) + URL_PATH_SEPARATOR + URL_PATH_USERS;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.add(HEADER_X_AUTH_TOKEN, token);
+        HttpEntity<String> testRequest = new HttpEntity<>(httpHeaders);
+        ResponseEntity<UserDTO[]> entity = restTemplate.exchange(url, HttpMethod.GET, testRequest, UserDTO[].class);
 
-        ResponseEntity<UserDTO[]> entity = restTemplate.getForEntity(url, UserDTO[].class);
-        UserDTO[] allUsers = entity.getBody();
         if (!entity.getStatusCode().equals(HttpStatus.OK)) {
             return null;
         }
-        if ((allUsers != null) && (allUsers.length > 0)) {
-            List<UserDTO> resultList = Arrays.asList(allUsers);
-            return resultList;
+        if (entity.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
+        UserDTO[] allUsers = entity.getBody();
+        List<UserDTO> resultList = Arrays.asList(allUsers);
+        return resultList;
+
     }
 
     /*
@@ -177,7 +182,7 @@ public class UserProxyServiceImpl implements UserProxyService {
      * proxy.dto.UserDTO)
      */
     @Override
-    public ResponseEntity<?> login(UserDTO user) {
+    public ResponseEntity<String> login(UserDTO user) {
         RestTemplate restTemplate = new RestTemplate();
         String url = getUrl(UserProxyServiceType.USER) + URL_PATH_SEPARATOR + URL_PATH_LOGIN;
         String username = user.getUsername();
@@ -186,9 +191,11 @@ public class UserProxyServiceImpl implements UserProxyService {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> loginRequest = new HttpEntity<>("{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}", httpHeaders);
         ResponseEntity<UserDTO> results = restTemplate.postForEntity(url, loginRequest, UserDTO.class);
-
-        httpHeaders.add(HEADER_X_AUTH_TOKEN, results.getHeaders().getFirst(HEADER_X_AUTH_TOKEN));
-        return results;
+        if (results.getStatusCode().equals(HttpStatus.OK)) {
+            user.setToken(results.getHeaders().getFirst(HEADER_X_AUTH_TOKEN));
+            return new ResponseEntity<String>(user.getToken(), HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<String>(results.getStatusCode());
 
     }
 
@@ -214,7 +221,7 @@ public class UserProxyServiceImpl implements UserProxyService {
         RestTemplate restTemplate = new RestTemplate();
         url = getUrl(UserProxyServiceType.USER) + URL_PATH_SEPARATOR + URL_PATH_USERS + URL_PATH_SEPARATOR + URL_PATH_CURRENT;
 
-        LOGGER.debug("================ SERVIS getToken(HttpHeaders httpHeaders) ============================");
+        LOGGER.debug("================ SERVICE getToken(HttpHeaders httpHeaders) ============================");
 
         LOGGER.debug("PARAM httpHeaders: {}", httpHeaders);
 
@@ -228,12 +235,13 @@ public class UserProxyServiceImpl implements UserProxyService {
         LOGGER.debug("Przygotowuje requesta do operacji getCurrent()... {}", authorizationRequest);
         UserDTO user = new UserDTO();
 
-        HttpEntity<UserDTO> currentPrincipal = restTemplate.exchange(url, HttpMethod.GET, authorizationRequest, UserDTO.class);
+        ResponseEntity<UserDTO> currentPrincipal = restTemplate.exchange(url, HttpMethod.GET, authorizationRequest, UserDTO.class);
+        LOGGER.debug("currentPrincipal: {}", currentPrincipal);
 
-        if ((currentPrincipal != null) && currentPrincipal.hasBody() && currentPrincipal.getHeaders().containsKey(HEADER_X_AUTH_TOKEN)) {
+        if ((currentPrincipal != null) && (currentPrincipal.getStatusCode().equals(HttpStatus.ACCEPTED) || currentPrincipal.getStatusCode().equals(HttpStatus.FOUND))) {
 
             HttpHeaders headers = currentPrincipal.getHeaders();
-            Authentication auth = currentPrincipal.getBody();
+            UserDTO auth = currentPrincipal.getBody();
             if (auth.isAuthenticated()) {
                 auth.setAuthenticated(true);
                 List<Collection<? extends GrantedAuthority>> authorities = Arrays.asList(auth.getAuthorities());
@@ -241,7 +249,7 @@ public class UserProxyServiceImpl implements UserProxyService {
                 UserDetails details = (UserDetails) auth.getDetails();
                 String name = auth.getName();
                 Object principal = auth.getPrincipal();
-                user = (UserDTO) auth;
+                user = auth;
 
                 // Set<RoleDTO> roles = new HashSet<>();
                 // for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {

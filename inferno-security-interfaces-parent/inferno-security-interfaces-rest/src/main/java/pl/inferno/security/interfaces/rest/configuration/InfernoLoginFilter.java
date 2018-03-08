@@ -12,7 +12,6 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -76,12 +75,7 @@ public class InfernoLoginFilter extends AbstractAuthenticationProcessingFilter {
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        ServletInputStream inputStream = request.getInputStream();
-        LOGGER.debug("JSON REQUEST: {}", inputStream);
-        Object json = mapper.readValue(inputStream, Object.class);
-        String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-        LOGGER.debug("User AS JSON object: {}", jsonString);
-        User user = mapper.readValue(jsonString, User.class);
+        User user = mapper.readValue(request.getReader(), User.class);
         LOGGER.debug("User AS POJO object: {}", user);
         String username = user.getUsername();
         String password = user.getPassword();

@@ -28,6 +28,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -83,12 +84,12 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
     @Column(name = "credentials_expired", nullable = false)
     private boolean credentialsExpired;
 
-    @JsonManagedReference
+    @JsonManagedReference(value = "person-user")
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Person person;
 
-    @JsonProperty
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "assignedRole")
+    @JsonManagedReference(value = "roles-user")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     // @JoinTable(schema = "inferno_authorization_schema", name =
     // "inferno_roles_assigment", joinColumns = @JoinColumn(name = "user_id"),
     // inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -305,7 +306,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      * @see
      * org.springframework.security.core.userdetails.UserDetails#getAuthorities()
      */
-    @JsonProperty
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

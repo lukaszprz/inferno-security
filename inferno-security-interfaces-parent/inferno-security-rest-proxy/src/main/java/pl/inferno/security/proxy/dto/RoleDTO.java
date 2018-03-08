@@ -12,6 +12,13 @@ import org.springframework.security.core.GrantedAuthority;
 public class RoleDTO implements GrantedAuthority {
 
     /**
+     *
+     */
+    public RoleDTO() {
+        // TODO Auto-generated constructor stub
+    }
+
+    /**
      * long serialVersionUID
      */
     private static final long serialVersionUID = 2764450619220203330L;
@@ -65,8 +72,7 @@ public class RoleDTO implements GrantedAuthority {
      */
     @Override
     public String getAuthority() {
-        // TODO Auto-generated method stub
-        return null;
+        return name;
     }
 
     /*

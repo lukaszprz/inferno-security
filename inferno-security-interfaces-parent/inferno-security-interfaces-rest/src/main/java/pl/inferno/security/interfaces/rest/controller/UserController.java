@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.inferno.security.core.model.User;
 import pl.inferno.security.core.service.UserService;
 import pl.inferno.security.interfaces.rest.utils.CustomErrorType;
+import pl.inferno.security.interfaces.rest.utils.UserAuthentication;
 
 /**
  *
@@ -30,6 +32,7 @@ import pl.inferno.security.interfaces.rest.utils.CustomErrorType;
  */
 @RestController
 @RequestMapping("/api")
+@Transactional
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
@@ -92,23 +95,15 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users/current", method = RequestMethod.GET)
-    public ResponseEntity<Authentication> getCurrent(Authentication authentication) {
+    public ResponseEntity<User> getCurrent() {
         HttpStatus httpStatus = HttpStatus.TEMPORARY_REDIRECT;
-        if ((authentication != null) && authentication.isAuthenticated()) {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof UserAuthentication) {
             LOGGER.debug("CONTROLLER getCurrent(), authentication param: {}", authentication);
-            httpStatus = HttpStatus.FOUND;
-            return new ResponseEntity<>(authentication, httpStatus);
+            return new ResponseEntity<>(((UserAuthentication) authentication).getDetails(), HttpStatus.FOUND);
         } else {
-            authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null) {
-                httpStatus = HttpStatus.ACCEPTED;
-                return new ResponseEntity<Authentication>(authentication, httpStatus);
-            } else {
-                SecurityContextHolder.getContext().setAuthentication(null);
-                httpStatus = HttpStatus.NETWORK_AUTHENTICATION_REQUIRED;
-                return new ResponseEntity<Authentication>(SecurityContextHolder.getContext().getAuthentication(), httpStatus);
-            }
-
+            User anonymousUser = new User();
+            return new ResponseEntity<>(anonymousUser, HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
         }
 
     }

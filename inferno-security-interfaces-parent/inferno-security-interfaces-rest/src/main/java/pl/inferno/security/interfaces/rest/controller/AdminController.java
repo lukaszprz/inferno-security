@@ -8,13 +8,19 @@
  */
 package pl.inferno.security.interfaces.rest.controller;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +31,7 @@ import pl.inferno.security.core.model.User;
 import pl.inferno.security.core.model.UserRoles;
 import pl.inferno.security.core.service.RoleService;
 import pl.inferno.security.core.service.UserService;
+import pl.inferno.security.interfaces.rest.utils.UserAuthentication;
 
 /**
  * Class AdminController
@@ -33,7 +40,10 @@ import pl.inferno.security.core.service.UserService;
  */
 @RestController
 @RequestMapping(value = "/admin/api/")
+@Transactional
 public class AdminController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 
     @Autowired
     private RoleService roleService;
@@ -90,12 +100,17 @@ public class AdminController {
     // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public ResponseEntity<List<User>> listAllUsers() {
-        List<User> users = userService.getAllUsers();
-        if (users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            // You many decide to return HttpStatus.NOT_FOUND
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof UserAuthentication) {
+            LOGGER.debug("CONTROLLER listAllUsers(), authentication param: {}", authentication);
+            List<User> users = userService.getAllUsers();
+            if (users.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                // You many decide to return HttpStatus.NOT_FOUND
+            }
+            return new ResponseEntity<List<User>>(users, HttpStatus.OK);
         }
-        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+        return new ResponseEntity<List<User>>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
     }
 
 }
