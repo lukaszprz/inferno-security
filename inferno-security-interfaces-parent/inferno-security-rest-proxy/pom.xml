@@ -64,11 +64,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+                    <fork>true</fork>
+                    <skip>false</skip>
+                </configuration>
 				<executions>
 					<execution>
+					   <id>stop-service</id>
 						<phase>post-integration-test</phase>
 						<goals>
-							<goal>stop</goal>
+							<goal>stop</goal>							
 						</goals>
 					</execution>
 				</executions>

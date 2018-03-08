@@ -138,6 +138,20 @@
 							<goal>repackage</goal>							
 						</goals>
 					</execution>
+					<execution>
+					   <id>start-service</id>
+					   <phase>pre-integration-test</phase>
+					   <goals>
+					       <goal>start</goal>
+					   </goals>
+					</execution>
+					<!-- <execution>
+					   <id>stop-service</id>
+					   <phase>post-integration-test</phase>
+					   <goals>
+					       <goal>stop</goal>
+					   </goals>
+					</execution> -->
 				</executions>
 				<!-- <executions> <execution> <phase>install</phase> <goals> <goal>start</goal> 
 					</goals> </execution> </executions> -->
