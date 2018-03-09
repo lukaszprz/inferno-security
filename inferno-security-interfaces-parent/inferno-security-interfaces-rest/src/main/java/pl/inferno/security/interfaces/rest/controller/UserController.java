@@ -44,7 +44,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     // @CrossOrigin
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/user/name/{username}", method = RequestMethod.GET)
     public ResponseEntity<?> findUser(@PathVariable("username") String username) {
         LOGGER.info("Fetching User with username {}", username);
@@ -117,9 +117,11 @@ public class UserController {
         }
 
         final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        if (!passwordEncoder.matches(user.getPassword(), currentUser.getPassword())) {
-            return new ResponseEntity<String>("Old password mismatch.", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        // if (!passwordEncoder.matches(user.getPassword(), currentUser.getPassword()))
+        // {
+        // return new ResponseEntity<String>("Old password mismatch.",
+        // HttpStatus.UNPROCESSABLE_ENTITY);
+        // }
 
         currentUser.setPassword(passwordEncoder.encode(user.getNewPassword()));
         userService.saveUser(currentUser);

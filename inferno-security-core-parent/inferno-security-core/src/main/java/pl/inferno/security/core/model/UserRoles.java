@@ -54,6 +54,9 @@ public class UserRoles extends InfernoAbstractAuditableEntity implements Granted
     @Column(name = "authority", nullable = false)
     private String authority;
 
+    @Column(name = "valid_from", nullable = true)
+    private Timestamp validFrom;
+
     @Column(name = "valid_to", nullable = true)
     private Timestamp validTo;
 
@@ -94,6 +97,21 @@ public class UserRoles extends InfernoAbstractAuditableEntity implements Granted
      */
     public void setValidTo(Timestamp validTo) {
         this.validTo = validTo;
+    }
+
+    /**
+     * @return the validFrom
+     */
+    public Timestamp getValidFrom() {
+        return validFrom;
+    }
+
+    /**
+     * @param validFrom
+     *            the validFrom to set
+     */
+    public void setValidFrom(Timestamp validFrom) {
+        this.validFrom = validFrom;
     }
 
     /**
@@ -142,11 +160,10 @@ public class UserRoles extends InfernoAbstractAuditableEntity implements Granted
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        // result = (prime * result) + ((assignedRole == null) ? 0 :
-        // assignedRole.hashCode());
+        result = (prime * result) + ((assignedRole == null) ? 0 : assignedRole.hashCode());
         result = (prime * result) + ((authority == null) ? 0 : authority.hashCode());
         result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-        // result = (prime * result) + ((user == null) ? 0 : user.hashCode());
+        result = (prime * result) + ((validFrom == null) ? 0 : validFrom.hashCode());
         result = (prime * result) + ((validTo == null) ? 0 : validTo.hashCode());
         return result;
     }
@@ -163,7 +180,7 @@ public class UserRoles extends InfernoAbstractAuditableEntity implements Granted
         if (!super.equals(obj)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof UserRoles)) {
             return false;
         }
         UserRoles other = (UserRoles) obj;
@@ -195,6 +212,13 @@ public class UserRoles extends InfernoAbstractAuditableEntity implements Granted
         } else if (!user.equals(other.user)) {
             return false;
         }
+        if (validFrom == null) {
+            if (other.validFrom != null) {
+                return false;
+            }
+        } else if (!validFrom.equals(other.validFrom)) {
+            return false;
+        }
         if (validTo == null) {
             if (other.validTo != null) {
                 return false;
@@ -216,14 +240,11 @@ public class UserRoles extends InfernoAbstractAuditableEntity implements Granted
         if (id != null) {
             builder.append("id=").append(id).append(", ");
         }
-        // if (user != null) {
-        // builder.append("user=").append(user.getUsername()).append(", ");
-        // }
-        // if (assignedRole != null) {
-        // builder.append("assignedRole=").append(assignedRole).append(", ");
-        // }
         if (authority != null) {
             builder.append("authority=").append(authority).append(", ");
+        }
+        if (validFrom != null) {
+            builder.append("validFrom=").append(validFrom).append(", ");
         }
         if (validTo != null) {
             builder.append("validTo=").append(validTo);

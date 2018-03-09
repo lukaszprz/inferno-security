@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import pl.inferno.security.proxy.dto.LoginTemplate;
 import pl.inferno.security.proxy.dto.UserDTO;
 
 /**
@@ -60,8 +61,10 @@ public interface UserProxyService {
 
     void setServerAdminUrl(String url);
 
-    ResponseEntity<String> login(UserDTO user);
+    ResponseEntity<String> login(LoginTemplate user);
 
     HttpEntity<String> encryptPassword(String rawPassword);
+
+    ResponseEntity<String> changePassword(UserDTO user);
 
 }

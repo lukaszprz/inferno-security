@@ -25,7 +25,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 
+import pl.inferno.security.proxy.dto.LoginTemplate;
 import pl.inferno.security.proxy.dto.UserDTO;
 import pl.inferno.security.proxy.service.UserProxyService;
 
@@ -50,7 +52,7 @@ public class InfernoRestProxyRunnerTest {
 
     @Test
     public void testUserApi_login() {
-        UserDTO user = createUserTemplate();
+        LoginTemplate user = createUserTemplate();
 
         LOGGER.debug("USER: {}", user);
 
@@ -63,14 +65,16 @@ public class InfernoRestProxyRunnerTest {
     @Test
     public void testToken() {
         UserDTO user = null;
+        LoginTemplate userTemplate = new LoginTemplate();
         ResponseEntity<String> loginRequest = null;
         String token = getToken(USERNAME);
         if (token != null) {
             user = users.get(USERNAME);
             loginRequest = new ResponseEntity<String>(user.getToken(), HttpStatus.ALREADY_REPORTED);
         } else if (users.isEmpty()) {
-            user = createUserTemplate();
-            loginRequest = performLogin(user);
+            userTemplate = createUserTemplate();
+            user = new UserDTO(userTemplate.getUsername(), userTemplate.getPassword());
+            loginRequest = performLogin(userTemplate);
             token = getToken(USERNAME);
         }
 
@@ -101,7 +105,7 @@ public class InfernoRestProxyRunnerTest {
      * Test method for
      * {@link pl.inferno.security.InfernoRestProxyRunner#main(java.lang.String[])}.
      */
-    @Test
+    @Test(expected = HttpClientErrorException.class)
     public final void testAllUsers() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -119,14 +123,14 @@ public class InfernoRestProxyRunnerTest {
 
     @Before
     public void before() {
-        UserDTO userTemplate = createUserTemplate();
+        LoginTemplate userTemplate = createUserTemplate();
         if (users.isEmpty()) {
             performLogin(userTemplate);
         }
         LOGGER.debug("Authenticated users count: {}", users.size());
     }
 
-    private ResponseEntity<String> performLogin(UserDTO user) {
+    private ResponseEntity<String> performLogin(LoginTemplate user) {
         ResponseEntity<String> response = userProxyService.login(user);
         assertNotNull("Login response not null test failed.", response);
 
@@ -134,8 +138,9 @@ public class InfernoRestProxyRunnerTest {
             LOGGER.debug("User zalogowany to: {}", response);
 
             if (!users.containsKey(user.getUsername())) {
-                user.setToken(response.getBody());
-                users.put(USERNAME, user);
+                UserDTO userDTO = new UserDTO(user.getUsername(), user.getPassword());
+                userDTO.setToken(response.getBody());
+                users.put(USERNAME, userDTO);
             } else {
                 UserDTO authenticatedUser = users.get(USERNAME);
                 authenticatedUser.setToken(response.getBody());
@@ -152,8 +157,8 @@ public class InfernoRestProxyRunnerTest {
         return null;
     }
 
-    private UserDTO createUserTemplate() {
-        UserDTO user = new UserDTO();
+    private LoginTemplate createUserTemplate() {
+        LoginTemplate user = new LoginTemplate();
         user.setUsername(USERNAME);
         user.setPassword("test123");
         return user;

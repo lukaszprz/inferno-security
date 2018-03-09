@@ -35,6 +35,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import pl.inferno.security.proxy.dto.LoginTemplate;
 import pl.inferno.security.proxy.dto.UserDTO;
 import pl.inferno.security.proxy.service.UserProxyService;
 
@@ -95,7 +96,7 @@ public class InfernoRestProxyAnonymousUsersTest {
 
     @Test
     public void testWrongUserLogin() {
-        UserDTO user = new UserDTO();
+        LoginTemplate user = new LoginTemplate();
         user.setUsername("anon");
         user.setPassword("qwerty");
         ResponseEntity<String> tokenResponse = null;

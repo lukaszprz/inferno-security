@@ -363,7 +363,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
         result = (prime * result) + ((id == null) ? 0 : id.hashCode());
         result = (prime * result) + ((password == null) ? 0 : password.hashCode());
         result = (prime * result) + ((person == null) ? 0 : person.hashCode());
-        result = (prime * result) + ((roles == null) ? 0 : roles.hashCode());
+        // result = (prime * result) + ((roles == null) ? 0 : roles.hashCode());
         result = (prime * result) + ((username == null) ? 0 : username.hashCode());
         return result;
     }

@@ -18,11 +18,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import pl.inferno.security.proxy.dto.LoginTemplate;
 import pl.inferno.security.proxy.dto.UserDTO;
 import pl.inferno.security.proxy.service.UserProxyService;
 
@@ -45,6 +47,23 @@ public class UserProxyServiceImpl implements UserProxyService {
     public String URL_ADMIN_ALL_USERS = SERVER_ADMIN_URL + URL_PATH_SEPARATOR + URL_PATH_USERS;
 
     private String url;
+
+    @Override
+    public ResponseEntity<String> changePassword(UserDTO user) {
+
+        String url = getUrl(UserProxyServiceType.USER) + URL_PATH_SEPARATOR + URL_PATH_USERS + URL_PATH_SEPARATOR + URL_PATH_CURRENT;
+        // String uri = "/api/users/current?_method=PATCH";
+        HttpHeaders headers = new HttpHeaders();
+        MediaType mediaType = new MediaType("application", "merge-patch+json");
+        headers.setContentType(mediaType);
+        headers.add(HEADER_X_AUTH_TOKEN, user.getToken());
+        HttpEntity<?> request = new HttpEntity<UserDTO>(user, headers);
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+
+        ResponseEntity<?> response = restTemplate.exchange(url, HttpMethod.PATCH, request, Void.class);
+        return new ResponseEntity<String>((String) response.getBody(), response.getStatusCode());
+    }
 
     /*
      * (non-Javadoc)
@@ -182,19 +201,21 @@ public class UserProxyServiceImpl implements UserProxyService {
      * proxy.dto.UserDTO)
      */
     @Override
-    public ResponseEntity<String> login(UserDTO user) {
+    public ResponseEntity<String> login(LoginTemplate user) {
         RestTemplate restTemplate = new RestTemplate();
         String url = getUrl(UserProxyServiceType.USER) + URL_PATH_SEPARATOR + URL_PATH_LOGIN;
         String username = user.getUsername();
         String password = user.getPassword();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> loginRequest = new HttpEntity<>("{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}", httpHeaders);
+
+        HttpEntity<Object> loginRequest = new HttpEntity<>(new LoginTemplate(username, password), httpHeaders);
         ResponseEntity<UserDTO> results = restTemplate.postForEntity(url, loginRequest, UserDTO.class);
 
         if (results.getHeaders().containsKey(HEADER_X_AUTH_TOKEN)) {
-            user.setToken(results.getHeaders().getFirst(HEADER_X_AUTH_TOKEN));
-            return new ResponseEntity<String>(user.getToken(), HttpStatus.ACCEPTED);
+            String token = results.getHeaders().getFirst(HEADER_X_AUTH_TOKEN);
+
+            return new ResponseEntity<String>(token, HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
 

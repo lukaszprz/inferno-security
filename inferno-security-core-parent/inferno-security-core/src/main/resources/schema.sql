@@ -209,6 +209,7 @@ CREATE TABLE "inferno_roles_assigment" (
     "user_user_id" bigint,
     "assigned_role_id" bigint,
     "authority" character varying(255) NOT NULL,
+    "valid_from" timestamp without time zone,
     "valid_to" timestamp without time zone,
     "created_by" "name" DEFAULT CURRENT_USER NOT NULL,
     "created_date" timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,

@@ -34,6 +34,8 @@ public class UserDTO implements UserDetails, Authentication, Principal {
 
     private String password;
 
+    private String newPassword;
+
     private boolean active;
 
     private DateTime validTo;
@@ -224,7 +226,7 @@ public class UserDTO implements UserDetails, Authentication, Principal {
      */
     @Override
     public Object getDetails() {
-        return this;
+        return null;
     }
 
     /*
@@ -501,6 +503,21 @@ public class UserDTO implements UserDetails, Authentication, Principal {
         builder.append("authenticated=").append(authenticated).append(", accountExpired=").append(accountExpired).append(", accountLocked=").append(accountLocked)
                 .append(", credentialsExpired=").append(credentialsExpired).append("]");
         return builder.toString();
+    }
+
+    /**
+     * @return the newPassword
+     */
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    /**
+     * @param newPassword
+     *            the newPassword to set
+     */
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
 }

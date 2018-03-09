@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
+<head>
+<div th:replace="fragments/header :: header-css" />
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header" />
+
+	<div class="container">
+
+		<div class="starter-template">
+			<h1>User page (Spring Security protected)</h1>
+
+			<h1 th:inline="text">Hello
+				[[${#httpServletRequest.remoteUser}]]!</h1>
+
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title" >Panel title</h3>
+				</div>
+				<div class="panel-body" th:text="${user}">Panel content</div>
+			</div>
+			
+			<table id="usersTable" dt:table="true" class="table table-bordered table-hover table-condensed">
+			<caption>User Data</caption>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>                
+                <th>Date Of Birth</th>
+                <th>Encrypted Password</th>                
+                <th>Actions</th>               
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="info" th:each="user : ${user}">
+                <td th:text="${user?.id}">1</td>
+                <td th:text="${user?.username}">1</td>
+                <td th:text="${user.person?.firstName}">John</td>
+                <td th:text="${user.person?.lastName}">Doe</td>
+                <td th:text="${user.person?.dateOfBirth}">John</td>                
+                <td th:text="${user?.password}">1</td>                
+                <td><div class="btn-toolbar" role="toolbar" aria-label="...">
+	                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
+		                    <a class="btn btn-primary btn-xs" th:href="@{/user?edit}">Edit</a>
+		                    <a class="btn btn-danger btn-xs" th:href="@{/user?remove}">Remove</a>
+                        </div>
+                     </div>
+                </td>                
+            </tr>
+        </tbody>        
+</table>
+<table id="userDetailsTable" dt:table="true" class="table table-bordered table-hover table-condensed">
+<caption>User's Account Technical Details</caption>
+        <thead>
+            <tr>
+                <th>Enabled</th>
+                <th>Expired</th>
+                <th>Locked</th>
+                <th>Expires on</th>
+                <th>Expired credentials</th>                
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="info" th:each="user : ${user}">
+                <td th:text="${user?.enabled}">1</td>
+                <td th:text="${user?.accountExpired}">1</td>
+                <td th:text="${user?.accountLocked}">1</td>
+                <td th:text="${user?.expires}">1</td>    
+                <td th:text="${user?.credentialsExpired}">1</td>                               
+            </tr>
+        </tbody>
+</table>
+
+<table id="authoritesTable" dt:table="true" class="table table-striped table-hover table-condensed" style="width: 30%;">
+<caption>Authorities granted to User</caption>
+        <thead>
+            <tr>
+                <th>Granted Authority</th>                             
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="success text-center" th:each="authority : ${user.getAuthorities()}">
+                <td th:text="${authority}">1</td>                                
+            </tr>
+        </tbody>
+</table>
+
+<table id="rolesTable" dt:table="true" class="table table-bordered table-hover">
+<caption>Roles assigned to User</caption>
+        <thead>
+            <tr>
+                <th style="width: 3%">Id</th>
+                <th style="width: 20%">Role Name</th>
+                <th style="width: 20%">Authority</th>
+                <th style="width: 36%">Description</th>          
+                <th style="width: 12%">Valid To</th> 
+                <th style="width: 12%">Valid From</th>
+                <th style="width: 12%">Assigned by</th>
+                <th style="width: 9%">Actions</th>               
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="active" th:each="role : ${user.roles}">
+                <td th:text="${role?.id}">1</td>
+                <td th:text="${role.assignedRole?.name}">1</td>
+                <td th:text="${role?.authority}">1</td>
+                <td th:text="${role.assignedRole?.description}">Doe</td>
+                <td th:text="${role?.validTo}">1</td>
+                <td th:text="${role?.createdDate}">1</td>
+                <td th:text="${role?.createdBy}">1</td>
+                <td><div class="btn-toolbar" role="toolbar" aria-label="...">
+                        <div class="btn-group btn-group-justified btn-group-xs" role="group" aria-label="...">
+                            <a class="btn btn-primary btn-xs disabled" th:href="@{/user?edit}">Edit</a>
+                            <a class="btn btn-danger btn-xs disabled" th:href="@{/user?remove}">Revoke</a>
+                        </div>
+                     </div>
+                </td>                
+            </tr>
+        </tbody>
+</table>
+
+<table id="addressesTable" dt:table="true" class="table">
+<caption>User's Addresses</caption>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Address Type</th>
+                <th>Street</th>
+                <th>Building Number</th>
+                <th>Appartment</th>
+                <th>Post Code</th>
+                <th>City</th>
+                <th>District / Province</th>     
+                <th>Actions</th>      
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="address : ${user.person.addresses}">
+                <td th:text="${address?.id}">1</td>
+                <td th:text="${address?.type}">1</td>   
+                <td th:text="${address?.street}">1</td>   
+                <td th:text="${address?.buildingNumber}">1</td>   
+                <td th:text="${address?.appartment}">1</td>   
+                <td th:text="${address?.postCode}">1</td>   
+                <td th:text="${address?.city}">1</td>   
+                <td th:text="${address?.district}">1</td>   
+                <td><div class="btn-toolbar" role="toolbar" aria-label="...">
+                        <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                            <a class="btn btn-primary btn-xs" th:href="@{/user?edit}">Edit</a>
+                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}">Remove</a>
+                        </div>
+                     </div>
+                </td>                           
+            </tr>
+        </tbody>
+</table>
+
+<table id="auditTable" dt:table="true" class="table">
+<caption>Audit Data</caption>
+        <thead>
+            <tr>
+                <th>Created by</th>
+                <th>Created date</th>
+                <th>Last modified by</th>
+                <th>Last modifification date</th>                             
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="danger" th:each="user : ${user}">
+                <td th:text="${user?.createdBy}">1</td>
+                <td th:text="${user?.createdDate}">1</td>
+                <td th:text="${user?.lastModifiedBy}">1</td>
+                <td th:text="${user?.lastModifiedDate}">1</td>                             
+            </tr>
+        </tbody>
+</table>
+			
+			
+
+			<form th:action="@{/logout}" method="post">
+				<input type="submit" value="Sign Out" />
+			</form>
+
+		</div>
+
+	</div>
+	<!-- /.container -->
+	<div th:replace="fragments/footer :: footer" />
+
+</body>
+</html>

@@ -9,38 +9,35 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 /**
  * @author lukasz-adm
- *
  */
-@EnableEurekaClient
+// @EnableEurekaClient
 @SpringBootApplication
 public class InfernoWebRunner extends SpringBootServletInitializer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(InfernoWebRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfernoWebRunner.class);
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.springframework.boot.web.support.SpringBootServletInitializer#configure(
-	 * org.springframework.boot.builder.SpringApplicationBuilder)
-	 */
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.boot.web.support.SpringBootServletInitializer#configure(
+     * org.springframework.boot.builder.SpringApplicationBuilder)
+     */
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 
-		return builder.sources(InfernoWebRunner.class);
-	}
+        return builder.sources(InfernoWebRunner.class);
+    }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		LOGGER.debug("The Inferno Web Interface service is running ...........");
-		SpringApplication.run(InfernoWebRunner.class, args);
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        LOGGER.debug("The Inferno Web Interface service is running ...........");
+        SpringApplication.run(InfernoWebRunner.class, args);
 
-	}
+    }
 
 }
