@@ -11,16 +11,25 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
 	<div class="container">
 
 		<div class="starter-template">
-			<h1>User page (Spring Security protected)</h1>
-
-			<h1 th:inline="text">Hello
-				[[${#httpServletRequest.remoteUser}]]!</h1>
-
+			<h4  class="text-primary"><span class="glyphicon glyphicon-cog"></span> User page</h4>
+			
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<h3 class="panel-title" >Panel title</h3>
+					<h3 class="panel-title" ><span sec:authentication="name"></span> - User Sumary</h3>
 				</div>
-				<div class="panel-body" th:text="${user}">Panel content</div>
+				<div class="panel-body">
+				        <address>
+						  <strong>Main Address</strong><br/>
+						  <span th:text="${user.person.addresses[0].street}"/> <span th:text="${user.person.addresses[0].buildingNumber}"/>/<span th:text="${user.person.addresses[0].appartment}"/><br/>
+						  <span th:text="${user.person.addresses[0].postCode}"/> <span th:text="${user.person.addresses[0].city}"/><br/>
+						  <span th:text="${user.person.addresses[0].district}"/>
+						</address>
+						
+						<address>
+						  <strong><span th:text="${user.person.firstName}"/> <span th:text="${user.person.lastName}"/></strong><br/>
+						  <a href="mailto:#">first.last@example.com</a>						  
+						</address>
+				</div>
 			</div>
 			
 			<table id="usersTable" dt:table="true" class="table table-bordered table-hover table-condensed">
@@ -46,8 +55,8 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
                 <td th:text="${user?.password}">1</td>                
                 <td><div class="btn-toolbar" role="toolbar" aria-label="...">
 	                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
-		                    <a class="btn btn-primary btn-xs" th:href="@{/user?edit}">Edit</a>
-		                    <a class="btn btn-danger btn-xs" th:href="@{/user?remove}">Remove</a>
+		                    <a class="btn btn-primary btn-xs" th:href="@{/user?edit}"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}"><span class="glyphicon glyphicon-trash"></span></a>
                         </div>
                      </div>
                 </td>                
@@ -115,8 +124,8 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
                 <td th:text="${role?.createdBy}">1</td>
                 <td><div class="btn-toolbar" role="toolbar" aria-label="...">
                         <div class="btn-group btn-group-justified btn-group-xs" role="group" aria-label="...">
-                            <a class="btn btn-primary btn-xs disabled" th:href="@{/user?edit}">Edit</a>
-                            <a class="btn btn-danger btn-xs disabled" th:href="@{/user?remove}">Revoke</a>
+                            <a class="btn btn-primary btn-xs" th:href="@{/user?edit}"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}"><span class="glyphicon glyphicon-trash"></span></a>
                         </div>
                      </div>
                 </td>                
@@ -151,8 +160,8 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
                 <td th:text="${address?.district}">1</td>   
                 <td><div class="btn-toolbar" role="toolbar" aria-label="...">
                         <div class="btn-group btn-group-xs" role="group" aria-label="...">
-                            <a class="btn btn-primary btn-xs" th:href="@{/user?edit}">Edit</a>
-                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}">Remove</a>
+                            <a class="btn btn-primary btn-xs" th:href="@{/user?edit}"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}"><span class="glyphicon glyphicon-trash"></span></a>
                         </div>
                      </div>
                 </td>                           

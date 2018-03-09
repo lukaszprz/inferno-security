@@ -10,9 +10,7 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Admin page (Spring Security protected)</h1>
-
-        <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+        <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>        
         
         <table id="usersTable" dt:table="true" class="table table-bordered table-hover table-striped">
             <caption>All Users List</caption>
@@ -47,8 +45,8 @@
                 <td th:text="${user?.getAuthorities()}">1</td> 
                 <td><div class="btn-toolbar" role="toolbar" aria-label="...">
                         <div class="btn-group btn-group-xs" role="group" aria-label="...">
-                            <a class="btn btn-primary btn-xs" th:href="@{/user?edit}">Edit</a>
-                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}">Remove</a>
+                            <a class="btn btn-primary btn-xs" th:href="@{/user?edit}"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}"><span class="glyphicon glyphicon-trash"></span></a>
                         </div>
                      </div>
                 </td>                
