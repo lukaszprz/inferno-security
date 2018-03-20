@@ -30,24 +30,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class InfernoAccessDeniedExceptionHandler implements AccessDeniedHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InfernoAccessDeniedExceptionHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InfernoAccessDeniedExceptionHandler.class);
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.security.web.access.AccessDeniedHandler#handle(javax.
-     * servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
-     * org.springframework.security.access.AccessDeniedException)
-     */
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            LOGGER.warn("User: {} attempted to access the protected URL: {}", authentication.getName(), request.getRequestURI());
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.security.web.access.AccessDeniedHandler#handle(javax.
+	 * servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
+	 * org.springframework.security.access.AccessDeniedException)
+	 */
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+			AccessDeniedException accessDeniedException) throws IOException, ServletException {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+			LOGGER.warn("User: {} attempted to access the protected URL: {}", authentication.getName(),
+					request.getRequestURI());
+		}
 
-        response.sendRedirect(request.getContextPath() + "/403");
+		response.sendRedirect(request.getContextPath() + "/403");
 
-    }
+	}
 
 }

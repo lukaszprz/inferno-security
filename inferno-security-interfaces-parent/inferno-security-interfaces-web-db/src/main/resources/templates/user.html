@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
 xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
 <head>
-<div th:replace="fragments/header :: header-css" />
+<div th:replace="fragments/header :: header-css(pageTitle='page.title.user')" />
 </head>
 <body>
 
@@ -11,15 +11,15 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
 	<div class="container">
 
 		<div class="starter-template">
-			<h4  class="text-primary"><span class="glyphicon glyphicon-cog"></span> User page</h4>
+			<h4  class="text-primary"><span class="glyphicon glyphicon-cog"></span> <span th:text="#{page.header.user}">User page</span></h4>
 			
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<h3 class="panel-title" ><span sec:authentication="name"></span> - User Sumary</h3>
+					<h3 class="panel-title" ><span sec:authentication="name"></span> - <span th:text="#{userSummary}">User Summary</span></h3>
 				</div>
 				<div class="panel-body">
 				        <address>
-						  <strong>Main Address</strong><br/>
+						  <strong th:text="#{mainAddress}">Main Address</strong><br/>
 						  <span th:text="${user.person.addresses[0].street}"/> <span th:text="${user.person.addresses[0].buildingNumber}"/>/<span th:text="${user.person.addresses[0].appartment}"/><br/>
 						  <span th:text="${user.person.addresses[0].postCode}"/> <span th:text="${user.person.addresses[0].city}"/><br/>
 						  <span th:text="${user.person.addresses[0].district}"/>
@@ -31,18 +31,18 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
 						</address>
 				</div>
 			</div>
-			
+	
 			<table id="usersTable" dt:table="true" class="table table-bordered table-hover table-condensed">
-			<caption>User Data</caption>
+			<caption th:text="#{user.data.caption}">User Data</caption>
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>First Name</th>
-                <th>Last Name</th>                
-                <th>Date Of Birth</th>
-                <th>Encrypted Password</th>                
-                <th>Actions</th>               
+                <th th:text="#{id}">Id</th>
+                <th th:text="#{username}">Username</th>
+                <th th:text="#{firstName}">First Name</th>
+                <th th:text="#{lastName}">Last Name</th>                
+                <th th:text="#{dateOfBirth}">Date Of Birth</th>
+                <th th:text="#{encryptedPassword}">Encrypted Password</th>                
+                <th th:text="#{actions}">Actions</th>               
             </tr>
         </thead>
         <tbody>
@@ -55,14 +55,121 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
                 <td th:text="${user?.password}">1</td>                
                 <td><div class="btn-toolbar" role="toolbar" aria-label="...">
 	                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
-		                    <a class="btn btn-primary btn-xs" th:href="@{/user?edit}"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}"><span class="glyphicon glyphicon-trash"></span></a>
+		                    <a href="#" class="btn btn-primary btn-xs" name="action" th:value="editUser" data-toggle="modal" data-target="#userModal" th:title="#{user.data.actions.tooltip.editUser}"><span class="glyphicon glyphicon-pencil"></span></a>
+		                    <a href="#" class="btn btn-warning btn-xs" name="action" th:value="changePassword" data-toggle="modal" data-target="#userPasswordModal" th:title="#{user.data.actions.tooltip.changePassword}"><span class="glyphicon glyphicon-lock"></span></a>                            
                         </div>
                      </div>
                 </td>                
             </tr>
         </tbody>        
 </table>
+
+<div th:if="${#fields.hasErrors('${userForm.*}')}">
+    <table id="userErrorsTable" dt:table="true" class="table table-striped">
+        <caption class="text-danger" th:text="#{user.validation.errors.caption}">User Validation Errors:</caption>
+        <thead>
+            <tr>
+                <th th:text="#{user.validation.errors.severity}">Severity</th>
+                <th th:text="#{user.validation.errors.field.label}">Field</th>
+                <th th:text="#{user.validation.errors.field}">Field</th>
+                <th th:text="#{user.validation.errors.rejectedValue}">Rejected Value</th>
+                <th th:text="#{user.validation.errors.reason}">Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:classappend="${e.severity == 'ERROR' ? 'danger' : 'warning'}" th:each="e : ${errors}">
+                <td th:text="${e.severity}"></td>
+                <td th:text="${e.global} ? ${e.objectName} : #{${e.fieldName}}"></td>
+                <td th:text="${e.global} ? ${e.objectName} : ${e.fieldName}"></td>
+                <td th:text="${e.value}"></td>
+                <td th:text="#{${e.code}}"></td>
+            </tr>
+        </tbody>        
+    </table>  
+</div>
+
+<div th:if="${successAction?.success}">
+    <table id="userSuccessActionsTable" dt:table="true" class="table table-striped">
+        <caption class="text-success" th:text="#{user.action.success.caption}">User Successfull Actions:</caption>
+        <thead>
+            <tr>                
+                <th th:text="#{user.action.success.field.label}">Field</th>
+                <th th:text="#{user.action.success.field}">Field</th>
+                <th th:text="#{user.action.success.oldValue}">Old Value</th>
+                <th th:text="#{user.action.success.newValue}">New Value</th>
+                <th th:text="#{user.action.success.message}">Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="success" th:each="change : ${successAction.changes}">                
+                <td th:text="#{${change.fieldName}}"></td>
+                <td th:text="${change.fieldName}"></td>
+                <td th:text="${change.oldValue}"></td>
+                <td th:text="${change.newValue}"></td>
+                <td th:text="#{${change.messageCode}}"></td>
+            </tr>
+        </tbody>        
+    </table>  
+</div>
+
+<div id="userPasswordModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <form th:action="@{/user(action='changePassword')}" method="post" th:object="${userForm}">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Change User's Password:</h4>        
+      </div>
+      <div class="modal-body">
+        
+            <div class="form-group">
+                <label for="oldPassword">Old Password</label>                
+                <input type="password" class="form-control" id="oldPassword" placeholder="Old Password" th:field="*{oldPassword}" />                
+                <label for="newPassword1">New Password</label>
+                <input type="password" class="form-control" id="newPassword1" placeholder="New Password" th:field="*{newPassword1}" />
+                <label for="newPassword2">Retype New Password</label>
+                <input type="password" class="form-control" id="newPassword2" placeholder="Retype New Password" th:field="*{newPassword2}" />  
+                <input type="hidden" class="form-control" id="username" th:field="*{username}" />             
+            </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="userModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <form th:action="@{/user(action='editUser')}" method="post" th:object="${userForm}">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Edit User</h4>
+      </div>
+      <div class="modal-body">
+        
+            <div class="form-group">                
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" placeholder="First Name" th:field="*{firstName}" />
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" placeholder="Last Name" th:field="*{lastName}" />
+                <label for="dateOfBirth">Last Name</label>
+                <input type="text" class="form-control" id="dateOfBirth" placeholder="Date Of Birth" th:field="*{dateOfBirth}" />                
+            </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <table id="userDetailsTable" dt:table="true" class="table table-bordered table-hover table-condensed">
 <caption>User's Account Technical Details</caption>
         <thead>
@@ -99,6 +206,7 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
         </tbody>
 </table>
 
+<span th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">Admin test</span>
 <table id="rolesTable" dt:table="true" class="table table-bordered table-hover">
 <caption>Roles assigned to User</caption>
         <thead>
@@ -200,6 +308,8 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
 	</div>
 	<!-- /.container -->
 	<div th:replace="fragments/footer :: footer" />
+<script type="text/javascript">
 
+</script>
 </body>
 </html>

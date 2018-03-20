@@ -8,23 +8,25 @@
  */
 package pl.inferno.security.configuration;
 
-import java.util.List;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import pl.inferno.security.converter.ObjectErrorToInfernoErrorObjectConverter;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.validation.DefaultMessageCodesResolver;
+import org.springframework.validation.MessageCodesResolver;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * Class InfernoWebConfiguration
@@ -35,54 +37,59 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @EnableWebMvc
 public class InfernoWebConfiguration extends WebMvcConfigurerAdapter {
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/webjars/**", "/img/**", "/css/**", "/js/**").addResourceLocations("classpath:/META-INF/resources/webjars/", "classpath:/static/img/",
-                "classpath:/static/css/", "classpath:/static/js/");
-    }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/webjars/**", "/img/**", "/css/**", "/js/**", "/messages/**").addResourceLocations(
+				"classpath:/META-INF/resources/webjars/", "classpath:/static/img/", "classpath:/static/css/",
+				"classpath:/static/js/", "classpath:/messages/");
+	}
 
-    private ObjectMapper objectMapper() {
-        Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
-        bean.setIndentOutput(true);
-        bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        bean.afterPropertiesSet();
-        ObjectMapper objectMapper = bean.getObject();
-        // objectMapper.registerModule(new JodaModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, true);
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        objectMapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-        objectMapper.configure(Feature.ALLOW_COMMENTS, true);
-        objectMapper.configure(Feature.ALLOW_MISSING_VALUES, true);
-        objectMapper.configure(Feature.ALLOW_SINGLE_QUOTES, true);
-        objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        objectMapper.configure(Feature.ALLOW_YAML_COMMENTS, true);
-        objectMapper.configure(com.fasterxml.jackson.core.JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
-        objectMapper.configure(com.fasterxml.jackson.core.JsonGenerator.Feature.QUOTE_FIELD_NAMES, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+	@Bean
+	public ReloadableResourceBundleMessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:messages/messages");
+		messageSource.setDefaultEncoding("UTF-8");
+		messageSource.setUseCodeAsDefaultMessage(true);
+		messageSource.setAlwaysUseMessageFormat(true);
+		messageSource.setCacheSeconds((int) TimeUnit.HOURS.toSeconds(1));
+		messageSource.setFallbackToSystemLocale(false);
 
-        return objectMapper;
-    }
+		return messageSource;
+	}
 
-    private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(objectMapper());
-        return converter;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#
+	 * getValidator()
+	 */
+	@Override
+	public Validator getValidator() {
 
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(mappingJackson2HttpMessageConverter());
-    }
+		return validator(messageSource());
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
-    }
+	@Bean
+	public LocalValidatorFactoryBean validator(MessageSource messageSource) {
+
+		LocalValidatorFactoryBean factory = new LocalValidatorFactoryBean();
+		factory.setValidationMessageSource(messageSource);
+
+		return factory;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#
+	 * addFormatters(org.springframework.format.FormatterRegistry)
+	 */
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+
+		registry.addConverter(new ObjectErrorToInfernoErrorObjectConverter());
+	}
+
 }

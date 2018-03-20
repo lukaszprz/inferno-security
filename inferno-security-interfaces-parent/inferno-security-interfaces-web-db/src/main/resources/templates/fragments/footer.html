@@ -9,13 +9,14 @@
     <div class="container">
 
         <footer>
-        <!-- this is footer -->
-        © 2018 Delta-DEV
-            <span sec:authorize="isAuthenticated()">
-                | Logged user: <span sec:authentication="name"></span> |
-                Roles: <span sec:authentication="principal.authorities"></span> |
-                <a th:href="@{/logout}">Sign Out</a>
-            </span>
+        <!-- this is footer -->        
+        <i><span th:utext="#{footer.copyrights.sign}"></span> <span th:text="#{footer.copyrights.year}"></span> <b><span th:text="#{footer.organization}"></span></b></i>        
+        <span sec:authorize="isAuthenticated()">
+            <span th:utext="#{footer.separator}"></span>
+            <span th:text="#{footer.loggedUser.label}"></span> <b><span sec:authentication="name" th:class="text-info"></span></b>
+            <span th:utext="#{footer.separator}"></span>
+            <span th:text="#{footer.roles.label}"></span> <b><span sec:authentication="principal.authorities" th:class="text-success"></span></b>            
+        </span>
 
         <script type="text/javascript" src="/webjars/jquery/3.3.1/jquery.min.js"></script>
         <script type="text/javascript" src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>

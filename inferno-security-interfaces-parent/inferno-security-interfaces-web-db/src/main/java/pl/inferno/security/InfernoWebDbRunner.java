@@ -23,27 +23,28 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 @SpringBootApplication
 public class InfernoWebDbRunner extends SpringBootServletInitializer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InfernoWebDbRunner.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InfernoWebDbRunner.class);
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.boot.web.support.SpringBootServletInitializer#configure(
-     * org.springframework.boot.builder.SpringApplicationBuilder)
-     */
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.boot.web.support.SpringBootServletInitializer#configure(
+	 * org.springframework.boot.builder.SpringApplicationBuilder)
+	 */
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 
-        return builder.sources(InfernoWebDbRunner.class);
-    }
+		return builder.sources(InfernoWebDbRunner.class);
+	}
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-        LOGGER.debug("The Inferno Web DB Interface service is running ...........");
-        SpringApplication.run(InfernoWebDbRunner.class, args);
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		LOGGER.debug("The Inferno Web DB Interface service is running ...........");
+		SpringApplication.run(InfernoWebDbRunner.class, args);
 
-    }
+	}
 
 }

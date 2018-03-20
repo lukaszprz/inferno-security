@@ -32,49 +32,50 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @EnableWebMvc
 public class InfernoWebConfiguration extends WebMvcConfigurerAdapter {
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/webjars/**", "/img/**", "/css/**", "/js/**").addResourceLocations("classpath:/META-INF/resources/webjars/", "classpath:/static/img/",
-                "classpath:/static/css/", "classpath:/static/js/");
-    }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/webjars/**", "/img/**", "/css/**", "/js/**").addResourceLocations(
+				"classpath:/META-INF/resources/webjars/", "classpath:/static/img/", "classpath:/static/css/",
+				"classpath:/static/js/");
+	}
 
-    private ObjectMapper objectMapper() {
-        Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
-        bean.setIndentOutput(true);
-        bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        bean.afterPropertiesSet();
-        ObjectMapper objectMapper = bean.getObject();
-        // objectMapper.registerModule(new JodaModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        objectMapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, true);
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        objectMapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-        objectMapper.configure(Feature.ALLOW_COMMENTS, true);
-        objectMapper.configure(Feature.ALLOW_MISSING_VALUES, true);
-        objectMapper.configure(Feature.ALLOW_SINGLE_QUOTES, true);
-        objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        objectMapper.configure(Feature.ALLOW_YAML_COMMENTS, true);
-        objectMapper.configure(com.fasterxml.jackson.core.JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
-        objectMapper.configure(com.fasterxml.jackson.core.JsonGenerator.Feature.QUOTE_FIELD_NAMES, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+	private ObjectMapper objectMapper() {
+		Jackson2ObjectMapperFactoryBean bean = new Jackson2ObjectMapperFactoryBean();
+		bean.setIndentOutput(true);
+		bean.setSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		bean.afterPropertiesSet();
+		ObjectMapper objectMapper = bean.getObject();
+		// objectMapper.registerModule(new JodaModule());
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
+		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		objectMapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, true);
+		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+		objectMapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, false);
+		objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+		objectMapper.configure(Feature.ALLOW_COMMENTS, true);
+		objectMapper.configure(Feature.ALLOW_MISSING_VALUES, true);
+		objectMapper.configure(Feature.ALLOW_SINGLE_QUOTES, true);
+		objectMapper.configure(Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+		objectMapper.configure(Feature.ALLOW_YAML_COMMENTS, true);
+		objectMapper.configure(com.fasterxml.jackson.core.JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+		objectMapper.configure(com.fasterxml.jackson.core.JsonGenerator.Feature.QUOTE_FIELD_NAMES, true);
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
+		objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+		objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-        return objectMapper;
-    }
+		return objectMapper;
+	}
 
-    private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(objectMapper());
-        return converter;
-    }
+	private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+		converter.setObjectMapper(objectMapper());
+		return converter;
+	}
 
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(mappingJackson2HttpMessageConverter());
-    }
+	@Override
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		converters.add(mappingJackson2HttpMessageConverter());
+	}
 
 }

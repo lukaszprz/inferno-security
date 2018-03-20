@@ -32,35 +32,38 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 public class SecurityInterceptor extends HandlerInterceptorAdapter {
 
-    /*
-     * (non-Javadoc)
-     * @see
-     * org.springframework.web.servlet.handler.HandlerInterceptorAdapter#postHandle(
-     * javax.servlet.http.HttpServletRequest,
-     * javax.servlet.http.HttpServletResponse, java.lang.Object,
-     * org.springframework.web.servlet.ModelAndView)
-     */
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        if (modelAndView != null) {
-            ServletRequest req = request;
-            ServletResponse resp = response;
-            FilterInvocation filterInvocation = new FilterInvocation(req, resp, new FilterChain() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.handler.HandlerInterceptorAdapter#postHandle(
+	 * javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse, java.lang.Object,
+	 * org.springframework.web.servlet.ModelAndView)
+	 */
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+			ModelAndView modelAndView) throws Exception {
+		if (modelAndView != null) {
+			ServletRequest req = request;
+			ServletResponse resp = response;
+			FilterInvocation filterInvocation = new FilterInvocation(req, resp, new FilterChain() {
 
-                @Override
-                public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-                    throw new UnsupportedOperationException();
+				@Override
+				public void doFilter(ServletRequest request, ServletResponse response)
+						throws IOException, ServletException {
+					throw new UnsupportedOperationException();
 
-                }
-            });
+				}
+			});
 
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (authentication != null) {
-                WebSecurityExpressionRoot sec = new WebSecurityExpressionRoot(authentication, filterInvocation);
-                sec.setTrustResolver(new AuthenticationTrustResolverImpl());
-                modelAndView.getModel().put("sec", sec);
-            }
-        }
-    }
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			if (authentication != null) {
+				WebSecurityExpressionRoot sec = new WebSecurityExpressionRoot(authentication, filterInvocation);
+				sec.setTrustResolver(new AuthenticationTrustResolverImpl());
+				modelAndView.getModel().put("sec", sec);
+			}
+		}
+	}
 
 }
