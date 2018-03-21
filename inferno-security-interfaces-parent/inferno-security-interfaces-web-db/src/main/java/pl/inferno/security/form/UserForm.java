@@ -8,12 +8,10 @@
  */
 package pl.inferno.security.form;
 
-import java.sql.Date;
+import java.io.Serializable;
 import java.util.Map;
 
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotBlank;
+import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -21,7 +19,13 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  * @author Łukasz Przesmycki (lukasz.przesmycki@gmail.com)
  */
-public class UserForm {
+// @Component
+public class UserForm implements Serializable {
+
+	/**
+	 * long serialVersionUID
+	 */
+	private static final long serialVersionUID = -7498783885899200788L;
 
 	public static class FormActions {
 		public enum Action {
@@ -55,7 +59,8 @@ public class UserForm {
 
 	private String action;
 
-	private Date dateOfBirth;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dateOfBirth;
 
 	private String firstName;
 
@@ -83,7 +88,7 @@ public class UserForm {
 	/**
 	 * @return the dateOfBirth
 	 */
-	public Date getDateOfBirth() {
+	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
 
@@ -148,7 +153,7 @@ public class UserForm {
 	 * @param dateOfBirth
 	 *            the dateOfBirth to set
 	 */
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
@@ -232,16 +237,16 @@ public class UserForm {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((action == null) ? 0 : action.hashCode());
-		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
-		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result + ((messages == null) ? 0 : messages.hashCode());
-		result = prime * result + ((newPassword1 == null) ? 0 : newPassword1.hashCode());
-		result = prime * result + ((newPassword2 == null) ? 0 : newPassword2.hashCode());
-		result = prime * result + ((oldForm == null) ? 0 : oldForm.hashCode());
-		result = prime * result + ((oldPassword == null) ? 0 : oldPassword.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = (prime * result) + ((action == null) ? 0 : action.hashCode());
+		result = (prime * result) + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
+		result = (prime * result) + ((firstName == null) ? 0 : firstName.hashCode());
+		result = (prime * result) + ((lastName == null) ? 0 : lastName.hashCode());
+		result = (prime * result) + ((messages == null) ? 0 : messages.hashCode());
+		result = (prime * result) + ((newPassword1 == null) ? 0 : newPassword1.hashCode());
+		result = (prime * result) + ((newPassword2 == null) ? 0 : newPassword2.hashCode());
+		result = (prime * result) + ((oldForm == null) ? 0 : oldForm.hashCode());
+		result = (prime * result) + ((oldPassword == null) ? 0 : oldPassword.hashCode());
+		result = (prime * result) + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
@@ -261,7 +266,7 @@ public class UserForm {
 		if (!(obj instanceof UserForm)) {
 			return false;
 		}
-		UserForm other = (UserForm) obj;
+		final UserForm other = (UserForm) obj;
 		if (action == null) {
 			if (other.action != null) {
 				return false;
@@ -342,7 +347,7 @@ public class UserForm {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder();
 		builder.append("UserForm [");
 		if (action != null) {
 			builder.append("action=").append(action).append(", ");

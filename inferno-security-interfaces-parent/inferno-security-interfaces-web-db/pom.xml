@@ -24,6 +24,10 @@
 		<dependency>
 			<groupId>pl.inferno.security</groupId>
 			<artifactId>inferno-security-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pl.inferno.validation</groupId>
+			<artifactId>inferno-validation-spring-pl</artifactId>
 			<version>${inferno.security.version}</version>
 		</dependency>
 		<dependency>
@@ -121,6 +125,16 @@
 			<artifactId>usertype.core</artifactId>
 			<version>5.0.0.GA</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jadira.usertype</groupId>
+			<artifactId>usertype.extended</artifactId>
+			<version>5.0.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>0.7.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -159,7 +173,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>spring-snapshots</id>

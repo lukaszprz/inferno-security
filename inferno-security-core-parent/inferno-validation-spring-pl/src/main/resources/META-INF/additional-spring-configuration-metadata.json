@@ -1,0 +1,52 @@
+{"properties": [
+  {
+    "name": "validation.pattern.email",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.email'"
+  },
+  {
+    "name": "validation.pattern.pesel",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.pesel'"
+  },
+  {
+    "name": "validation.pattern.nip",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.nip'"
+  },
+  {
+    "name": "validation.pattern.regon",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.regon'"
+  },
+  {
+    "name": "validation.pattern.nip",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.nip'"
+  },
+  {
+    "name": "validation.pattern.host",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.host'"
+  },
+  {
+    "name": "validation.pattern.ip",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.ip'"
+  },
+  {
+    "name": "validation.pattern.mobilePhoneNumber",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.mobilePhoneNumber'"
+  },
+  {
+    "name": "validation.pattern.stationaryPhoneNumber",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.stationaryPhoneNumber'"
+  },
+  {
+    "name": "validation.pattern.iban",
+    "type": "java.lang.String",
+    "description": "A description for 'validation.pattern.iban'"
+  }
+]}

@@ -8,17 +8,14 @@
  */
 package pl.inferno.security;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 /**
  * Class InfernoSuiteTest
  *
  * @author Łukasz Przesmycki (lukasz.przesmycki@gmail.com)
  */
-@RunWith(Suite.class)
-@SuiteClasses({ InfernoRestProxyRunnerTest.class, InfernoRestProxyAnonymousUsersTest.class })
+// @RunWith(Suite.class)
+// @SuiteClasses({ InfernoRestProxyRunnerTest.class,
+// InfernoRestProxyAnonymousUsersTest.class })
 public class InfernoTestSuite {
 
 }

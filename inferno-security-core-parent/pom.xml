@@ -1,5 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>pl.inferno.security</groupId>
@@ -9,12 +12,8 @@
 	<artifactId>inferno-security-core-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>[PARENT] Inferno Core Modules</name>
-
 	<modules>
+		<module>inferno-validation-spring-pl</module>
 		<module>inferno-security-core</module>
 	</modules>
-
-	
-
-	
 </project>

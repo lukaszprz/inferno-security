@@ -3,7 +3,6 @@
  */
 package pl.inferno.security.validator;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.DefaultMessageCodesResolver;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
@@ -37,24 +33,13 @@ import pl.inferno.security.utils.MessageUtils;
 @Component
 public class UserValidator implements Validator {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(UserValidator.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(UserValidator.class);
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserService userService;
-
-	// /**
-	// * @param passwordEncoder
-	// * @param userService
-	// */
-	// @Autowired
-	// public UserValidator(PasswordEncoder passwordEncoder, UserService
-	// userService) {
-	// this.passwordEncoder = passwordEncoder;
-	// this.userService = userService;
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -76,7 +61,7 @@ public class UserValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		UserForm userForm = (UserForm) target;
-
+		LOGGER.debug("USERFORM AS TARGET: {}", userForm);
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String currentPrincipalName = authentication.getName();
 
@@ -127,7 +112,7 @@ public class UserValidator implements Validator {
 			argumentsMap.put(MessageUtils.SEVERITY_MAP_KEY, MessageUtils.EMPTY);
 			argumentsMap.put(MessageUtils.VALUE_MAP_KEY, MessageUtils.EMPTY);
 
-			if (user != null && !passwordEncoder.matches(userForm.getOldPassword(), user.getPassword())) {
+			if ((user != null) && !passwordEncoder.matches(userForm.getOldPassword(), user.getPassword())) {
 				argumentsMap = new HashMap<>();
 				argumentsMap.put(MessageUtils.SEVERITY_MAP_KEY, MessageUtils.renderSeverityMessage(Severity.ERROR));
 				argumentsMap.put(MessageUtils.VALUE_MAP_KEY, userForm.getOldPassword());
@@ -179,7 +164,7 @@ public class UserValidator implements Validator {
 				errors.rejectValue("dateOfBirth", "userForm.dateOfBirth.empty", new Object[] { argumentsMap },
 						"userForm.dateOfBirth.empty");
 			}
-			if (errors.getErrorCount() == 3 || (userForm.getFirstName().equals(oldUserForm.getFirstName())
+			if ((errors.getErrorCount() == 3) || (userForm.getFirstName().equals(oldUserForm.getFirstName())
 					&& userForm.getDateOfBirth().equals(oldUserForm.getDateOfBirth())
 					&& userForm.getLastName().equals(oldUserForm.getLastName()))) {
 				argumentsMap = new HashMap<>();

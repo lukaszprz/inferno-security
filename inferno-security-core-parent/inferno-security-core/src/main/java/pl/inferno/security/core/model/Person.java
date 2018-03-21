@@ -4,7 +4,6 @@
 package pl.inferno.security.core.model;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.joda.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -47,7 +48,8 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
     private String lastName;
 
     @Column(name = "date_of_birth")
-    private Date dateOfBirth;
+    // @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
+    private LocalDate dateOfBirth;
 
     @JsonBackReference(value = "person-user")
     @OneToOne(fetch = FetchType.LAZY)
@@ -62,7 +64,7 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      * @return the id
      */
     public Long getId() {
-        return id;
+	return id;
     }
 
     /**
@@ -70,14 +72,14 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      *            the id to set
      */
     public void setId(Long id) {
-        this.id = id;
+	this.id = id;
     }
 
     /**
      * @return the firstName
      */
     public String getFirstName() {
-        return firstName;
+	return firstName;
     }
 
     /**
@@ -85,14 +87,14 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      *            the firstName to set
      */
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+	this.firstName = firstName;
     }
 
     /**
      * @return the lastName
      */
     public String getLastName() {
-        return lastName;
+	return lastName;
     }
 
     /**
@@ -100,29 +102,29 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      *            the lastName to set
      */
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+	this.lastName = lastName;
     }
 
     /**
      * @return the dateOfBirth
      */
-    public Date getDateOfBirth() {
-        return dateOfBirth;
+    public LocalDate getDateOfBirth() {
+	return dateOfBirth;
     }
 
     /**
      * @param dateOfBirth
      *            the dateOfBirth to set
      */
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+	this.dateOfBirth = dateOfBirth;
     }
 
     /**
      * @return the user
      */
     public User getUser() {
-        return user;
+	return user;
     }
 
     /**
@@ -130,14 +132,14 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      *            the user to set
      */
     public void setUser(User user) {
-        this.user = user;
+	this.user = user;
     }
 
     /**
      * @return the addresses
      */
     public Set<Address> getAddresses() {
-        return addresses;
+	return addresses;
     }
 
     /**
@@ -145,115 +147,118 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      *            the addresses to set
      */
     public void setAddresses(Set<Address> addresses) {
-        this.addresses = addresses;
+	this.addresses = addresses;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        // result = (prime * result) + ((addresses == null) ? 0 : addresses.hashCode());
-        result = (prime * result) + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
-        result = (prime * result) + ((firstName == null) ? 0 : firstName.hashCode());
-        result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-        result = (prime * result) + ((lastName == null) ? 0 : lastName.hashCode());
-        // result = (prime * result) + ((user == null) ? 0 : user.hashCode());
-        return result;
+	final int prime = 31;
+	int result = 1;
+	// result = (prime * result) + ((addresses == null) ? 0 : addresses.hashCode());
+	result = (prime * result) + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
+	result = (prime * result) + ((firstName == null) ? 0 : firstName.hashCode());
+	result = (prime * result) + ((id == null) ? 0 : id.hashCode());
+	result = (prime * result) + ((lastName == null) ? 0 : lastName.hashCode());
+	// result = (prime * result) + ((user == null) ? 0 : user.hashCode());
+	return result;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Person other = (Person) obj;
-        // if (addresses == null) {
-        // if (other.addresses != null) {
-        // return false;
-        // }
-        // } else if (!addresses.equals(other.addresses)) {
-        // return false;
-        // }
-        if (dateOfBirth == null) {
-            if (other.dateOfBirth != null) {
-                return false;
-            }
-        } else if (!dateOfBirth.equals(other.dateOfBirth)) {
-            return false;
-        }
-        if (firstName == null) {
-            if (other.firstName != null) {
-                return false;
-            }
-        } else if (!firstName.equals(other.firstName)) {
-            return false;
-        }
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (lastName == null) {
-            if (other.lastName != null) {
-                return false;
-            }
-        } else if (!lastName.equals(other.lastName)) {
-            return false;
-        }
-        // if (user == null) {
-        // if (other.user != null) {
-        // return false;
-        // }
-        // } else if (!user.equals(other.user)) {
-        // return false;
-        // }
-        return true;
+	if (this == obj) {
+	    return true;
+	}
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final Person other = (Person) obj;
+	// if (addresses == null) {
+	// if (other.addresses != null) {
+	// return false;
+	// }
+	// } else if (!addresses.equals(other.addresses)) {
+	// return false;
+	// }
+	if (dateOfBirth == null) {
+	    if (other.dateOfBirth != null) {
+		return false;
+	    }
+	} else if (!dateOfBirth.equals(other.dateOfBirth)) {
+	    return false;
+	}
+	if (firstName == null) {
+	    if (other.firstName != null) {
+		return false;
+	    }
+	} else if (!firstName.equals(other.firstName)) {
+	    return false;
+	}
+	if (id == null) {
+	    if (other.id != null) {
+		return false;
+	    }
+	} else if (!id.equals(other.id)) {
+	    return false;
+	}
+	if (lastName == null) {
+	    if (other.lastName != null) {
+		return false;
+	    }
+	} else if (!lastName.equals(other.lastName)) {
+	    return false;
+	}
+	// if (user == null) {
+	// if (other.user != null) {
+	// return false;
+	// }
+	// } else if (!user.equals(other.user)) {
+	// return false;
+	// }
+	return true;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Person [");
-        if (id != null) {
-            builder.append("id=").append(id).append(", ");
-        }
-        if (firstName != null) {
-            builder.append("firstName=").append(firstName).append(", ");
-        }
-        if (lastName != null) {
-            builder.append("lastName=").append(lastName).append(", ");
-        }
-        if (dateOfBirth != null) {
-            builder.append("dateOfBirth=").append(dateOfBirth).append(", ");
-        }
-        // if (user != null) {
-        // builder.append("user=").append(user).append(", ");
-        // }
-        // if (addresses != null) {
-        // builder.append("addresses=").append(addresses);
-        // }
-        builder.append("]");
-        return builder.toString();
+	final StringBuilder builder = new StringBuilder();
+	builder.append("Person [");
+	if (id != null) {
+	    builder.append("id=").append(id).append(", ");
+	}
+	if (firstName != null) {
+	    builder.append("firstName=").append(firstName).append(", ");
+	}
+	if (lastName != null) {
+	    builder.append("lastName=").append(lastName).append(", ");
+	}
+	if (dateOfBirth != null) {
+	    builder.append("dateOfBirth=").append(dateOfBirth).append(", ");
+	}
+	// if (user != null) {
+	// builder.append("user=").append(user).append(", ");
+	// }
+	// if (addresses != null) {
+	// builder.append("addresses=").append(addresses);
+	// }
+	builder.append("]");
+	return builder.toString();
     }
 
 }

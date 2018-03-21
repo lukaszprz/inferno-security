@@ -4,7 +4,6 @@
 package pl.inferno.security.core.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +21,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -68,9 +68,9 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
-    @JsonProperty
     @Column(name = "expires", nullable = true)
-    private Timestamp expires;
+    // @Type(type = "org.joda.time.contrib.hibernate.PersistentLocalDateTime")
+    private LocalDateTime expires;
 
     @JsonProperty
     @Column(name = "is_expired", nullable = false)
@@ -104,7 +104,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      * @return the id
      */
     public Long getId() {
-        return id;
+	return id;
     }
 
     /**
@@ -112,7 +112,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the id to set
      */
     public void setId(Long id) {
-        this.id = id;
+	this.id = id;
     }
 
     /**
@@ -120,7 +120,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      */
     @Override
     public String getUsername() {
-        return username;
+	return username;
     }
 
     /**
@@ -128,7 +128,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the username to set
      */
     public void setUsername(String username) {
-        this.username = username;
+	this.username = username;
     }
 
     /**
@@ -136,7 +136,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      */
     @Override
     public String getPassword() {
-        return password;
+	return password;
     }
 
     /**
@@ -144,7 +144,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the password to set
      */
     public void setPassword(String password) {
-        this.password = password;
+	this.password = password;
     }
 
     /**
@@ -152,7 +152,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      */
     @Override
     public boolean isEnabled() {
-        return enabled;
+	return enabled;
     }
 
     /**
@@ -160,29 +160,29 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the accountEnabled to set
      */
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+	this.enabled = enabled;
     }
 
     /**
      * @return the expires
      */
-    public Timestamp getExpires() {
-        return expires;
+    public LocalDateTime getExpires() {
+	return expires;
     }
 
     /**
      * @param expires
      *            the expires to set
      */
-    public void setExpires(Timestamp expires) {
-        this.expires = expires;
+    public void setExpires(LocalDateTime expires) {
+	this.expires = expires;
     }
 
     /**
      * @return the accountExpired
      */
     public boolean isAccountExpired() {
-        return accountExpired;
+	return accountExpired;
     }
 
     /**
@@ -190,14 +190,14 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the accountExpired to set
      */
     public void setAccountExpired(boolean accountExpired) {
-        this.accountExpired = accountExpired;
+	this.accountExpired = accountExpired;
     }
 
     /**
      * @return the accountLocked
      */
     public boolean isAccountLocked() {
-        return accountLocked;
+	return accountLocked;
     }
 
     /**
@@ -205,14 +205,14 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the accountLocked to set
      */
     public void setAccountLocked(boolean accountLocked) {
-        this.accountLocked = accountLocked;
+	this.accountLocked = accountLocked;
     }
 
     /**
      * @return the credentialsExpired
      */
     public boolean isCredentialsExpired() {
-        return credentialsExpired;
+	return credentialsExpired;
     }
 
     /**
@@ -220,7 +220,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the credentialsExpired to set
      */
     public void setCredentialsExpired(boolean credentialsExpired) {
-        this.credentialsExpired = credentialsExpired;
+	this.credentialsExpired = credentialsExpired;
     }
 
     // /**
@@ -242,7 +242,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      * @return the roles
      */
     public Set<UserRoles> getRoles() {
-        return roles;
+	return roles;
     }
 
     /**
@@ -250,39 +250,42 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the roles to set
      */
     public void setRoles(Set<UserRoles> roles) {
-        this.roles = roles;
+	this.roles = roles;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired
      * ()
      */
     @Override
     public boolean isAccountNonExpired() {
-        return !accountExpired;
+	return !accountExpired;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * org.springframework.security.core.userdetails.UserDetails#isAccountNonLocked(
      * )
      */
     @Override
     public boolean isAccountNonLocked() {
-        return !accountLocked;
+	return !accountLocked;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.springframework.security.core.userdetails.UserDetails#
      * isCredentialsNonExpired()
      */
     @Override
     public boolean isCredentialsNonExpired() {
-        return !credentialsExpired;
+	return !credentialsExpired;
     }
 
     // /**
@@ -303,25 +306,26 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * org.springframework.security.core.userdetails.UserDetails#getAuthorities()
      */
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (UserRoles assignedRole : roles) {
-            authorities.add(new SimpleGrantedAuthority(assignedRole.getAuthority()));
-        }
+	final List<GrantedAuthority> authorities = new ArrayList<>();
+	for (final UserRoles assignedRole : roles) {
+	    authorities.add(new SimpleGrantedAuthority(assignedRole.getAuthority()));
+	}
 
-        return authorities;
+	return authorities;
     }
 
     /**
      * @return the person
      */
     public Person getPerson() {
-        return person;
+	return person;
     }
 
     /**
@@ -329,14 +333,14 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the person to set
      */
     public void setPerson(Person person) {
-        this.person = person;
+	this.person = person;
     }
 
     /**
      * @return the newPassword
      */
     public String getNewPassword() {
-        return newPassword;
+	return newPassword;
     }
 
     /**
@@ -344,134 +348,137 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      *            the newPassword to set
      */
     public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+	this.newPassword = newPassword;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = (prime * result) + (accountExpired ? 1231 : 1237);
-        result = (prime * result) + (accountLocked ? 1231 : 1237);
-        result = (prime * result) + (credentialsExpired ? 1231 : 1237);
-        result = (prime * result) + (enabled ? 1231 : 1237);
-        result = (prime * result) + ((expires == null) ? 0 : expires.hashCode());
-        result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-        result = (prime * result) + ((password == null) ? 0 : password.hashCode());
-        result = (prime * result) + ((person == null) ? 0 : person.hashCode());
-        // result = (prime * result) + ((roles == null) ? 0 : roles.hashCode());
-        result = (prime * result) + ((username == null) ? 0 : username.hashCode());
-        return result;
+	final int prime = 31;
+	int result = super.hashCode();
+	result = (prime * result) + (accountExpired ? 1231 : 1237);
+	result = (prime * result) + (accountLocked ? 1231 : 1237);
+	result = (prime * result) + (credentialsExpired ? 1231 : 1237);
+	result = (prime * result) + (enabled ? 1231 : 1237);
+	result = (prime * result) + ((expires == null) ? 0 : expires.hashCode());
+	result = (prime * result) + ((id == null) ? 0 : id.hashCode());
+	result = (prime * result) + ((password == null) ? 0 : password.hashCode());
+	result = (prime * result) + ((person == null) ? 0 : person.hashCode());
+	// result = (prime * result) + ((roles == null) ? 0 : roles.hashCode());
+	result = (prime * result) + ((username == null) ? 0 : username.hashCode());
+	return result;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof User)) {
-            return false;
-        }
-        User other = (User) obj;
-        if (accountExpired != other.accountExpired) {
-            return false;
-        }
-        if (accountLocked != other.accountLocked) {
-            return false;
-        }
-        if (credentialsExpired != other.credentialsExpired) {
-            return false;
-        }
-        if (enabled != other.enabled) {
-            return false;
-        }
-        if (expires == null) {
-            if (other.expires != null) {
-                return false;
-            }
-        } else if (!expires.equals(other.expires)) {
-            return false;
-        }
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (password == null) {
-            if (other.password != null) {
-                return false;
-            }
-        } else if (!password.equals(other.password)) {
-            return false;
-        }
-        if (person == null) {
-            if (other.person != null) {
-                return false;
-            }
-        } else if (!person.equals(other.person)) {
-            return false;
-        }
-        if (roles == null) {
-            if (other.roles != null) {
-                return false;
-            }
-        } else if (!roles.equals(other.roles)) {
-            return false;
-        }
-        if (username == null) {
-            if (other.username != null) {
-                return false;
-            }
-        } else if (!username.equals(other.username)) {
-            return false;
-        }
-        return true;
+	if (this == obj) {
+	    return true;
+	}
+	if (!super.equals(obj)) {
+	    return false;
+	}
+	if (!(obj instanceof User)) {
+	    return false;
+	}
+	final User other = (User) obj;
+	if (accountExpired != other.accountExpired) {
+	    return false;
+	}
+	if (accountLocked != other.accountLocked) {
+	    return false;
+	}
+	if (credentialsExpired != other.credentialsExpired) {
+	    return false;
+	}
+	if (enabled != other.enabled) {
+	    return false;
+	}
+	if (expires == null) {
+	    if (other.expires != null) {
+		return false;
+	    }
+	} else if (!expires.equals(other.expires)) {
+	    return false;
+	}
+	if (id == null) {
+	    if (other.id != null) {
+		return false;
+	    }
+	} else if (!id.equals(other.id)) {
+	    return false;
+	}
+	if (password == null) {
+	    if (other.password != null) {
+		return false;
+	    }
+	} else if (!password.equals(other.password)) {
+	    return false;
+	}
+	if (person == null) {
+	    if (other.person != null) {
+		return false;
+	    }
+	} else if (!person.equals(other.person)) {
+	    return false;
+	}
+	if (roles == null) {
+	    if (other.roles != null) {
+		return false;
+	    }
+	} else if (!roles.equals(other.roles)) {
+	    return false;
+	}
+	if (username == null) {
+	    if (other.username != null) {
+		return false;
+	    }
+	} else if (!username.equals(other.username)) {
+	    return false;
+	}
+	return true;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("User [");
-        if (id != null) {
-            builder.append("id=").append(id).append(", ");
-        }
-        if (username != null) {
-            builder.append("username=").append(username).append(", ");
-        }
-        if (password != null) {
-            builder.append("password=").append(password).append(", ");
-        }
-        builder.append("enabled=").append(enabled).append(", ");
-        if (expires != null) {
-            builder.append("expires=").append(expires).append(", ");
-        }
-        builder.append("accountExpired=").append(accountExpired).append(", accountLocked=").append(accountLocked).append(", credentialsExpired=").append(credentialsExpired)
-                .append(", ");
-        if (person != null) {
-            builder.append("person=").append(person.getFirstName() + " " + person.getLastName()).append(", ");
-        }
-        if (roles != null) {
-            builder.append("roles=").append(roles);
-        }
-        builder.append("]");
-        return builder.toString();
+	final StringBuilder builder = new StringBuilder();
+	builder.append("User [");
+	if (id != null) {
+	    builder.append("id=").append(id).append(", ");
+	}
+	if (username != null) {
+	    builder.append("username=").append(username).append(", ");
+	}
+	if (password != null) {
+	    builder.append("password=").append(password).append(", ");
+	}
+	builder.append("enabled=").append(enabled).append(", ");
+	if (expires != null) {
+	    builder.append("expires=").append(expires).append(", ");
+	}
+	builder.append("accountExpired=").append(accountExpired).append(", accountLocked=").append(accountLocked)
+		.append(", credentialsExpired=").append(credentialsExpired).append(", ");
+	if (person != null) {
+	    builder.append("person=").append(person.getFirstName() + " " + person.getLastName()).append(", ");
+	}
+	if (roles != null) {
+	    builder.append("roles=").append(roles);
+	}
+	builder.append("]");
+	return builder.toString();
     }
 
 }
