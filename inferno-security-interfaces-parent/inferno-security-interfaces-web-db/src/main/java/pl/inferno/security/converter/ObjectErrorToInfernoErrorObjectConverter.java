@@ -16,7 +16,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.DefaultMessageCodesResolver;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
@@ -84,7 +83,7 @@ public class ObjectErrorToInfernoErrorObjectConverter implements Converter<Objec
 					infernoErrorObject.setArguments(new Object[] { argsMap });
 				}
 			}
-			if (fieldError.getArguments().length > 0 && !overridenArgs) {
+			if ((fieldError.getArguments().length > 0) && !overridenArgs) {
 				Map<String, Object> argumentsMap = (Map<String, Object>) fieldError.getArguments()[0];
 				String severity = messageSource.getMessage((String) argumentsMap.get(MessageUtils.SEVERITY_MAP_KEY),
 						null, LocaleContextHolder.getLocale());
@@ -95,15 +94,15 @@ public class ObjectErrorToInfernoErrorObjectConverter implements Converter<Objec
 			}
 
 		} else if (source instanceof ObjectError) {
-			ObjectError objectError = (ObjectError) source;
+			ObjectError objectError = source;
 			infernoErrorObject = new InfernoErrorObject(objectError.getObjectName(), null);
 			infernoErrorObject.setObjectName(objectError.getObjectName());
 			infernoErrorObject.setGlobal(true);
 			infernoErrorObject.setCode(objectError.getCode());
 			infernoErrorObject.setCodes(objectError.getCodes());
 			infernoErrorObject.setArguments(objectError.getArguments());
-			LOGGER.debug("ARGUMENTS: {} [{}]", objectError.getArguments(), objectError.getArguments().length);
-			if (objectError.getArguments().length > 0) {
+
+			if ((objectError.getArguments() != null) && (objectError.getArguments().length > 0)) {
 				Map<String, Object> argumentsMap = (Map<String, Object>) objectError.getArguments()[0];
 				for (String key : argumentsMap.keySet()) {
 					LOGGER.debug("{} =====> {}", key, argumentsMap.get(key));

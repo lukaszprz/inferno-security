@@ -9,6 +9,6 @@ package pl.inferno.security.core.model;
  */
 public enum AddressType {
 
-	MAIN, CORRESPONDENCE
+    MAIN, CORRESPONDENCE, ADDITIONAL
 
 }

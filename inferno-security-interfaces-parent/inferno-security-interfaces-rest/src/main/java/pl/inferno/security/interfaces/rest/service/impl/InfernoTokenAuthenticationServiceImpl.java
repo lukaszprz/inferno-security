@@ -8,6 +8,8 @@
  */
 package pl.inferno.security.interfaces.rest.service.impl;
 
+import java.sql.Timestamp;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
@@ -73,7 +75,8 @@ public class InfernoTokenAuthenticationServiceImpl implements InfernoTokenAuthen
     @Override
     public void addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
 	final User user = authentication.getDetails();
-	user.setExpires(LocalDateTime.now().plusDays(Long.valueOf(TEN_DAYS).intValue()));
+	LocalDateTime exp = LocalDateTime.now().plusDays(Long.valueOf(TEN_DAYS).intValue());
+	user.setExpires(new Timestamp(TEN_DAYS));
 
 	response.addHeader(AUTH_HEADER_NAME, tokenHandler.createTokenForUser(user));
     }

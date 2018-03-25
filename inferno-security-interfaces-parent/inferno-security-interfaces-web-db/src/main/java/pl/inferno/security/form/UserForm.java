@@ -9,6 +9,7 @@
 package pl.inferno.security.form;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
@@ -21,6 +22,11 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 // @Component
 public class UserForm implements Serializable {
+
+	/**
+	 * String USER_FORM_OBJECT_NAME
+	 */
+	public static final String USER_FORM_OBJECT_NAME = "userForm";
 
 	/**
 	 * long serialVersionUID
@@ -77,6 +83,22 @@ public class UserForm implements Serializable {
 	private String oldPassword;
 
 	private String username;
+
+	private String email;
+
+	private String homePhoneNumber;
+
+	private String mobilePhoneNumber;
+
+	/**
+	 * List<InfernoErrorObject> errors
+	 */
+	private List<InfernoErrorObject> errors;
+
+	/**
+	 * SuccessfullAction successfullAction
+	 */
+	private SuccessfullAction successfullAction;
 
 	/**
 	 * @return the action
@@ -228,6 +250,81 @@ public class UserForm implements Serializable {
 		this.username = username;
 	}
 
+	/**
+	 * @return the errors
+	 */
+	public List<InfernoErrorObject> getErrors() {
+		return errors;
+	}
+
+	/**
+	 * @param errors
+	 *            the errors to set
+	 */
+	public void setErrors(List<InfernoErrorObject> errors) {
+		this.errors = errors;
+	}
+
+	/**
+	 * @return the successfullAction
+	 */
+	public SuccessfullAction getSuccessfullAction() {
+		return successfullAction;
+	}
+
+	/**
+	 * @param successfullAction
+	 *            the successfullAction to set
+	 */
+	public void setSuccessfullAction(SuccessfullAction successfullAction) {
+		this.successfullAction = successfullAction;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email
+	 *            the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * @return the homePhoneNumber
+	 */
+	public String getHomePhoneNumber() {
+		return homePhoneNumber;
+	}
+
+	/**
+	 * @param homePhoneNumber
+	 *            the homePhoneNumber to set
+	 */
+	public void setHomePhoneNumber(String homePhoneNumber) {
+		this.homePhoneNumber = homePhoneNumber;
+	}
+
+	/**
+	 * @return the mobilePhoneNumber
+	 */
+	public String getMobilePhoneNumber() {
+		return mobilePhoneNumber;
+	}
+
+	/**
+	 * @param mobilePhoneNumber
+	 *            the mobilePhoneNumber to set
+	 */
+	public void setMobilePhoneNumber(String mobilePhoneNumber) {
+		this.mobilePhoneNumber = mobilePhoneNumber;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -239,13 +336,18 @@ public class UserForm implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((action == null) ? 0 : action.hashCode());
 		result = (prime * result) + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
+		result = (prime * result) + ((email == null) ? 0 : email.hashCode());
+		result = (prime * result) + ((errors == null) ? 0 : errors.hashCode());
 		result = (prime * result) + ((firstName == null) ? 0 : firstName.hashCode());
+		result = (prime * result) + ((homePhoneNumber == null) ? 0 : homePhoneNumber.hashCode());
 		result = (prime * result) + ((lastName == null) ? 0 : lastName.hashCode());
 		result = (prime * result) + ((messages == null) ? 0 : messages.hashCode());
+		result = (prime * result) + ((mobilePhoneNumber == null) ? 0 : mobilePhoneNumber.hashCode());
 		result = (prime * result) + ((newPassword1 == null) ? 0 : newPassword1.hashCode());
 		result = (prime * result) + ((newPassword2 == null) ? 0 : newPassword2.hashCode());
 		result = (prime * result) + ((oldForm == null) ? 0 : oldForm.hashCode());
 		result = (prime * result) + ((oldPassword == null) ? 0 : oldPassword.hashCode());
+		result = (prime * result) + ((successfullAction == null) ? 0 : successfullAction.hashCode());
 		result = (prime * result) + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
@@ -266,7 +368,7 @@ public class UserForm implements Serializable {
 		if (!(obj instanceof UserForm)) {
 			return false;
 		}
-		final UserForm other = (UserForm) obj;
+		UserForm other = (UserForm) obj;
 		if (action == null) {
 			if (other.action != null) {
 				return false;
@@ -281,11 +383,32 @@ public class UserForm implements Serializable {
 		} else if (!dateOfBirth.equals(other.dateOfBirth)) {
 			return false;
 		}
+		if (email == null) {
+			if (other.email != null) {
+				return false;
+			}
+		} else if (!email.equals(other.email)) {
+			return false;
+		}
+		if (errors == null) {
+			if (other.errors != null) {
+				return false;
+			}
+		} else if (!errors.equals(other.errors)) {
+			return false;
+		}
 		if (firstName == null) {
 			if (other.firstName != null) {
 				return false;
 			}
 		} else if (!firstName.equals(other.firstName)) {
+			return false;
+		}
+		if (homePhoneNumber == null) {
+			if (other.homePhoneNumber != null) {
+				return false;
+			}
+		} else if (!homePhoneNumber.equals(other.homePhoneNumber)) {
 			return false;
 		}
 		if (lastName == null) {
@@ -300,6 +423,13 @@ public class UserForm implements Serializable {
 				return false;
 			}
 		} else if (!messages.equals(other.messages)) {
+			return false;
+		}
+		if (mobilePhoneNumber == null) {
+			if (other.mobilePhoneNumber != null) {
+				return false;
+			}
+		} else if (!mobilePhoneNumber.equals(other.mobilePhoneNumber)) {
 			return false;
 		}
 		if (newPassword1 == null) {
@@ -330,6 +460,13 @@ public class UserForm implements Serializable {
 		} else if (!oldPassword.equals(other.oldPassword)) {
 			return false;
 		}
+		if (successfullAction == null) {
+			if (other.successfullAction != null) {
+				return false;
+			}
+		} else if (!successfullAction.equals(other.successfullAction)) {
+			return false;
+		}
 		if (username == null) {
 			if (other.username != null) {
 				return false;
@@ -347,7 +484,7 @@ public class UserForm implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder();
 		builder.append("UserForm [");
 		if (action != null) {
 			builder.append("action=").append(action).append(", ");
@@ -377,7 +514,22 @@ public class UserForm implements Serializable {
 			builder.append("oldPassword=").append(oldPassword).append(", ");
 		}
 		if (username != null) {
-			builder.append("username=").append(username);
+			builder.append("username=").append(username).append(", ");
+		}
+		if (email != null) {
+			builder.append("email=").append(email).append(", ");
+		}
+		if (homePhoneNumber != null) {
+			builder.append("homePhoneNumber=").append(homePhoneNumber).append(", ");
+		}
+		if (mobilePhoneNumber != null) {
+			builder.append("mobilePhoneNumber=").append(mobilePhoneNumber).append(", ");
+		}
+		if (errors != null) {
+			builder.append("errors=").append(errors).append(", ");
+		}
+		if (successfullAction != null) {
+			builder.append("successfullAction=").append(successfullAction);
 		}
 		builder.append("]");
 		return builder.toString();

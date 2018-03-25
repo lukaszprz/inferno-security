@@ -6,6 +6,7 @@ package pl.inferno.security.validator;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,11 +70,14 @@ public class UserValidator implements Validator {
 		Person person = user.getPerson();
 
 		UserForm oldUserForm = new UserForm();
-		oldUserForm.setDateOfBirth(person.getDateOfBirth());
+		oldUserForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
 		oldUserForm.setFirstName(person.getFirstName());
 		oldUserForm.setLastName(person.getLastName());
 		oldUserForm.setOldPassword(user.getPassword());
 		oldUserForm.setUsername(user.getUsername());
+		oldUserForm.setEmail(person.getEmail());
+		oldUserForm.setHomePhoneNumber(person.getHomePhoneNumber());
+		oldUserForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
 		userForm.setOldForm(oldUserForm);
 
 		if (userForm.getAction().equals(UserForm.FormActions.Action.CHANGE_PASSWORD.getParam())) {
@@ -153,6 +157,8 @@ public class UserValidator implements Validator {
 					new Object[] { argumentsMap });
 			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "lastName", "userForm.lastName.empty",
 					new Object[] { argumentsMap });
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "userForm.email.empty",
+					new Object[] { argumentsMap });
 
 			if (userForm.getDateOfBirth() == null) {
 				argumentsMap = new HashMap<>();
@@ -164,9 +170,10 @@ public class UserValidator implements Validator {
 				errors.rejectValue("dateOfBirth", "userForm.dateOfBirth.empty", new Object[] { argumentsMap },
 						"userForm.dateOfBirth.empty");
 			}
-			if ((errors.getErrorCount() == 3) || (userForm.getFirstName().equals(oldUserForm.getFirstName())
+			if ((errors.getErrorCount() == 4) || (userForm.getFirstName().equals(oldUserForm.getFirstName())
 					&& userForm.getDateOfBirth().equals(oldUserForm.getDateOfBirth())
-					&& userForm.getLastName().equals(oldUserForm.getLastName()))) {
+					&& userForm.getLastName().equals(oldUserForm.getLastName())
+					&& userForm.getEmail().equalsIgnoreCase(oldUserForm.getEmail()))) {
 				argumentsMap = new HashMap<>();
 				argumentsMap.put(MessageUtils.SEVERITY_MAP_KEY, MessageUtils.renderSeverityMessage(Severity.WARNING));
 				argumentsMap.put(MessageUtils.VALUE_MAP_KEY, MessageUtils.NO_CHANGES);

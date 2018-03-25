@@ -3,11 +3,8 @@
  */
 package pl.inferno.security.core.service;
 
-import java.util.Set;
-
 import pl.inferno.security.core.model.Address;
 import pl.inferno.security.core.model.AddressType;
-import pl.inferno.security.core.model.Person;
 
 /**
  * @author lukasz-adm
@@ -15,12 +12,14 @@ import pl.inferno.security.core.model.Person;
  */
 public interface AddressService {
 
-	Address saveAddress(Address address);
+    Address saveAddress(Address address);
 
-	Address getAddressByType(AddressType type);
+    Address getAddressByType(AddressType type);
 
-	Address findAddress(Address address);
+    Address findAddress(Address address);
 
-	Set<Address> findAddressesByPerson(Person person);
+    Address findById(Long id);
+
+    Address deleteAddressById(Long id);
 
 }

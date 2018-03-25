@@ -32,32 +32,32 @@ import pl.inferno.security.interfaces.rest.service.InfernoTokenAuthenticationSer
  */
 public class InfernoAuthenticationFilter extends GenericFilterBean {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(InfernoAuthenticationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfernoAuthenticationFilter.class);
 
-	private final InfernoTokenAuthenticationService tokenAuthenticationService;
+    private final InfernoTokenAuthenticationService tokenAuthenticationService;
 
-	/**
-	 * @param tokenAuthenticationService
-	 */
-	public InfernoAuthenticationFilter(InfernoTokenAuthenticationService tokenAuthenticationService) {
-		this.tokenAuthenticationService = tokenAuthenticationService;
-	}
+    /**
+     * @param tokenAuthenticationService
+     */
+    public InfernoAuthenticationFilter(InfernoTokenAuthenticationService tokenAuthenticationService) {
+	this.tokenAuthenticationService = tokenAuthenticationService;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
-	 * javax.servlet.ServletResponse, javax.servlet.FilterChain)
-	 */
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-	        throws IOException, ServletException {
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+     * javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     */
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	    throws IOException, ServletException {
 
-		SecurityContextHolder.getContext()
-		        .setAuthentication(tokenAuthenticationService.getAuthentication((HttpServletRequest) request));
+	SecurityContextHolder.getContext()
+		.setAuthentication(tokenAuthenticationService.getAuthentication((HttpServletRequest) request));
 
-		chain.doFilter(request, response); // always continue
+	chain.doFilter(request, response); // always continue
 
-	}
+    }
 
 }

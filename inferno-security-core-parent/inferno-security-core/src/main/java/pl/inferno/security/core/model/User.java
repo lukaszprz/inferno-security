@@ -4,6 +4,7 @@
 package pl.inferno.security.core.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +22,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -70,7 +70,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
 
     @Column(name = "expires", nullable = true)
     // @Type(type = "org.joda.time.contrib.hibernate.PersistentLocalDateTime")
-    private LocalDateTime expires;
+    private Timestamp expires;
 
     @JsonProperty
     @Column(name = "is_expired", nullable = false)
@@ -166,7 +166,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
     /**
      * @return the expires
      */
-    public LocalDateTime getExpires() {
+    public Timestamp getExpires() {
 	return expires;
     }
 
@@ -174,7 +174,7 @@ public class User extends InfernoAbstractAuditableEntity implements UserDetails,
      * @param expires
      *            the expires to set
      */
-    public void setExpires(LocalDateTime expires) {
+    public void setExpires(Timestamp expires) {
 	this.expires = expires;
     }
 

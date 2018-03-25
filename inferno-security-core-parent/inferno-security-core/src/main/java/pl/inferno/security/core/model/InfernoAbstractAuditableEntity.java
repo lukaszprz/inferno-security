@@ -4,13 +4,12 @@
 package pl.inferno.security.core.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
-
-import org.joda.time.LocalDateTime;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -38,10 +37,9 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
     @JsonIgnore
     @Column(name = "created_date", nullable = false)
     // @CreatedDate
-    // @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    // @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     // @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private Timestamp createdDate = new Timestamp(new Date().getTime());
 
     @JsonIgnore
     // @Column(name = "modified_by")
@@ -53,10 +51,9 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
     @JsonIgnore
     @Column(name = "last_modified_date")
     // @LastModifiedDate
-    // @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDateTime")
+    // @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
     // @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-    private LocalDateTime lastModifiedDate = LocalDateTime.now();
+    private Timestamp lastModifiedDate;
 
     /**
      * @return the createdBy
@@ -76,7 +73,7 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
     /**
      * @return the createdDate
      */
-    public LocalDateTime getCreatedDate() {
+    public Timestamp getCreatedDate() {
 	return createdDate;
     }
 
@@ -84,7 +81,7 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
      * @param createdDate
      *            the createdDate to set
      */
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(Timestamp createdDate) {
 	this.createdDate = createdDate;
     }
 
@@ -106,7 +103,7 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
     /**
      * @return the lastModifiedDate
      */
-    public LocalDateTime getLastModifiedDate() {
+    public Timestamp getLastModifiedDate() {
 	return lastModifiedDate;
     }
 
@@ -114,7 +111,7 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
      * @param lastModifiedDate
      *            the lastModifiedDate to set
      */
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(Timestamp lastModifiedDate) {
 	this.lastModifiedDate = lastModifiedDate;
     }
 
@@ -150,7 +147,7 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
 	if (!(obj instanceof InfernoAbstractAuditableEntity)) {
 	    return false;
 	}
-	final InfernoAbstractAuditableEntity other = (InfernoAbstractAuditableEntity) obj;
+	InfernoAbstractAuditableEntity other = (InfernoAbstractAuditableEntity) obj;
 	if (createdBy == null) {
 	    if (other.createdBy != null) {
 		return false;
@@ -189,7 +186,7 @@ public abstract class InfernoAbstractAuditableEntity implements Serializable {
      */
     @Override
     public String toString() {
-	final StringBuilder builder = new StringBuilder();
+	StringBuilder builder = new StringBuilder();
 	builder.append("InfernoAbstractAuditableEntity [");
 	if (createdBy != null) {
 	    builder.append("createdBy=").append(createdBy).append(", ");

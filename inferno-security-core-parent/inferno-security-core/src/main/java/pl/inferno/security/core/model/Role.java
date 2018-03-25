@@ -3,6 +3,7 @@
  */
 package pl.inferno.security.core.model;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.joda.time.LocalDateTime;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -45,8 +45,7 @@ public class Role extends InfernoAbstractAuditableEntity implements GrantedAutho
     private String description;
 
     @Column(name = "valid_to")
-    // @Type(type = "org.joda.time.contrib.hibernate.PersistentLocalDateTime")
-    private LocalDateTime validTo;
+    private Timestamp validTo;
 
     @JsonManagedReference(value = "role-assign")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "assignedRole", cascade = CascadeType.ALL)
@@ -56,7 +55,7 @@ public class Role extends InfernoAbstractAuditableEntity implements GrantedAutho
      * @return the id
      */
     public Long getId() {
-	return id;
+        return id;
     }
 
     /**
@@ -64,14 +63,14 @@ public class Role extends InfernoAbstractAuditableEntity implements GrantedAutho
      *            the id to set
      */
     public void setId(Long id) {
-	this.id = id;
+        this.id = id;
     }
 
     /**
      * @return the name
      */
     public String getName() {
-	return name;
+        return name;
     }
 
     /**
@@ -79,7 +78,7 @@ public class Role extends InfernoAbstractAuditableEntity implements GrantedAutho
      *            the name to set
      */
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     // /**
@@ -100,23 +99,23 @@ public class Role extends InfernoAbstractAuditableEntity implements GrantedAutho
     /**
      * @return the validTo
      */
-    public LocalDateTime getValidTo() {
-	return validTo;
+    public Timestamp getValidTo() {
+        return validTo;
     }
 
     /**
      * @param validTo
      *            the validTo to set
      */
-    public void setValidTo(LocalDateTime validTo) {
-	this.validTo = validTo;
+    public void setValidTo(Timestamp validTo) {
+        this.validTo = validTo;
     }
 
     /**
      * @return the description
      */
     public String getDescription() {
-	return description;
+        return description;
     }
 
     /**
@@ -124,14 +123,14 @@ public class Role extends InfernoAbstractAuditableEntity implements GrantedAutho
      *            the description to set
      */
     public void setDescription(String description) {
-	this.description = description;
+        this.description = description;
     }
 
     /**
      * @return the usersAssignment
      */
     public Set<UserRoles> getUsersAssignment() {
-	return usersAssignment;
+        return usersAssignment;
     }
 
     /**
@@ -139,114 +138,110 @@ public class Role extends InfernoAbstractAuditableEntity implements GrantedAutho
      *            the usersAssignment to set
      */
     public void setUsersAssignment(Set<UserRoles> usersAssignment) {
-	this.usersAssignment = usersAssignment;
+        this.usersAssignment = usersAssignment;
     }
 
     /*
      * (non-Javadoc)
-     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-	final int prime = 31;
-	int result = 1;
-	// result = (prime * result) + ((created == null) ? 0 : created.hashCode());
-	result = (prime * result) + ((description == null) ? 0 : description.hashCode());
-	result = (prime * result) + ((id == null) ? 0 : id.hashCode());
-	result = (prime * result) + ((name == null) ? 0 : name.hashCode());
-	result = (prime * result) + ((validTo == null) ? 0 : validTo.hashCode());
-	return result;
+        final int prime = 31;
+        int result = 1;
+        // result = (prime * result) + ((created == null) ? 0 : created.hashCode());
+        result = (prime * result) + ((description == null) ? 0 : description.hashCode());
+        result = (prime * result) + ((id == null) ? 0 : id.hashCode());
+        result = (prime * result) + ((name == null) ? 0 : name.hashCode());
+        result = (prime * result) + ((validTo == null) ? 0 : validTo.hashCode());
+        return result;
     }
 
     /*
      * (non-Javadoc)
-     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (obj == null) {
-	    return false;
-	}
-	if (getClass() != obj.getClass()) {
-	    return false;
-	}
-	final Role other = (Role) obj;
-	// if (created == null) {
-	// if (other.created != null) {
-	// return false;
-	// }
-	// } else if (!created.equals(other.created)) {
-	// return false;
-	// }
-	if (description == null) {
-	    if (other.description != null) {
-		return false;
-	    }
-	} else if (!description.equals(other.description)) {
-	    return false;
-	}
-	if (id == null) {
-	    if (other.id != null) {
-		return false;
-	    }
-	} else if (!id.equals(other.id)) {
-	    return false;
-	}
-	if (name == null) {
-	    if (other.name != null) {
-		return false;
-	    }
-	} else if (!name.equals(other.name)) {
-	    return false;
-	}
-	if (validTo == null) {
-	    if (other.validTo != null) {
-		return false;
-	    }
-	} else if (!validTo.equals(other.validTo)) {
-	    return false;
-	}
-	return true;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Role other = (Role) obj;
+        // if (created == null) {
+        // if (other.created != null) {
+        // return false;
+        // }
+        // } else if (!created.equals(other.created)) {
+        // return false;
+        // }
+        if (description == null) {
+            if (other.description != null) {
+                return false;
+            }
+        } else if (!description.equals(other.description)) {
+            return false;
+        }
+        if (id == null) {
+            if (other.id != null) {
+                return false;
+            }
+        } else if (!id.equals(other.id)) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        if (validTo == null) {
+            if (other.validTo != null) {
+                return false;
+            }
+        } else if (!validTo.equals(other.validTo)) {
+            return false;
+        }
+        return true;
     }
 
     /*
      * (non-Javadoc)
-     * 
      * @see org.springframework.security.core.GrantedAuthority#getAuthority()
      */
     @Override
     public String getAuthority() {
-	return name;
+        return name;
     }
 
     /*
      * (non-Javadoc)
-     * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-	final StringBuilder builder = new StringBuilder();
-	builder.append("Role [");
-	if (id != null) {
-	    builder.append("id=").append(id).append(", ");
-	}
-	if (name != null) {
-	    builder.append("name=").append(name).append(", ");
-	}
-	if (description != null) {
-	    builder.append("description=").append(description).append(", ");
-	}
-	if (validTo != null) {
-	    builder.append("validTo=").append(validTo);
-	}
-	builder.append("]");
-	return builder.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append("Role [");
+        if (id != null) {
+            builder.append("id=").append(id).append(", ");
+        }
+        if (name != null) {
+            builder.append("name=").append(name).append(", ");
+        }
+        if (description != null) {
+            builder.append("description=").append(description).append(", ");
+        }
+        if (validTo != null) {
+            builder.append("validTo=").append(validTo);
+        }
+        builder.append("]");
+        return builder.toString();
     }
 
 }

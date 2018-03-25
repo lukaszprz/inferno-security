@@ -4,13 +4,17 @@
 package pl.inferno.security.controller.mvc;
 
 import java.security.Principal;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +32,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import pl.inferno.security.converter.ObjectErrorToInfernoErrorObjectConverter;
+import pl.inferno.security.core.model.Address;
+import pl.inferno.security.core.model.AddressType;
 import pl.inferno.security.core.model.Person;
 import pl.inferno.security.core.model.User;
+import pl.inferno.security.core.service.AddressService;
 import pl.inferno.security.core.service.UserService;
+import pl.inferno.security.form.AddressForm;
 import pl.inferno.security.form.InfernoErrorObject;
 import pl.inferno.security.form.SuccessfullAction;
 import pl.inferno.security.form.SuccessfullAction.Change;
 import pl.inferno.security.form.UserForm;
+import pl.inferno.security.validator.AddressValidator;
 import pl.inferno.security.validator.UserValidator;
 
 /**
@@ -56,12 +65,18 @@ public class UserController {
 	private UserService userService;
 
 	@Autowired
+	private AddressService addressService;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserValidator userValidator;
 
-	@InitBinder("userForm")
+	@Autowired
+	private AddressValidator addressValidator;
+
+	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 
 		DefaultMessageCodesResolver messageCodesResolver = new DefaultMessageCodesResolver();
@@ -70,9 +85,13 @@ public class UserController {
 		binder.initBeanPropertyAccess();
 		// binder.initDirectFieldAccess();
 
-		// binder.setValidator(userValidator);
-		binder.addValidators(userValidator);
-
+		if (UserForm.USER_FORM_OBJECT_NAME.equals(binder.getObjectName())) {
+			// binder.setValidator(userValidator);
+			binder.addValidators(userValidator);
+		}
+		if (AddressForm.ADDRESS_FORM_OBJECT_NAME.equals(binder.getObjectName())) {
+			binder.addValidators(addressValidator);
+		}
 	}
 
 	@GetMapping
@@ -82,23 +101,38 @@ public class UserController {
 
 		UserForm userForm = new UserForm();
 		Person person = user.getPerson();
-		userForm.setDateOfBirth(person.getDateOfBirth());
+		userForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
 		userForm.setFirstName(person.getFirstName());
 		userForm.setLastName(person.getLastName());
 		userForm.setOldPassword(user.getPassword());
 		userForm.setAction(request.getParameter("action"));
 		userForm.setUsername(user.getUsername());
+		userForm.setEmail(person.getEmail());
+		userForm.setHomePhoneNumber(person.getHomePhoneNumber());
+		userForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
+
+		AddressForm addressForm = new AddressForm();
+
+		addressForm.setAction(request.getParameter("action"));
+
+		addressForm.setType(request.getParameter("type"));
+
+		modelAndView.addObject("addressTypes", recheckAddressTypes(person.getAddresses(), addressForm));
+
+		SuccessfullAction successfullAction = new SuccessfullAction();
+		successfullAction.setSuccess(false);
+		addressForm.setSuccessfullAction(successfullAction);
+
+		modelAndView.addObject(AddressForm.ADDRESS_FORM_OBJECT_NAME, addressForm);
 
 		modelAndView.addObject("action", userForm.getAction());
-		modelAndView.addObject("userForm", userForm);
+		userForm.setSuccessfullAction(successfullAction);
+		modelAndView.addObject(UserForm.USER_FORM_OBJECT_NAME, userForm);
 
 		modelAndView.addObject("page", "user");
 		modelAndView.addObject("user", user);
 		modelAndView.setViewName("user");
-		SuccessfullAction successfullAction = new SuccessfullAction();
-		successfullAction.setSuccess(false);
-		modelAndView.addObject("successAction", successfullAction);
-		// return "/user";
+
 		return modelAndView;
 	}
 
@@ -111,13 +145,52 @@ public class UserController {
 		User user = userService.getUserByUserName(principal.getName());
 		Person person = user.getPerson();
 
+		AddressForm addressForm = new AddressForm();
+		List<Address> addresses = person.getAddresses();
+		addressForm.setUsersDefinedAddresses(addresses);
+
+		Map<AddressForm.AddressType.Type, Address> addressesMap = new HashMap<>();
+
+		for (Address address : addresses) {
+			if (AddressType.MAIN.equals(address.getType())) {
+				addressesMap.put(AddressForm.AddressType.Type.MAIN, address);
+				addressForm.setMainAddressDefined(true);
+			} else if (AddressType.CORRESPONDENCE.equals(address.getType())) {
+				addressesMap.put(AddressForm.AddressType.Type.CORRESPONDENCE, address);
+				addressForm.setCorrespondenceAddressDefined(true);
+			} else if (AddressType.ADDITIONAL.equals(address.getType())) {
+				addressesMap.put(AddressForm.AddressType.Type.ADDITIONAL, address);
+				addressForm.setAdditionalAddressDefined(true);
+			}
+		}
+		addressForm.setUsersAddressesMap(addressesMap);
+		addressForm.setAllowAdd(addresses.size() < 3);
+		addressForm.setCountAddresses(addresses.size());
+
+		Address main = addressesMap.get(AddressForm.AddressType.Type.MAIN);
+		if (main != null) {
+			addressForm.setId(main.getId());
+			addressForm.setAppartment(main.getAppartment());
+			addressForm.setBuildingNumber(main.getBuildingNumber());
+			addressForm.setCity(main.getCity());
+			addressForm.setDistrict(main.getDistrict());
+			addressForm.setPostCode(main.getPostCode());
+			addressForm.setStreet(main.getStreet());
+			addressForm.setType(AddressForm.AddressType.Type.MAIN.name());
+		}
+
+		modelAndView.addObject(AddressForm.ADDRESS_FORM_OBJECT_NAME, addressForm);
+
 		UserForm oldUserForm = new UserForm();
 		oldUserForm.setAction(userForm.getAction());
-		oldUserForm.setDateOfBirth(person.getDateOfBirth());
+		oldUserForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
 		oldUserForm.setFirstName(person.getFirstName());
 		oldUserForm.setLastName(person.getLastName());
 		oldUserForm.setOldPassword(user.getPassword());
 		oldUserForm.setUsername(user.getUsername());
+		oldUserForm.setEmail(person.getEmail());
+		oldUserForm.setHomePhoneNumber(person.getHomePhoneNumber());
+		oldUserForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
 		userForm.setOldForm(oldUserForm);
 
 		LOGGER.debug("NEW USER-FORM OBJECT: {}", userForm.toString());
@@ -134,16 +207,16 @@ public class UserController {
 				errors.add(infernoError);
 				LOGGER.debug("converted error type: {}", infernoError.toString());
 			}
+			userForm.setErrors(errors);
 
-			modelAndView.addObject("errors", errors);
 			modelAndView.addObject("user", user);
-			modelAndView.addObject("userForm", userForm);
+			modelAndView.addObject(UserForm.USER_FORM_OBJECT_NAME, userForm);
 
 			return modelAndView;
 		}
 
 		SuccessfullAction successfullAction = new SuccessfullAction();
-		successfullAction.setObjectName("userForm");
+		successfullAction.setObjectName(UserForm.USER_FORM_OBJECT_NAME);
 		List<Change> changes = new ArrayList<>();
 		if (userForm.getAction().equals(UserForm.FormActions.Action.CHANGE_PASSWORD.getParam())) {
 
@@ -180,7 +253,7 @@ public class UserController {
 			}
 
 			if (!oldUserForm.getDateOfBirth().equals(userForm.getDateOfBirth())) {
-				person.setDateOfBirth(userForm.getDateOfBirth());
+				person.setDateOfBirth(new Date(userForm.getDateOfBirth().toDate().getTime()));
 
 				change = successfullAction.new Change();
 				change.setFieldName("dateOfBirth");
@@ -191,15 +264,222 @@ public class UserController {
 			}
 		}
 
-		User savedUser = userService.saveUser(user);
+		User userToSave = user;
+
+		Person personToSave = person;
+
+		personToSave.setEmail(userForm.getEmail());
+		personToSave.setHomePhoneNumber(userForm.getHomePhoneNumber());
+		personToSave.setMobilePhoneNumber(userForm.getMobilePhoneNumber());
+		userToSave.setPerson(personToSave);
+
+		User savedUser = userService.saveUser(userToSave);
 		if (savedUser != null) {
 			successfullAction.setChanges(changes);
 			successfullAction.setSuccess(true);
-			modelAndView.addObject("successAction", successfullAction);
+			userForm.setSuccessfullAction(successfullAction);
 		}
-		modelAndView.addObject("userForm", userForm);
+
+		modelAndView.addObject(UserForm.USER_FORM_OBJECT_NAME, userForm);
 		modelAndView.addObject("user", savedUser);
 		return modelAndView;
+	}
+
+	@PostMapping("/address")
+	public ModelAndView changeAddress(Principal principal, @ModelAttribute @Valid AddressForm addressForm,
+			BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response,
+			ModelAndView modelAndView) {
+		LOGGER.debug("Address Form: {}", addressForm);
+
+		User user = userService.getUserByUserName(principal.getName());
+		Person person = user.getPerson();
+
+		modelAndView.setViewName("user");
+		modelAndView.addObject(UserForm.USER_FORM_OBJECT_NAME, new UserForm());
+
+		if (bindingResult.hasErrors()) {
+			List<InfernoErrorObject> errors = new ArrayList<>();
+			for (ObjectError obj : bindingResult.getAllErrors()) {
+
+				LOGGER.debug("obj error type: {}", obj.getClass().getName());
+				InfernoErrorObject infernoError = objectErrorConverter.convert(obj);
+				errors.add(infernoError);
+				LOGGER.debug("converted error type: {}", infernoError.toString());
+			}
+			addressForm.setErrors(errors);
+			modelAndView.addObject("user", user);
+			modelAndView.addObject(AddressForm.ADDRESS_FORM_OBJECT_NAME, addressForm);
+
+			return modelAndView;
+		} else {
+			addressForm.setAction(request.getParameter("action"));
+			if (addressForm.getAction().equals(AddressForm.FormActions.Action.EDIT.getParam())) {
+				Address address = addressService.findById(addressForm.getId());
+				address.setId(addressForm.getId());
+				address.setAppartment(addressForm.getAppartment());
+				address.setBuildingNumber(addressForm.getBuildingNumber());
+				address.setCity(addressForm.getCity());
+				address.setDistrict(addressForm.getDistrict());
+				address.setPostCode(addressForm.getPostCode());
+				address.setStreet(addressForm.getStreet());
+				address.setType(AddressType.valueOf(addressForm.getType()));
+
+				List<Address> addresses = new ArrayList<>();
+				for (Address addressPerson : person.getAddresses()) {
+					if (addressPerson.getType().equals(address.getType())) {
+						addresses.add(address);
+					} else {
+						addresses.add(addressPerson);
+					}
+				}
+				person.setAddresses(addresses);
+				user.setPerson(person);
+
+				addressService.saveAddress(address);
+
+			} else if (addressForm.getAction().equals(AddressForm.FormActions.Action.DELETE.getParam())) {
+				LOGGER.debug("* * * DELETE * * *");
+
+				Address address = addressService.deleteAddressById(addressForm.getId());
+				if (address != null) {
+					LOGGER.debug("DELETED ADDRESS: {}", address);
+
+					SuccessfullAction success = logSuccess(AddressForm.ADDRESS_FORM_OBJECT_NAME, "address", address,
+							null, "addressForm.address.deleted");
+
+					addressForm.setSuccessfullAction(success);
+
+					List<Address> addresses = person.getAddresses();
+					if (addresses.contains(address)) {
+						addresses.remove(address);
+					}
+					person.setAddresses(addresses);
+					user.setPerson(person);
+				} else {
+					bindingResult.reject("addressForm.save.error");
+					List<InfernoErrorObject> errors = new ArrayList<>();
+					for (ObjectError obj : bindingResult.getAllErrors()) {
+
+						LOGGER.debug("obj error type: {}", obj.getClass().getName());
+						InfernoErrorObject infernoError = objectErrorConverter.convert(obj);
+						errors.add(infernoError);
+						LOGGER.debug("converted error type: {}", infernoError.toString());
+					}
+					addressForm.setErrors(errors);
+					modelAndView.addObject(AddressForm.ADDRESS_FORM_OBJECT_NAME, addressForm);
+					modelAndView.addObject("user", user);
+
+					return modelAndView;
+				}
+			} else if (addressForm.getAction().equals(AddressForm.FormActions.Action.ADD.getParam())) {
+				LOGGER.debug("* * * ADD * * *");
+
+				Address address = new Address();
+				address.setAppartment(addressForm.getAppartment());
+				address.setBuildingNumber(addressForm.getBuildingNumber());
+				address.setCity(addressForm.getCity());
+				address.setDistrict(addressForm.getDistrict());
+				address.setPostCode(addressForm.getPostCode());
+				address.setStreet(addressForm.getStreet());
+				address.setType(AddressType.valueOf(addressForm.getType()));
+				address.setCreatedBy(user.getUsername());
+				Address storedAddress = addressService.saveAddress(address);
+				if (storedAddress != null) {
+					LOGGER.debug("SUCCESS! Stored Entity: {}", storedAddress);
+
+					SuccessfullAction success = logSuccess(AddressForm.ADDRESS_FORM_OBJECT_NAME, "address", null,
+							storedAddress, "addressForm.new.address.added");
+
+					addressForm.setSuccessfullAction(success);
+
+					List<Address> addresses = person.getAddresses();
+					if (!addresses.contains(storedAddress)) {
+						addresses.add(storedAddress);
+					}
+					person.setAddresses(addresses);
+					user.setPerson(person);
+					userService.saveUser(user);
+					modelAndView.addObject("addressTypes", recheckAddressTypes(person.getAddresses(), addressForm));
+				} else {
+					bindingResult.reject("addressForm.save.error");
+					List<InfernoErrorObject> errors = new ArrayList<>();
+					for (ObjectError obj : bindingResult.getAllErrors()) {
+
+						LOGGER.debug("obj error type: {}", obj.getClass().getName());
+						InfernoErrorObject infernoError = objectErrorConverter.convert(obj);
+						errors.add(infernoError);
+						LOGGER.debug("converted error type: {}", infernoError.toString());
+					}
+					addressForm.setErrors(errors);
+					modelAndView.addObject(AddressForm.ADDRESS_FORM_OBJECT_NAME, addressForm);
+					modelAndView.addObject("user", user);
+
+					return modelAndView;
+				}
+			}
+		}
+		modelAndView.addObject(AddressForm.ADDRESS_FORM_OBJECT_NAME, addressForm);
+		modelAndView.addObject("user", user);
+
+		return modelAndView;
+	}
+
+	private List<AddressForm.AddressType.Type> recheckAddressTypes(List<Address> addresses, AddressForm addressForm) {
+
+		for (Address definedAddress : addresses) {
+			if (definedAddress.getType().equals(AddressType.MAIN)) {
+				addressForm.setMainAddressDefined(true);
+			} else {
+				addressForm.setMainAddressDefined(false);
+			}
+			if (definedAddress.getType().equals(AddressType.CORRESPONDENCE)) {
+				addressForm.setCorrespondenceAddressDefined(true);
+			} else {
+				addressForm.setCorrespondenceAddressDefined(false);
+			}
+			if (definedAddress.getType().equals(AddressType.ADDITIONAL)) {
+				addressForm.setAdditionalAddressDefined(true);
+			} else {
+				addressForm.setAdditionalAddressDefined(false);
+			}
+		}
+
+		if ((addresses != null) && !addresses.isEmpty()) {
+			addressForm.setCountAddresses(addresses.size());
+			addressForm.setAllowAdd(addresses.size() < 3);
+		}
+
+		List<AddressForm.AddressType.Type> typesList = new ArrayList<>();
+		if (addressForm.isAllowAdd()) {
+			if (!addressForm.isMainAddressDefined()) {
+				typesList.add(AddressForm.AddressType.Type.MAIN);
+			}
+			if (!addressForm.isCorrespondenceAddressDefined()) {
+				typesList.add(AddressForm.AddressType.Type.CORRESPONDENCE);
+			}
+			if (!addressForm.isAdditionalAddressDefined()) {
+				typesList.add(AddressForm.AddressType.Type.ADDITIONAL);
+			}
+		}
+
+		return typesList;
+	}
+
+	private SuccessfullAction logSuccess(String objectName, String fieldName, Object oldValue, Object newValue,
+			String messageCode) {
+		SuccessfullAction success = new SuccessfullAction();
+		success.setSuccess(true);
+		success.setObjectName(objectName);
+		List<Change> changes = new ArrayList<>();
+		SuccessfullAction.Change change = success.new Change();
+		change.setFieldName(fieldName);
+		change.setOldValue(oldValue);
+		change.setNewValue(newValue);
+		change.setMessageCode(messageCode);
+		changes.add(change);
+		success.setChanges(changes);
+
+		return success;
 	}
 
 }

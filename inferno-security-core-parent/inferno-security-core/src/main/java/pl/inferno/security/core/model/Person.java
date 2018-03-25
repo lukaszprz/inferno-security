@@ -4,9 +4,9 @@
 package pl.inferno.security.core.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.sql.Date;
+import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,11 +17,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import org.joda.time.LocalDate;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * @author lukasz-adm
@@ -42,23 +41,35 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
     private Long id;
 
     @Column(name = "first_name")
+    @Size(min = 3, max = 255, message = "{person.firstName.empty}")
     private String firstName;
 
     @Column(name = "last_name")
+    @Size(min = 3, max = 255, message = "{person.lastName.empty}")
     private String lastName;
 
     @Column(name = "date_of_birth")
-    // @Type(type = "org.joda.time.contrib.hibernate.PersistentDateTime")
-    private LocalDate dateOfBirth;
+    private Date dateOfBirth;
+
+    @Column(name = "email", nullable = true, insertable = true, unique = true, updatable = true)
+    // @Email(message = "{person.email.invalid}")
+    private String email;
+
+    @Column(name = "home_phone_number")
+    private String homePhoneNumber;
+
+    @Column(name = "mobile_phone_number")
+    private String mobilePhoneNumber;
 
     @JsonBackReference(value = "person-user")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @JsonManagedReference(value = "address-person")
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "person")
-    private Set<Address> addresses;
+    @JsonIgnore
+    @OneToMany
+    @JoinColumn(name = "fk_person")
+    private List<Address> addresses;
 
     /**
      * @return the id
@@ -108,7 +119,7 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
     /**
      * @return the dateOfBirth
      */
-    public LocalDate getDateOfBirth() {
+    public Date getDateOfBirth() {
 	return dateOfBirth;
     }
 
@@ -116,7 +127,7 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      * @param dateOfBirth
      *            the dateOfBirth to set
      */
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(Date dateOfBirth) {
 	this.dateOfBirth = dateOfBirth;
     }
 
@@ -138,7 +149,7 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
     /**
      * @return the addresses
      */
-    public Set<Address> getAddresses() {
+    public List<Address> getAddresses() {
 	return addresses;
     }
 
@@ -146,8 +157,53 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      * @param addresses
      *            the addresses to set
      */
-    public void setAddresses(Set<Address> addresses) {
+    public void setAddresses(List<Address> addresses) {
 	this.addresses = addresses;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+	return email;
+    }
+
+    /**
+     * @param email
+     *            the email to set
+     */
+    public void setEmail(String email) {
+	this.email = email;
+    }
+
+    /**
+     * @return the homePhoneNumber
+     */
+    public String getHomePhoneNumber() {
+	return homePhoneNumber;
+    }
+
+    /**
+     * @param homePhoneNumber
+     *            the homePhoneNumber to set
+     */
+    public void setHomePhoneNumber(String homePhoneNumber) {
+	this.homePhoneNumber = homePhoneNumber;
+    }
+
+    /**
+     * @return the mobilePhoneNumber
+     */
+    public String getMobilePhoneNumber() {
+	return mobilePhoneNumber;
+    }
+
+    /**
+     * @param mobilePhoneNumber
+     *            the mobilePhoneNumber to set
+     */
+    public void setMobilePhoneNumber(String mobilePhoneNumber) {
+	this.mobilePhoneNumber = mobilePhoneNumber;
     }
 
     /*
@@ -158,13 +214,14 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
     @Override
     public int hashCode() {
 	final int prime = 31;
-	int result = 1;
-	// result = (prime * result) + ((addresses == null) ? 0 : addresses.hashCode());
+	int result = super.hashCode();
 	result = (prime * result) + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
+	result = (prime * result) + ((email == null) ? 0 : email.hashCode());
 	result = (prime * result) + ((firstName == null) ? 0 : firstName.hashCode());
+	result = (prime * result) + ((homePhoneNumber == null) ? 0 : homePhoneNumber.hashCode());
 	result = (prime * result) + ((id == null) ? 0 : id.hashCode());
 	result = (prime * result) + ((lastName == null) ? 0 : lastName.hashCode());
-	// result = (prime * result) + ((user == null) ? 0 : user.hashCode());
+	result = (prime * result) + ((mobilePhoneNumber == null) ? 0 : mobilePhoneNumber.hashCode());
 	return result;
     }
 
@@ -178,20 +235,13 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
 	if (this == obj) {
 	    return true;
 	}
-	if (obj == null) {
+	if (!super.equals(obj)) {
 	    return false;
 	}
-	if (getClass() != obj.getClass()) {
+	if (!(obj instanceof Person)) {
 	    return false;
 	}
-	final Person other = (Person) obj;
-	// if (addresses == null) {
-	// if (other.addresses != null) {
-	// return false;
-	// }
-	// } else if (!addresses.equals(other.addresses)) {
-	// return false;
-	// }
+	Person other = (Person) obj;
 	if (dateOfBirth == null) {
 	    if (other.dateOfBirth != null) {
 		return false;
@@ -199,11 +249,25 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
 	} else if (!dateOfBirth.equals(other.dateOfBirth)) {
 	    return false;
 	}
+	if (email == null) {
+	    if (other.email != null) {
+		return false;
+	    }
+	} else if (!email.equals(other.email)) {
+	    return false;
+	}
 	if (firstName == null) {
 	    if (other.firstName != null) {
 		return false;
 	    }
 	} else if (!firstName.equals(other.firstName)) {
+	    return false;
+	}
+	if (homePhoneNumber == null) {
+	    if (other.homePhoneNumber != null) {
+		return false;
+	    }
+	} else if (!homePhoneNumber.equals(other.homePhoneNumber)) {
 	    return false;
 	}
 	if (id == null) {
@@ -220,13 +284,13 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
 	} else if (!lastName.equals(other.lastName)) {
 	    return false;
 	}
-	// if (user == null) {
-	// if (other.user != null) {
-	// return false;
-	// }
-	// } else if (!user.equals(other.user)) {
-	// return false;
-	// }
+	if (mobilePhoneNumber == null) {
+	    if (other.mobilePhoneNumber != null) {
+		return false;
+	    }
+	} else if (!mobilePhoneNumber.equals(other.mobilePhoneNumber)) {
+	    return false;
+	}
 	return true;
     }
 
@@ -237,7 +301,7 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
      */
     @Override
     public String toString() {
-	final StringBuilder builder = new StringBuilder();
+	StringBuilder builder = new StringBuilder();
 	builder.append("Person [");
 	if (id != null) {
 	    builder.append("id=").append(id).append(", ");
@@ -251,12 +315,15 @@ public class Person extends InfernoAbstractAuditableEntity implements Serializab
 	if (dateOfBirth != null) {
 	    builder.append("dateOfBirth=").append(dateOfBirth).append(", ");
 	}
-	// if (user != null) {
-	// builder.append("user=").append(user).append(", ");
-	// }
-	// if (addresses != null) {
-	// builder.append("addresses=").append(addresses);
-	// }
+	if (email != null) {
+	    builder.append("email=").append(email).append(", ");
+	}
+	if (homePhoneNumber != null) {
+	    builder.append("homePhoneNumber=").append(homePhoneNumber).append(", ");
+	}
+	if (mobilePhoneNumber != null) {
+	    builder.append("mobilePhoneNumber=").append(mobilePhoneNumber);
+	}
 	builder.append("]");
 	return builder.toString();
     }

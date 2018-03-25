@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -60,7 +61,8 @@ public class InfernoTokenHandler {
 		boolean validHash = Arrays.equals(createHmac(userBytes), hash);
 		if (validHash) {
 		    final User user = fromJSON(userBytes);
-		    if (LocalDateTime.now().isAfter(user.getExpires())) {
+		    Timestamp userExpTime = user.getExpires();
+		    if (LocalDateTime.now().isAfter(new LocalDateTime(userExpTime.getTime()))) {
 			return user;
 		    }
 		}

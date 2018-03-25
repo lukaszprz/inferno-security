@@ -12,14 +12,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 
 import pl.inferno.security.proxy.dto.LoginTemplate;
 import pl.inferno.security.proxy.dto.UserDTO;
@@ -28,8 +34,8 @@ import pl.inferno.security.proxy.service.UserProxyService;
 /**
  * @author lukasz-adm
  */
-// @RunWith(SpringRunner.class)
-// @SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class InfernoRestProxyRunnerTest {
 
     private Logger LOGGER = LoggerFactory.getLogger(InfernoRestProxyRunnerTest.class);
@@ -44,7 +50,7 @@ public class InfernoRestProxyRunnerTest {
     @Rule
     public InfernoRestProxyTestRule infernoRule = new InfernoRestProxyTestRule();
 
-    // @Test
+    @Test
     public void testUserApi_login() {
 	LoginTemplate user = createUserTemplate();
 
@@ -56,7 +62,7 @@ public class InfernoRestProxyRunnerTest {
 	assertNotNull("No token returned.", response.getBody());
     }
 
-    // @Test
+    @Test
     public void testToken() {
 	UserDTO user = null;
 	LoginTemplate userTemplate = new LoginTemplate();
@@ -88,7 +94,7 @@ public class InfernoRestProxyRunnerTest {
      * Test method for
      * {@link pl.inferno.security.InfernoRestProxyRunner#main(java.lang.String[])}.
      */
-    // @Test
+    @Test
     public final void testUserByName() {
 	UserDTO user = userProxyService.getUserByUsername(USERNAME);
 
@@ -99,7 +105,7 @@ public class InfernoRestProxyRunnerTest {
      * Test method for
      * {@link pl.inferno.security.InfernoRestProxyRunner#main(java.lang.String[])}.
      */
-    // @Test(expected = HttpClientErrorException.class)
+    @Test(expected = HttpClientErrorException.class)
     public final void testAllUsers() {
 	HttpHeaders httpHeaders = new HttpHeaders();
 	httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -115,7 +121,7 @@ public class InfernoRestProxyRunnerTest {
 	Assert.assertNotNull(users);
     }
 
-    // @Before
+    @Before
     public void before() {
 	LoginTemplate userTemplate = createUserTemplate();
 	if (users.isEmpty()) {
