@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')" />
+</head>
+<body>
+
+	<div th:replace="fragments/header :: header" />
+
+	<div class="container">
+
+		<div class="starter-template" th:fragment="user-create">
+			<h4 class="text-danger">
+				<span class="glyphicon glyphicon-cog"></span> Application Entities Administration <small><span class="glyphicon glyphicon-wrench"></span> <span th:text="#{menu.admin.usersManagement.createUser}"></span></small>
+			</h4>
+
+			<form class="form-horizontal" role="form" action="#" tha:action="@{/admin/user/create}" method="post" th:object="${user}">
+				<div class="form-group">
+					<label class="col-sm-2" for="username">Username</label> 
+					<div class="col-sm-6">
+					   <input type="text" class="form-control" id="username" name="username" placeholder="Username" th:field="*{username}"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-2" for="password">Password</label>
+					<div class="col-sm-6"> 
+					   <input type="password" class="form-control"	id="password" name="password" placeholder="Password" th:field="*{password}"/>
+				    </div>
+				</div>
+				<div class="form-group">
+				    <label class="col-sm-2" for="enabled">Enabled</label>
+				    <div class="col-sm-6">
+                        <input type="checkbox" id="enabled" name="enabled" th:field="*{enabled}"/>
+                    </div>
+				</div>
+				<div class="form-group">
+                    <label class="col-sm-2" for="accountExpired">Account Expired</label>
+                    <div class="col-sm-6">
+                        <input type="checkbox" id="accountExpired" name="accountExpired" th:field="*{accountExpired}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2" for="accountLocked">Account Locked</label>
+                    <div class="col-sm-6">
+                        <input type="checkbox" id="accountLocked" name="accountLocked" th:field="*{accountLocked}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2" for="credentialsExpired">Credentials Expired</label>
+                    <div class="col-sm-6">
+                        <input type="checkbox" id="credentialsExpired" name="credentialsExpired" th:field="*{credentialsExpired}"/>
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label class="col-sm-2" for="credentialsExpired">Expiration Date</label>
+                    <div class="col-sm-6">
+                        <div class="container">
+                            <div class="row">
+                                <div class='col-sm-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='expires'>
+                                            <input type='text' class="form-control" id="expires" name="expires" th:field="*{expires}"/>
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>                  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               				
+				<button type="submit" class="btn btn-default">Save</button>
+			</form>
+		</div>
+
+	</div>
+	<!-- /.container -->
+
+	<div th:replace="fragments/footer :: footer" />
+
+</body>
+</html>

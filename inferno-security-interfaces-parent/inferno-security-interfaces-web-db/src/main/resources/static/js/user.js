@@ -91,7 +91,14 @@ class User {
 	    var form = $('#deleteAddressForm');		
 	    form.attr('action', '/user/address?action=delete');		
 	});
-	
+	$('#expires').datetimepicker({
+            locale: 'pl',
+            format: 'YYYY-MM-DD HH:mm:ss.SSS'
+        });
+	$('#dateOfBirth').datetimepicker({
+            locale: 'pl',
+            format: 'YYYY-MM-DD'
+        });
     }
 }
     

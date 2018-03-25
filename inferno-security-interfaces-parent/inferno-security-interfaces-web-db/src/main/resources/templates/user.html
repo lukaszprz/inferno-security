@@ -170,8 +170,21 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
                 <input type="text" class="form-control" id="homePhoneNumber" th:placeholder="#{userModal.modal.placeholder.homePhone}" th:field="*{homePhoneNumber}" />
                 <label for="mobilePhoneNumber" th:text="#{userModal.modal.label.mobilePhone}"></label>
                 <input type="text" class="form-control" id="mobilePhoneNumber" th:placeholder="#{userModal.modal.placeholder.mobilePhone}" th:field="*{mobilePhoneNumber}" />
-                <label for="dateOfBirth" th:text="#{userModal.modal.label.dateOfBirth}"></label>
-                <input type="text" class="form-control" id="dateOfBirth" th:placeholder="#{userModal.modal.placeholder.dateOfBirth}" th:field="*{dateOfBirth}" />                
+                <div class="container">
+                    <div class="row">
+                        <div class='col-sm-6'>
+                            <div class="form-group">
+                                <div class='input-group date' id='dateOfBirth'>
+                                    <label for="dateOfBirth" th:text="#{userModal.modal.label.dateOfBirth}"></label>
+                                    <input type="text" class="form-control" id="dateOfBirth" th:placeholder="#{userModal.modal.placeholder.dateOfBirth}" th:field="*{dateOfBirth}" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>                  
+                    </div>
+                </div>                                
             </div>
         
       </div>
@@ -361,18 +374,13 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
             </tr>
         </tbody>
 </table>
-			
-			
 
-			<form th:action="@{/logout}" method="post">
-				<input type="submit" value="Sign Out" />
-			</form>
 
 		</div>
 
 	</div>
 	<!-- /.container -->
 	<div th:replace="fragments/footer :: footer" />
-<script type="text/javascript" src="/js/user.js" />
+
 </body>
 </html>
