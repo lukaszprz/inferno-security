@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
+<head>
+    <!-- <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/> -->
+    <title>Spring Boot Thymeleaf + Spring Security</title>
+</head>
+<body>
+
+<!-- <div th:replace="fragments/header :: header"/> -->
+
+<div layout:fragment="content">
+
+    <div class="starter-template">
+        <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>        
+                        
+        <a class="btn btn-success btn-xs" th:href="@{/wizard/choose-user(entity='user-roles', action='wizard', step='step1')}"><span class="glyphicon glyphicon-plus"></span> Begin Wizard</a>
+    </div>
+
+</div>
+<!-- /.container -->
+
+<!-- <div th:replace="fragments/footer :: footer"/> -->
+
+</body>
+</html>

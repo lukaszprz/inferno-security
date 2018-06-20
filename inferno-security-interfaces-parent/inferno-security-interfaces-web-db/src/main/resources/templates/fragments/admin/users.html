@@ -1,61 +1,73 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:dt="http://www.thymeleaf.org/dandelion/datatables" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
 <head>
-    <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/>
+    <title>layout</title>
 </head>
 <body>
 
-<div th:replace="fragments/header :: header"/>
+<div layout:fragment="content">
 
-<div class="container">
-
-    <div class="starter-template">
+    <div class="starter-template" th:fragment="users">
         <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>        
-        
-        <table id="usersTable" dt:table="true" class="table table-bordered table-hover table-striped">
-            <caption>All Users List</caption>
-        <thead>
-            <tr class="info">
-                <th></th>
-                <th>Id</th>
-                <th>Username</th>
-                <th>First Name</th>
-                <th>Last Name</th>                
-                <th>Enabled</th>
-                <th>Expired</th>
-                <th>Locked</th>
-                <th>Expires on</th>
-                <th>Expired credentials</th> 
-                <th>Granted Authority</th>
-                <th>Actions</th>               
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="user : ${allUsers}">
-                <td><input type="checkbox"  th:value="${user.id}"/></td>
-                <td th:text="${user?.id}">1</td>
-                <td th:text="${user?.username}">1</td>
-                <td th:text="${user.person?.firstName}">John</td>
-                <td th:text="${user.person?.lastName}">Doe</td>
-                <td th:text="${user?.enabled}">1</td>
-                <td th:text="${user?.accountExpired}">1</td>
-                <td th:text="${user?.accountLocked}">1</td>
-                <td th:text="${user?.expires}">1</td>    
-                <td th:text="${user?.credentialsExpired}">1</td>  
-                <td th:text="${user?.getAuthorities()}">1</td> 
-                <td><div class="btn-toolbar" role="toolbar" aria-label="...">
-                        <div class="btn-group btn-group-xs" role="group" aria-label="...">
-                            <a class="btn btn-primary btn-xs" th:href="@{/user?edit}"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a class="btn btn-danger btn-xs" th:href="@{/user?remove}"><span class="glyphicon glyphicon-trash"></span></a>
-                        </div>
-                     </div>
-                </td>                
-            </tr>
-        </tbody>        
-</table>
-
-        <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
+        <form id="userListForm" th:action="@{/admin/users(entity=users)}" method="post" th:object="${adminUserForm}">
+	        <div class="table-responsive">
+		        <table id="usersTable" dt:table="true" class="table table-bordered table-hover table-striped">
+		            <caption>All Users List</caption>
+			        <thead>
+			            <tr class="info">
+			                <th><input type="checkbox" id="checkAll"/></th>
+			                <th th:text="#{id}">Id</th>
+		                    <th th:text="#{username}">Username</th>
+		                    <th th:text="#{encryptedPassword}">Encrypted Password</th>
+		                    <th th:text="#{enabled}">Enabled</th>
+		                    <th th:text="#{expired}">Expired</th>
+		                    <th th:text="#{locked}">Locked</th>
+		                    <th th:text="#{expires}">Expires on</th>
+		                    <th th:text="#{credentialsExpired}">Expired credentials</th>
+			                <th th:text="#{actions}">Actions</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            <tr th:each="user, i : ${allUsers}">
+			                <td><input class="select-element" type="checkbox" name="selectedUsers" id="selectedUsers" th:value="${user.id}"/></td>
+			                <td th:text="${user?.id}">1</td>
+		                    <td th:text="${user?.username}">1</td>
+		                    <td th:text="${user?.password}">John</td>                    
+		                    <td th:text="${user?.enabled}">1</td>
+		                    <td th:text="${user?.accountExpired}">1</td>
+		                    <td th:text="${user?.accountLocked}">1</td>
+		                    <td th:text="${user?.expires}">1</td>    
+		                    <td th:text="${user?.credentialsExpired}">1</td>
+			                <td>
+                                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                    <div class="btn-group btn-group-xs" role="group" aria-label="...">			                            
+                                        <a class="btn btn-primary btn-xs" th:href="@{/admin/users(id=${user?.id}, entity='users', action='edit')}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <!-- <a class="btn btn-danger btn-xs" th:href="@{/admin(id=${user?.id}, entity='user', action='remove-single')}"><span class="glyphicon glyphicon-trash"></span></a> -->
+	                                    <input class="user-id" type="hidden" th:field="*{usersList[__${i.index}__].id}" th:value="${user.id}" />
+	                                    <input class="btn btn-danger btn-xs" type="submit" id="removeSingleButton" name="action" value="remove"><span class="glyphicon glyphicon-trash"></span></input>		                                
+			                        </div>
+			                    </div>
+			                </td>                
+			            </tr>
+			        </tbody>   
+			        <tfoot>
+	                    <tr class="danger" th:each="removedUser : ${removedUsers}">
+	                        <td></td>
+	                        <td th:text="${removedUser?.id}">1</td>
+	                        <td th:text="${removedUser?.username}">1</td>
+	                        <td th:text="${removedUser?.password}">John</td>                    
+	                        <td th:text="${removedUser?.enabled}">1</td>
+	                        <td th:text="${removedUser?.accountExpired}">1</td>
+	                        <td th:text="${removedUser?.accountLocked}">1</td>
+	                        <td th:text="${removedUser?.expires}">1</td>    
+	                        <td th:text="${removedUser?.credentialsExpired}">1</td>
+	                        <td th:text="#{'user.removed'}"> </td>
+	                    </tr>
+			        </tfoot>     
+			   </table>
+	        </div>
+	        <input type="hidden" name="selectedUsers" id="selectedUsers" th:value="${selectedUsers}"/>
+            <input id="removeSelectedButton" type="submit" name="action" value="remove-selected"/>
         </form>
 
     </div>

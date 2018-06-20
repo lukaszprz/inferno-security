@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
+<head>
+    <!-- <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/> -->
+    <title>Spring Boot Thymeleaf + Spring Security</title>
+</head>
+<body>
+
+<!-- <div th:replace="fragments/header :: header"/> -->
+
+<div layout:fragment="content">
+
+    <div class="starter-template" th:fragment="roles">
+        <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>        
+        <form id="rolesAssigmentListForm" th:action="@{/wizard/assignment-settings(userId=${userId}, entity='user-roles', action='wizard', step='2')}" method="post" th:object="${formWizard}">
+            <div class="table-responsive">
+                <table id="rolesTable" dt:table="true" class="table table-bordered table-hover table-striped">
+                    <caption>Available Roles List</caption>
+                    <thead>
+                        <tr class="info">
+                            <th th:if="${!showNextButton}"><input type="checkbox" id="checkAll"/></th>
+                            <th th:text="#{id}">Id</th>
+                            <th th:text="#{authority}">Name</th>
+                            <th th:text="#{name}">Name</th>
+                            <th th:text="#{description}">Description</th>
+                            <th th:text="#{validFrom}">Valid From</th>
+                            <th th:text="#{validTo}">Valid To</th>  
+                            <th th:text="#{actions}">Actions</th>                          
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="role, i : ${assignments}">
+                            <td th:if="${!showNextButton}"><input class="select-element" type="checkbox" name="selectedRoles" id="selectedRoles" th:value="${role?.authority}"/></td>
+                            <td th:text="${role?.id}">1</td>                            
+                            <td th:text="${role?.authority}">1</td>
+                            <td th:text="${role?.assignedRole.name}">John</td>
+                            <td th:text="${role?.assignedRole.description}">John</td>
+                            <td th:text="${role?.validFrom}">1</td>                    
+                            <td th:text="${role?.validTo}">1</td>  
+                            <td>
+                                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                                        <button class="btn btn-primary btn-xs" th:id="editSelectedRolesButton" type="button" name="action" th:text="#{button.edit}" data-toggle="modal" th:attr="data-target=${'#assigmentEditModal'} + ${role?.id}"><span class="glyphicon glyphicon-pencil"></span></button>                                      
+                                        <!-- <a class="btn btn-primary btn-xs" th:href="@{/wizard/assignment-settings(userId=${userId}, entity='user-roles', action='wizard', step='step3')}"><span class="glyphicon glyphicon-pencil"></span></a> -->
+                                        <!-- <a class="btn btn-danger btn-xs" th:href="@{/admin(id=${user?.id}, entity='user', action='remove-single')}"><span class="glyphicon glyphicon-trash"></span></a> -->
+                                        <!-- <input class="role-id" type="hidden" th:field="*{roleAssigment[__${i.index}__].id}" th:value="${role.id}" /> -->
+                                        <input class="btn btn-danger btn-xs" type="submit" id="removeSingleButton" name="action" value="remove"><span class="glyphicon glyphicon-trash"></span></input>
+                                        <div th:replace="wizard/wizard_modals :: assigmentModal (userId=${userId}, roleId=${role?.id}, modalId=${'assigmentEditModal'} + ${role?.id}, modalTitle='roleAssigmentModal.modal.title', validFrom=${role?.validFrom}, validTo=${role?.validTo})">...</div>                                     
+                                    </div>
+                                </div>
+                            </td>                                          
+                        </tr>
+                    </tbody>                    
+               </table>
+            </div>
+            <div th:if="${!showNextButton}">
+                <input type="hidden" name="selectedRoles" id="selectedRoles" th:value="${selectedRoles}"/>
+                <input id="assignSelectedRolesButton" type="submit" name="action" value="assign-selected"/>
+            </div>
+            <div th:if="${showNextButton}">
+                <a th:href="@{/wizard/assignment-settings(userId=${userId}, entity='user-roles', action='wizard', step='3')}"><span class="glyphicon glyphicon-chevron-right"></span> <span th:text="#{button.next}">Next Step</span></a>
+            </div>
+        </form>
+
+    </div>
+</div>
+<!-- /.container -->
+
+<!-- <div th:replace="fragments/footer :: footer"/> -->
+
+</body>
+</html>

@@ -1,76 +1,76 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
-xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
+xmlns:dt="http://www.thymeleaf.org/dandelion/datatables" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
 <head>
-<div th:replace="fragments/header :: header-css(pageTitle='page.title.user')" />
+<!-- <div th:replace="fragments/header :: header-css(pageTitle='page.title.user')" /> -->
 </head>
 <body>
 
-	<div th:replace="fragments/header :: header" />
+	<!-- <div th:replace="fragments/header :: header" /> -->
 
-	<div class="container">
+	<div layout:fragment="content">
 
 		<div class="starter-template">
 			<h4  class="text-primary"><span class="glyphicon glyphicon-cog"></span> <span th:text="#{page.header.user}">User page</span></h4>
 			
-			<div class="panel panel-primary">
+			<div class="panel panel-primary" th:if="${user != null and user.person != null} and ${not #lists.isEmpty(user.person.addresses)}">
 				<div class="panel-heading">
 					<h3 class="panel-title" ><span sec:authentication="name"></span> - <span th:text="#{userSummary}">User Summary</span></h3>
 				</div>
 				<div class="panel-body">
 				        <address>
 						  <strong th:text="#{mainAddress}">Main Address</strong><br/>
-						  <span th:text="${user.person.addresses[0].street}"/> <span th:text="${user.person.addresses[0].buildingNumber}"/>/<span th:text="${user.person.addresses[0].appartment}"/><br/>
-						  <span th:text="${user.person.addresses[0].postCode}"/> <span th:text="${user.person.addresses[0].city}"/><br/>
-						  <span th:text="${user.person.addresses[0].district}"/>
+						  <span th:text="${user.person?.addresses[0].street}"/> <span th:text="${user.person?.addresses[0].buildingNumber}"/>/<span th:text="${user.person?.addresses[0].appartment}"/><br/>
+						  <span th:text="${user.person?.addresses[0].postCode}"/> <span th:text="${user.person?.addresses[0].city}"/><br/>
+						  <span th:text="${user.person?.addresses[0].district}"/>
 						</address>
 						
 						<address>
-						  <strong><span th:text="${user.person.firstName}"/> <span th:text="${user.person.lastName}"/></strong><br/>
-						  <span class="glyphicon glyphicon-envelope"></span> <a href="mailto:#" th:text="${user.person.email}">first.last@example.com</a><br/>
-						  <span class="glyphicon glyphicon-earphone"></span> <span th:text="${user.person.homePhoneNumber}"></span><br/>
-						  <span class="glyphicon glyphicon-phone"></span> <span th:text="${user.person.mobilePhoneNumber}"></span>
+						  <strong><span th:text="${user.person?.firstName}"/> <span th:text="${user.person?.lastName}"/></strong><br/>
+						  <span class="glyphicon glyphicon-envelope"></span> <a href="mailto:#" th:text="${user.person?.email}">first.last@example.com</a><br/>
+						  <span class="glyphicon glyphicon-earphone"></span> <span th:text="${user.person?.homePhoneNumber}"></span><br/>
+						  <span class="glyphicon glyphicon-phone"></span> <span th:text="${user.person?.mobilePhoneNumber}"></span>
 						</address>
 				</div>
 			</div>
 	
 			<table id="usersTable" dt:table="true" class="table table-bordered table-hover table-condensed">
-			<caption th:text="#{user.data.caption}">User Data</caption>
-        <thead>
-            <tr>
-                <th th:text="#{id}">Id</th>
-                <th th:text="#{username}">Username</th>
-                <th th:text="#{email}"></th>
-                <th th:text="#{mobilePhone}"></th>
-                <th th:text="#{homePhone}"></th>
-                <th th:text="#{firstName}">First Name</th>
-                <th th:text="#{lastName}">Last Name</th>                
-                <th th:text="#{dateOfBirth}">Date Of Birth</th>
-                <th th:text="#{encryptedPassword}">Encrypted Password</th>                
-                <th th:text="#{actions}">Actions</th>               
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="info" th:each="user : ${user}">
-                <td th:text="${user?.id}">1</td>
-                <td th:text="${user?.username}">1</td>
-                <td th:text="${user.person?.email}">John</td>
-                <td th:text="${user.person?.homePhoneNumber}">John</td>
-                <td th:text="${user.person?.mobilePhoneNumber}">John</td>
-                <td th:text="${user.person?.firstName}">John</td>
-                <td th:text="${user.person?.lastName}">Doe</td>
-                <td th:text="${user.person?.dateOfBirth}">John</td>                
-                <td th:text="${user?.password}">1</td>                
-                <td><div class="btn-toolbar" role="toolbar" aria-label="...">
-	                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
-		                    <a href="#" class="btn btn-primary btn-xs" name="action" th:value="editUser" data-toggle="modal" data-target="#userModal" th:title="#{user.data.actions.tooltip.editUser}"><span class="glyphicon glyphicon-pencil"></span></a>
-		                    <a href="#" class="btn btn-warning btn-xs" name="action" th:value="changePassword" data-toggle="modal" data-target="#userPasswordModal" th:title="#{user.data.actions.tooltip.changePassword}"><span class="glyphicon glyphicon-lock"></span></a>                            
-                        </div>
-                     </div>
-                </td>                
-            </tr>
-        </tbody>        
-</table>
+				<caption th:text="#{user.data.caption}">User Data</caption>
+		        <thead>
+		            <tr>
+		                <th th:text="#{id}">Id</th>
+		                <th th:text="#{username}">Username</th>
+		                <th th:text="#{email}"></th>
+		                <th th:text="#{mobilePhone}"></th>
+		                <th th:text="#{homePhone}"></th>
+		                <th th:text="#{firstName}">First Name</th>
+		                <th th:text="#{lastName}">Last Name</th>                
+		                <th th:text="#{dateOfBirth}">Date Of Birth</th>
+		                <th th:text="#{encryptedPassword}">Encrypted Password</th>
+		                <th th:text="#{actions}">Actions</th>
+		            </tr>
+		        </thead>
+		        <tbody>
+		            <tr class="info" th:each="user : ${user}">
+		                <td th:text="${user?.id}">1</td>
+		                <td th:text="${user?.username}">1</td>
+		                <td th:text="${user.person?.email}">John</td>
+		                <td th:text="${user.person?.homePhoneNumber}">John</td>
+		                <td th:text="${user.person?.mobilePhoneNumber}">John</td>
+		                <td th:text="${user.person?.firstName}">John</td>
+		                <td th:text="${user.person?.lastName}">Doe</td>
+		                <td th:text="${user.person?.dateOfBirth}">John</td>                
+		                <td th:text="${user?.password}">1</td>                
+		                <td><div class="btn-toolbar" role="toolbar" aria-label="...">
+			                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
+				                    <a href="#" class="btn btn-primary btn-xs" name="action" th:value="editUser" data-toggle="modal" data-target="#userModal" th:title="#{user.data.actions.tooltip.editUser}"><span class="glyphicon glyphicon-pencil"></span></a>
+				                    <a href="#" class="btn btn-warning btn-xs" name="action" th:value="changePassword" data-toggle="modal" data-target="#userPasswordModal" th:title="#{user.data.actions.tooltip.changePassword}"><span class="glyphicon glyphicon-lock"></span></a>                            
+		                        </div>
+		                     </div>
+		                </td>                
+		            </tr>
+		        </tbody>        
+	        </table>
 
 <div th:if="${#fields.hasErrors('${userForm.*}')}">
     <table id="userErrorsTable" dt:table="true" class="table table-striped">
@@ -170,21 +170,20 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
                 <input type="text" class="form-control" id="homePhoneNumber" th:placeholder="#{userModal.modal.placeholder.homePhone}" th:field="*{homePhoneNumber}" />
                 <label for="mobilePhoneNumber" th:text="#{userModal.modal.label.mobilePhone}"></label>
                 <input type="text" class="form-control" id="mobilePhoneNumber" th:placeholder="#{userModal.modal.placeholder.mobilePhone}" th:field="*{mobilePhoneNumber}" />
-                <div class="container">
-                    <div class="row">
-                        <div class='col-sm-6'>
-                            <div class="form-group">
-                                <div class='input-group date' id='dateOfBirth'>
-                                    <label for="dateOfBirth" th:text="#{userModal.modal.label.dateOfBirth}"></label>
-                                    <input type="text" class="form-control" id="dateOfBirth" th:placeholder="#{userModal.modal.placeholder.dateOfBirth}" th:field="*{dateOfBirth}" />
-                                    <span class="input-group-addon">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                    </span>
-                                </div>
+                <div class="row">
+                    <div class='col-sm-6'>
+                        <label for="dateOfBirth" th:text="#{userModal.modal.label.dateOfBirth}"></label>
+                        <div class="form-group">
+                            <div class='input-group date' id='dateOfBirth'>
+                                
+                                <input type="text" class="form-control" id="dateOfBirth" th:placeholder="#{userModal.modal.placeholder.dateOfBirth}" th:field="*{dateOfBirth}" />
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
                             </div>
-                        </div>                  
-                    </div>
-                </div>                                
+                        </div>
+                    </div>                  
+                </div>                                                
             </div>
         
       </div>
@@ -277,7 +276,7 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
             </tr>
         </thead>
         <tbody>
-            <tr th:each="address : ${user.person.addresses}">
+            <tr th:each="address : ${user.person?.addresses}">
                 <td th:attr="id='idVal_' + ${address?.type}" th:text="${address?.id}">1</td>
                 <td th:attr="id='typeVal_' + ${address?.type}" th:text="${address?.type}">1</td>   
                 <td th:attr="id='streetVal_' + ${address?.type}" th:text="${address?.street}">1</td>   
@@ -380,7 +379,7 @@ xmlns:dt="http://www.thymeleaf.org/dandelion/datatables">
 
 	</div>
 	<!-- /.container -->
-	<div th:replace="fragments/footer :: footer" />
+	<!-- <div th:replace="fragments/footer :: footer" /> -->
 
 </body>
 </html>

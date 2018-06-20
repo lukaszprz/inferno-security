@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:dt="http://www.thymeleaf.org/dandelion/datatables" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
+<head>
+    <title>layout</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="starter-template" th:fragment="roles">
+        <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>        
+        <form id="rolesListForm" th:action="@{/admin/roles(entity='roles')}" method="post" th:object="${adminRoleForm}">
+            <div class="table-responsive">
+                <table id="rolesTable" dt:table="true" class="table table-bordered table-hover table-striped">
+                    <caption>All Roles List</caption>
+                    <thead>
+                        <tr class="info">
+                            <th><input type="checkbox" id="checkAll"/></th>
+                            <th th:text="#{id}">Id</th>
+                            <th th:text="#{name}">Name</th>
+                            <th th:text="#{description}">Description</th>
+                            <th th:text="#{validTo}">Valid To</th>                            
+                            <th th:text="#{actions}">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="role : ${allRoles}">
+                            <td><input class="select-element" type="checkbox" name="selectedRoles" id="selectedRoles" th:value="${role.id}"/></td>
+                            <td th:text="${role?.id}">1</td>
+                            <td th:text="${role?.name}">1</td>
+                            <td th:text="${role?.description}">John</td>                    
+                            <td th:text="${role?.validTo}">1</td>                            
+                            <td>
+                                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                    <div class="btn-group btn-group-xs" role="group" aria-label="...">                                                                              
+                                        <a class="btn btn-primary btn-xs" th:href="@{/admin/roles(id=${role?.id}, entity='roles', action='edit')}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                        <input class="role-id" type="hidden" th:field="*{id}" th:value="${role.id}" />
+                                        <!-- <input type="hidden" th:attr="name=${i.current.name},id=id,value=${i.current.id}" /> -->
+                                        <button class="btn btn-danger btn-xs" type="submit" id="removeSingleRoleButton" name="action" value="remove"><span class="glyphicon glyphicon-trash"></span></button>                                       
+                                    </div>
+                                </div>
+                            </td>                
+                        </tr>
+                    </tbody>   
+                    <tfoot>
+                        <tr class="danger" th:each="removedRole : ${removedRoles}">
+                            <td></td>
+                            <td th:text="${removedRole?.id}">1</td>
+                            <td th:text="${removedRole?.name}">1</td>
+                            <td th:text="${removedRole?.description}">John</td>                    
+                            <td th:text="${removedRole?.validTo}">1</td>                            
+                            <td th:text="#{'role.removed'}"> </td>
+                        </tr>
+                    </tfoot>     
+               </table>
+            </div>
+            <input type="hidden" name="selectedRoles" id="selectedRoles" th:value="${selectedRoles}"/>
+            <input id="removeSelectedRolesButton" type="submit" name="action" value="remove-selected"/>
+        </form>
+
+    </div>
+
+</div>
+<!-- /.container -->
+
+<div th:replace="fragments/footer :: footer"/>
+
+</body>
+</html>

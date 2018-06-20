@@ -14,6 +14,7 @@
 
     <modules>
         <module>inferno-security-configuration</module>
+        <module>inferno-security-configuration-resources</module>
     </modules>
 
     

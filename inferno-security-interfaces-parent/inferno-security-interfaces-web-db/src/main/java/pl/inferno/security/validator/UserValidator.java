@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pl.inferno.security.validator;
 
@@ -44,7 +44,7 @@ public class UserValidator implements Validator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.validation.Validator#supports(java.lang.Class)
 	 */
 	@Override
@@ -55,7 +55,7 @@ public class UserValidator implements Validator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object,
 	 * org.springframework.validation.Errors)
 	 */
@@ -70,14 +70,17 @@ public class UserValidator implements Validator {
 		Person person = user.getPerson();
 
 		UserForm oldUserForm = new UserForm();
-		oldUserForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
-		oldUserForm.setFirstName(person.getFirstName());
-		oldUserForm.setLastName(person.getLastName());
+		if (person != null) {
+			oldUserForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
+			oldUserForm.setFirstName(person.getFirstName());
+			oldUserForm.setLastName(person.getLastName());
+			oldUserForm.setEmail(person.getEmail());
+			oldUserForm.setHomePhoneNumber(person.getHomePhoneNumber());
+			oldUserForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
+		}
+
 		oldUserForm.setOldPassword(user.getPassword());
 		oldUserForm.setUsername(user.getUsername());
-		oldUserForm.setEmail(person.getEmail());
-		oldUserForm.setHomePhoneNumber(person.getHomePhoneNumber());
-		oldUserForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
 		userForm.setOldForm(oldUserForm);
 
 		if (userForm.getAction().equals(UserForm.FormActions.Action.CHANGE_PASSWORD.getParam())) {

@@ -1,32 +1,44 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
 <head>
-    <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/>
+    <!-- <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/> -->
+    <title>Spring Boot Thymeleaf + Spring Security</title>
 </head>
 <body>
 
-<div th:replace="fragments/header :: header"/>
+<!-- <div th:replace="fragments/header :: header"/> -->
 
-<div class="container">
+<div layout:fragment="content">
 
     <div class="starter-template">
         <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>        
-        
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-            Create User
-        </button>
-        <div class="collapse" id="collapseExample">
-        <div class="well">
-            <div th:replace="admin_user_entity :: user-create"/>
+                        
+        <div id="create" th:if="${action} == 'create'">
+            <div class="well">
+                <div th:replace="fragments/admin/user_form :: user-form(entity='users', action='create')"/>
+            </div>
+		</div>
+        <div id="details" th:if="${action} == 'details'">
+            <div class="well">
+                <div th:replace="fragments/admin/user_details :: user-details(entity='users', action='details')"/>
+            </div>
         </div>
-</div>
-
+        <div id="edit" th:if="${action} == 'edit'">
+            <div class="well">                
+                <div th:replace="fragments/admin/user_form :: user-form(id=${id}, entity='users', action='edit')"/>
+            </div>
+        </div>
+        <div id="list" th:if="${action} == 'list'">
+            <div class="well">
+                <div th:replace="fragments/admin/users :: users(entity='users', action='list')"/>
+            </div>
+        </div>
     </div>
 
 </div>
 <!-- /.container -->
 
-<div th:replace="fragments/footer :: footer"/>
+<!-- <div th:replace="fragments/footer :: footer"/> -->
 
 </body>
 </html>

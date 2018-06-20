@@ -71,6 +71,7 @@ public class DefaultController {
 	public ModelAndView about() {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("page", "about");
+		modelAndView.addObject("pageTitle", "page.title.about");
 		modelAndView.setViewName("about");
 		return modelAndView;
 	}
@@ -84,6 +85,7 @@ public class DefaultController {
 	public ModelAndView home() {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("page", "home");
+		modelAndView.addObject("pageTitle", "page.title.home");
 		modelAndView.setViewName("home");
 		return modelAndView;
 	}
@@ -92,6 +94,7 @@ public class DefaultController {
 	public ModelAndView home1() {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("page", "home");
+		modelAndView.addObject("pageTitle", "page.title.home");
 		modelAndView.setViewName("home");
 		return modelAndView;
 	}
@@ -100,6 +103,7 @@ public class DefaultController {
 	public ModelAndView login() {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("page", "login");
+		modelAndView.addObject("pageTitle", "page.title.login");
 		modelAndView.setViewName("login");
 		return modelAndView;
 	}

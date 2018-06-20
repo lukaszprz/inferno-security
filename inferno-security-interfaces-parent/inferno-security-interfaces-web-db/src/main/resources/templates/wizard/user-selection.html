@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
+<head>
+    <!-- <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/> -->
+    <title>Spring Boot Thymeleaf + Spring Security</title>
+</head>
+<body>
+
+<!-- <div th:replace="fragments/header :: header"/> -->
+
+<div layout:fragment="content">
+
+    <div class="starter-template">
+        <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>        
+                    
+        
+            <div class="table-responsive">
+                <form action="#" id="selectUserForm" th:action="@{/wizard/choose-user(selectedUserId=${selectedUserId}, entity='user-roles', action='wizard', step='1')}" method="post" th:object="${formWizard}">
+                <table id="usersTable" dt:table="true" class="table table-bordered table-hover table-striped">
+                    <caption>All Users List</caption>
+                    <thead>
+                        <tr class="info">
+                            <th th:text="#{id}">Id</th>
+                            <th th:text="#{username}">Username</th>
+                            <th th:text="#{enabled}">Enabled</th>
+                            <th th:text="#{expired}">Expired</th>
+                            <th th:text="#{locked}">Locked</th>
+                            <th th:text="#{expires}">Expires on</th>
+                            <th th:text="#{credentialsExpired}">Expired credentials</th>
+                            <th th:text="#{roles}">Assigned roles</th>
+                            <th th:if="${!showNextButton}"><span th:text="#{actions}">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user, i : *{allUsers}">
+                            <td th:text="${user?.id}">1</td>
+                            <td th:text="${user?.username}">1</td>
+                            <td th:text="${user?.enabled}">1</td>
+                            <td th:text="${user?.accountExpired}">1</td>
+                            <td th:text="${user?.accountLocked}">1</td>
+                            <td th:text="${user?.expires}">1</td>                            
+                            <td th:text="${user?.credentialsExpired}">1</td>
+                            <td><div th:each="assignedRole : ${user?.roles}"><span th:text="${assignedRole.authority}"></span></div></td>
+                            <td th:if="${!showNextButton}">
+                                <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                    <div class="btn-group btn-group-xs" role="group" aria-label="...">                                        
+                                        <input type="hidden" id="selectedUserId" th:name="selectedUserId" th:value="${user?.id}" />
+                                        <!-- <input type="hidden" id="selectedUser" name="selectedUser" th:value="${user}" /> -->                                      
+                                        <!-- <button class="btn btn-success btn-xs" type="submit" id="chooseUserButton"><span class="glyphicon glyphicon-plus"></span> Select User</button> -->                                        
+                                        <a class="btn btn-success btn-xs" th:href="@{/wizard/assign-role(userId=${user?.id}, entity='user-roles', action='wizard', step='2')}"><span class="glyphicon glyphicon-plus"></span> Select User</a>
+                                    </div>
+                                </div>
+                            </td>                
+                        </tr>
+                    </tbody>     
+               </table>
+               </form>
+               <div th:if="${showNextButton}">
+                    <a th:href="@{/wizard/assign-role(userId=${userId}, entity='user-roles', action='wizard', step='3')}"><span class="glyphicon glyphicon-chevron-right"></span> <span th:text="#{button.next}">Next Step</span></a>
+               </div>
+            </div>        
+    </div>
+
+</div>
+<!-- /.container -->
+
+<!-- <div th:replace="fragments/footer :: footer"/> -->
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+create table "inferno_authorization_schema"."inferno_address" ("address_id" int8 not null, "created_by" varchar(255), "created_date" timestamp not null, "last_modified_by" varchar(255), "last_modified_date" timestamp, "appartment" varchar(255), "building_nr" varchar(255), "city" varchar(255), "country" varchar(255), "district" varchar(255), "post_code" varchar(255), "street" varchar(255), "type" varchar(255), "fk_person" int8, primary key ("address_id"))
+create table "inferno_authorization_schema"."inferno_person" ("person_id" int8 not null, "created_by" varchar(255), "created_date" timestamp not null, "last_modified_by" varchar(255), "last_modified_date" timestamp, "date_of_birth" date, "email" varchar(255), "first_name" varchar(255), "home_phone_number" varchar(255), "last_name" varchar(255), "mobile_phone_number" varchar(255), "user_id" int8 not null, primary key ("person_id"))
+create table "inferno_authorization_schema"."inferno_roles" ("role_id" int8 not null, "created_by" varchar(255), "created_date" timestamp not null, "last_modified_by" varchar(255), "last_modified_date" timestamp, "description" varchar(255), "name" varchar(255) not null, "valid_to" timestamp, primary key ("role_id"))
+create table "inferno_authorization_schema"."inferno_roles_assigment" ("user_role_id" int8 not null, "created_by" varchar(255), "created_date" timestamp not null, "last_modified_by" varchar(255), "last_modified_date" timestamp, "authority" varchar(255) not null, "valid_from" timestamp, "valid_to" timestamp, "assigned_role_id" int8 not null, "user_user_id" int8, primary key ("user_role_id"))
+create table "inferno_authorization_schema"."inferno_users" ("user_id" int8 not null, "created_by" varchar(255), "created_date" timestamp not null, "last_modified_by" varchar(255), "last_modified_date" timestamp, "is_expired" boolean not null, "is_locked" boolean not null, "credentials_expired" boolean not null, "enabled" boolean not null, "expires" timestamp, "password" varchar(255) not null, "username" varchar(255) not null, primary key ("user_id"))
+alter table "inferno_authorization_schema"."inferno_person" add constraint UK_ricto84vu25jtc9ufonobuqex unique ("email")
+alter table "inferno_authorization_schema"."inferno_roles" add constraint UK_nqbi2i1pc82apmu8dto91ob21 unique ("name")
+alter table "inferno_authorization_schema"."inferno_users" add constraint UK_as31qd8m2kj6mg5a7hdkhfokk unique ("username")
+create sequence "inferno_address_seq" start 1 increment 1
+create sequence "inferno_person_seq" start 1 increment 1
+create sequence "inferno_roles_seq" start 1 increment 1
+create sequence "inferno_user_roles_assigment_seq" start 1 increment 1
+create sequence "inferno_users_seq" start 1 increment 1
+alter table "inferno_authorization_schema"."inferno_address" add constraint "FKl8h23rn7vrka3dsovk0r6rb95" foreign key ("fk_person") references "inferno_authorization_schema"."inferno_person"
+alter table "inferno_authorization_schema"."inferno_person" add constraint "FKboehpk6lpu5ftdaugce9d1gk0" foreign key ("user_id") references "inferno_authorization_schema"."inferno_users"
+alter table "inferno_authorization_schema"."inferno_roles_assigment" add constraint "FKt4hhiptmxvuvqihixphygmhic" foreign key ("assigned_role_id") references "inferno_authorization_schema"."inferno_roles"
+alter table "inferno_authorization_schema"."inferno_roles_assigment" add constraint "FKt6xkwgck597y7y8wjn7trgyu8" foreign key ("user_user_id") references "inferno_authorization_schema"."inferno_users"

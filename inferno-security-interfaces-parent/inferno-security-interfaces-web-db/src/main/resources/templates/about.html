@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/layout">
 <head>
-    <div th:replace="fragments/header :: header-css(pageTitle='page.title.about')"/>
+    <!-- <div th:replace="fragments/header :: header-css(pageTitle='page.title.about')"/> -->
 </head>
 <body>
 
-<div th:replace="fragments/header :: header"/>
+<!-- <div th:replace="fragments/header :: header"/> -->
 
-<div class="container">
+<div layout:fragment="content">
 
     <div class="starter-template">
         <h1>Normal page (No need login)</h1>
@@ -16,7 +16,7 @@
 </div>
 <!-- /.container -->
 
-<div th:replace="fragments/footer :: footer"/>
+<!-- <div th:replace="fragments/footer :: footer"/> -->
 
 </body>
 </html>

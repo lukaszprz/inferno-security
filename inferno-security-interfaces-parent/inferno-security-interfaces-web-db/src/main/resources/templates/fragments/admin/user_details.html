@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"/>
+
+<div class="container">
+
+    <div class="starter-template" th:fragment="user-details">
+        <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>
+        <table id="usersTable" dt:table="true" class="table table-bordered table-hover table-striped">
+            <caption>All Users List</caption>
+            <thead>
+                <tr class="info">
+                    <th th:text="#{id}">Id</th>
+                    <th th:text="#{username}">Username</th>
+                    <th th:text="#{encryptedPassword}">Encrypted Password</th>
+                    <th th:text="#{enabled}">Enabled</th>
+                    <th th:text="#{expired}">Expired</th>
+	                <th th:text="#{locked}">Locked</th>
+	                <th th:text="#{expires}">Expires on</th>
+	                <th th:text="#{credentialsExpired}">Expired credentials</th>
+                    <th th:text="#{actions}">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:text="${user?.id}">1</td>
+                    <td th:text="${user?.username}">1</td>
+                    <td th:text="${user?.password}">John</td>                    
+                    <td th:text="${user?.enabled}">1</td>
+                    <td th:text="${user?.accountExpired}">1</td>
+                    <td th:text="${user?.accountLocked}">1</td>
+                    <td th:text="${user?.expires}">1</td>    
+                    <td th:text="${user?.credentialsExpired}">1</td>                     
+                    <td><div class="btn-toolbar" role="toolbar" aria-label="...">
+                            <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                                <a class="btn btn-primary btn-xs" th:href="@{/admin/users(id=${user?.id}, entity='users', action='edit')}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="btn btn-danger btn-xs" th:href="@{/admin/users(id=${user?.id}, entity='users', action='remove')}"><span class="glyphicon glyphicon-trash"></span></a>
+                            </div>
+                         </div>
+                    </td>                
+                </tr>
+            </tbody>        
+       </table>
+        <a class="btn btn-success btn-xs" th:href="@{/wizard/assign-role(id=${user?.id}, entity='user-roles', action='wizard', step='step2')}"><span class="glyphicon glyphicon-plus"></span> Assign roles</a>
+    </div>
+
+</div>
+
+<!-- /.container -->
+
+<div th:replace="fragments/footer :: footer"/>
+
+</body>
+</html>

@@ -8,13 +8,10 @@
  */
 package pl.inferno.security.configuration;
 
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import pl.inferno.security.converter.ObjectErrorToInfernoErrorObjectConverter;
-
-import java.util.List;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.context.MessageSource;
@@ -22,11 +19,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.validation.DefaultMessageCodesResolver;
-import org.springframework.validation.MessageCodesResolver;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.thymeleaf.spring4.view.ThymeleafViewResolver;
+
+import pl.inferno.security.converter.ObjectErrorToInfernoErrorObjectConverter;
+import pl.inferno.security.converter.StringToTimestampConverter;
 
 /**
  * Class InfernoWebConfiguration
@@ -59,7 +61,7 @@ public class InfernoWebConfiguration extends WebMvcConfigurerAdapter {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#
 	 * getValidator()
@@ -79,9 +81,21 @@ public class InfernoWebConfiguration extends WebMvcConfigurerAdapter {
 		return factory;
 	}
 
+	public ThymeleafViewResolver thymeleafViewResolver() {
+		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+		resolver.clearCache();
+		resolver.setCache(false);
+		SortedMap<String, Charset> charsets = Charset.availableCharsets();
+		Set<String> aliases = StandardCharsets.UTF_8.aliases();
+		StandardCharsets.UTF_8.displayName();
+
+		resolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		return resolver;
+	}
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#
 	 * addFormatters(org.springframework.format.FormatterRegistry)
@@ -90,6 +104,21 @@ public class InfernoWebConfiguration extends WebMvcConfigurerAdapter {
 	public void addFormatters(FormatterRegistry registry) {
 
 		registry.addConverter(new ObjectErrorToInfernoErrorObjectConverter());
+		registry.addConverter(new StringToTimestampConverter());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#
+	 * configureViewResolvers(org.springframework.web.servlet.config.annotation.
+	 * ViewResolverRegistry)
+	 */
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		registry.viewResolver(thymeleafViewResolver());
+		super.configureViewResolvers(registry);
 	}
 
 }

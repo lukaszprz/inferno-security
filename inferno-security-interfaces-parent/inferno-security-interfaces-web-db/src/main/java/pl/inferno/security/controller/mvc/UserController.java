@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pl.inferno.security.controller.mvc;
 
@@ -101,24 +101,25 @@ public class UserController {
 
 		UserForm userForm = new UserForm();
 		Person person = user.getPerson();
-		userForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
-		userForm.setFirstName(person.getFirstName());
-		userForm.setLastName(person.getLastName());
-		userForm.setOldPassword(user.getPassword());
 		userForm.setAction(request.getParameter("action"));
 		userForm.setUsername(user.getUsername());
-		userForm.setEmail(person.getEmail());
-		userForm.setHomePhoneNumber(person.getHomePhoneNumber());
-		userForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
-
+		userForm.setOldPassword(user.getPassword());
+		if (person != null) {
+			userForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
+			userForm.setFirstName(person.getFirstName());
+			userForm.setLastName(person.getLastName());
+			userForm.setEmail(person.getEmail());
+			userForm.setHomePhoneNumber(person.getHomePhoneNumber());
+			userForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
+		}
 		AddressForm addressForm = new AddressForm();
 
 		addressForm.setAction(request.getParameter("action"));
 
 		addressForm.setType(request.getParameter("type"));
-
-		modelAndView.addObject("addressTypes", recheckAddressTypes(person.getAddresses(), addressForm));
-
+		if (person != null) {
+			modelAndView.addObject("addressTypes", recheckAddressTypes(person.getAddresses(), addressForm));
+		}
 		SuccessfullAction successfullAction = new SuccessfullAction();
 		successfullAction.setSuccess(false);
 		addressForm.setSuccessfullAction(successfullAction);
@@ -130,6 +131,7 @@ public class UserController {
 		modelAndView.addObject(UserForm.USER_FORM_OBJECT_NAME, userForm);
 
 		modelAndView.addObject("page", "user");
+		modelAndView.addObject("pageTitle", "page.title.user");
 		modelAndView.addObject("user", user);
 		modelAndView.setViewName("user");
 
@@ -142,11 +144,13 @@ public class UserController {
 			ModelAndView modelAndView) {
 
 		LOGGER.debug("ACTION: {} ", userForm.getAction());
+		modelAndView.addObject("pageTitle", "page.title.user");
 		User user = userService.getUserByUserName(principal.getName());
 		Person person = user.getPerson();
 
 		AddressForm addressForm = new AddressForm();
-		List<Address> addresses = person.getAddresses();
+		List<Address> addresses = (person != null) && (person.getAddresses() != null) ? person.getAddresses()
+				: new ArrayList<>();
 		addressForm.setUsersDefinedAddresses(addresses);
 
 		Map<AddressForm.AddressType.Type, Address> addressesMap = new HashMap<>();
@@ -183,14 +187,16 @@ public class UserController {
 
 		UserForm oldUserForm = new UserForm();
 		oldUserForm.setAction(userForm.getAction());
-		oldUserForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
-		oldUserForm.setFirstName(person.getFirstName());
-		oldUserForm.setLastName(person.getLastName());
 		oldUserForm.setOldPassword(user.getPassword());
 		oldUserForm.setUsername(user.getUsername());
-		oldUserForm.setEmail(person.getEmail());
-		oldUserForm.setHomePhoneNumber(person.getHomePhoneNumber());
-		oldUserForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
+		if (person != null) {
+			oldUserForm.setDateOfBirth(new LocalDate(person.getDateOfBirth()));
+			oldUserForm.setFirstName(person.getFirstName());
+			oldUserForm.setLastName(person.getLastName());
+			oldUserForm.setEmail(person.getEmail());
+			oldUserForm.setHomePhoneNumber(person.getHomePhoneNumber());
+			oldUserForm.setMobilePhoneNumber(person.getMobilePhoneNumber());
+		}
 		userForm.setOldForm(oldUserForm);
 
 		LOGGER.debug("NEW USER-FORM OBJECT: {}", userForm.toString());
@@ -231,7 +237,7 @@ public class UserController {
 
 		if (userForm.getAction().equals(UserForm.FormActions.Action.EDIT_USER.getParam())) {
 			SuccessfullAction.Change change = successfullAction.new Change();
-			if (!oldUserForm.getFirstName().equals(userForm.getFirstName())) {
+			if ((oldUserForm.getFirstName() != null) && !oldUserForm.getFirstName().equals(userForm.getFirstName())) {
 				person.setFirstName(userForm.getFirstName());
 
 				change.setFieldName("firstName");
@@ -241,7 +247,7 @@ public class UserController {
 				changes.add(change);
 			}
 
-			if (!oldUserForm.getLastName().equals(userForm.getLastName())) {
+			if ((oldUserForm.getLastName() != null) && !oldUserForm.getLastName().equals(userForm.getLastName())) {
 				person.setLastName(userForm.getLastName());
 
 				change = successfullAction.new Change();
@@ -252,7 +258,8 @@ public class UserController {
 				changes.add(change);
 			}
 
-			if (!oldUserForm.getDateOfBirth().equals(userForm.getDateOfBirth())) {
+			if ((oldUserForm.getDateOfBirth() != null)
+					&& !oldUserForm.getDateOfBirth().equals(userForm.getDateOfBirth())) {
 				person.setDateOfBirth(new Date(userForm.getDateOfBirth().toDate().getTime()));
 
 				change = successfullAction.new Change();
@@ -267,7 +274,9 @@ public class UserController {
 		User userToSave = user;
 
 		Person personToSave = person;
-
+		if (person == null) {
+			personToSave = new Person();
+		}
 		personToSave.setEmail(userForm.getEmail());
 		personToSave.setHomePhoneNumber(userForm.getHomePhoneNumber());
 		personToSave.setMobilePhoneNumber(userForm.getMobilePhoneNumber());
@@ -290,7 +299,7 @@ public class UserController {
 			BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response,
 			ModelAndView modelAndView) {
 		LOGGER.debug("Address Form: {}", addressForm);
-
+		modelAndView.addObject("pageTitle", "page.title.user");
 		User user = userService.getUserByUserName(principal.getName());
 		Person person = user.getPerson();
 

@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')" />
+</head>
+<body>
+
+    <div th:replace="fragments/header :: header" />
+
+    <div class="container">
+
+        <div class="starter-template" th:fragment="role-form">
+            <h4 class="text-danger">
+                <span class="glyphicon glyphicon-cog"></span> Application Entities Administration <small><span class="glyphicon glyphicon-wrench"></span> <span th:text="#{menu.admin.usersManagement.createRole}"></span></small>
+            </h4>
+            <form class="form-horizontal" role="form" action="#" tha:action="@{/admin/roles(entity=${entity}, action=${action})}" method="post" th:object="${role}">
+                <div class="form-group">
+                    <label class="col-sm-2" for="name">Role Name</label> 
+                    <div class="col-sm-6">
+                       <input type="text" class="form-control" id="name" name="name" placeholder="Name" th:field="*{name}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2" for="description">Description</label>
+                    <div class="col-sm-6"> 
+                       <input type="text" class="form-control"  id="description" name="description" placeholder="Description" th:field="*{description}"/>
+                    </div>
+                </div>                
+                <div class="form-group">
+                    <label class="col-sm-2" for="validTo">Valid To</label>
+                    <div class="col-sm-6">
+                        <div class="container">
+                            <div class="row">
+                                <div class='col-sm-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='validTo'>
+                                            <input type='text' class="form-control" id="validTo" name="validTo" th:field="*{validTo}"/>
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>                  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                            
+                <button type="submit" class="btn btn-default">Save</button>
+            </form>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+    <div th:replace="fragments/footer :: footer" />
+
+</body>
+</html>

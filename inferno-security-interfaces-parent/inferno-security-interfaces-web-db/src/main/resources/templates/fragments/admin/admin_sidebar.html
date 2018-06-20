@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Header</title>
+</head>
+
+<body>
+
+	<div th:fragment="admin-sidebar-top">
+		<ul class="nav nav-pills nav-stacked">
+			<li th:classappend="${entity == 'users' ? 'active' : ''}"><a th:href="@{/admin/users(entity='users', action='main')}" th:text="#{page.admin.sidebar.top.users}">Users Management</a></li>
+			<li th:classappend="${entity == 'roles' ? 'active' : ''}"><a th:href="@{/admin/roles(entity='roles', action='main')}"	th:text="#{page.admin.sidebar.top.roles}">Roles Management</a></li>
+			<li th:classappend="${entity == 'user-roles' ? 'active' : ''}"><a th:href="@{/admin/user-roles(entity='user-roles', action='main')}" th:text="#{page.admin.sidebar.top.user.roles}">Role Assigment Management</a></li>
+			<li th:classappend="${entity == 'persons' ? 'active' : ''}"><a th:href="@{/admin(entity='persons')}"	th:text="#{page.admin.sidebar.top.persons}">Persons Management</a></li>
+			<li th:classappend="${entity == 'addresses' ? 'active' : ''}"><a th:href="@{/admin(entity='addresses')}"	th:text="#{page.admin.sidebar.top.addresses}">Addresses Management</a></li>			
+		</ul>
+	</div>
+	
+	<div th:fragment="admin-sidebar-bottom-users">
+        <ul class="nav nav-pills nav-stacked">
+            <li th:classappend="${action == 'main' ? 'active' : ''}"><a th:href="@{/admin/users(entity='users', action='main')}" th:text="#{page.admin.sidebar.bottom.users.main}">Admin Main</a></li>            
+            <li th:classappend="${action == 'list' ? 'active' : ''}"><a th:href="@{/admin/users(entity='users', action='list')}" th:text="#{page.admin.sidebar.bottom.users.list}">Users Management</a></li>
+            <li th:classappend="${action == 'create' ? 'active' : ''}"><a th:href="@{/admin/users(entity='users', action='create')}" th:text="#{page.admin.sidebar.bottom.users.create}">Roles Management</a></li>
+            <!-- <li th:classappend="${action == 'edit' ? 'active' : ''}"><a th:href="@{/admin(entity='user', action='list')}" th:text="#{page.admin.sidebar.bottom.users.edit}">Role Assigment Management</a></li>
+            <li th:classappend="${action == 'details' ? 'active' : ''}"><a th:href="@{/admin(entity='user', action='main')}" th:text="#{page.admin.sidebar.bottom.users.details}">Persons Management</a></li> -->            
+        </ul>
+    </div>
+    
+    <div th:fragment="admin-sidebar-bottom-roles">
+        <ul class="nav nav-pills nav-stacked">
+            <li th:classappend="${action == 'main' ? 'active' : ''}"><a th:href="@{/admin/roles(entity='roles', action='main')}" th:text="#{page.admin.sidebar.bottom.roles.main}">Admin Main</a></li>            
+            <li th:classappend="${action == 'list' ? 'active' : ''}"><a th:href="@{/admin/roles(entity='roles', action='list')}" th:text="#{page.admin.sidebar.bottom.roles.list}">Users Management</a></li>
+            <li th:classappend="${action == 'create' ? 'active' : ''}"><a th:href="@{/admin/roles(entity='roles', action='create')}" th:text="#{page.admin.sidebar.bottom.roles.create}">Roles Management</a></li>
+            <!-- <li th:classappend="${action == 'edit' ? 'active' : ''}"><a th:href="@{/admin(entity='user', action='list')}" th:text="#{page.admin.sidebar.bottom.users.edit}">Role Assigment Management</a></li>
+            <li th:classappend="${action == 'details' ? 'active' : ''}"><a th:href="@{/admin(entity='user', action='main')}" th:text="#{page.admin.sidebar.bottom.users.details}">Persons Management</a></li> -->            
+        </ul>
+    </div>
+    
+    <div th:fragment="admin-sidebar-bottom-user-roles">
+        <ul class="nav nav-pills nav-stacked">
+            <li th:classappend="${action == 'main' ? 'active' : ''}"><a th:href="@{/admin/user-roles(entity='user-roles', action='main')}" th:text="#{page.admin.sidebar.bottom.user_roles.main}">Admin Main</a></li>            
+            <li th:classappend="${action == 'list' ? 'active' : ''}"><a th:href="@{/admin/user-roles(entity='user-roles', action='list')}" th:text="#{page.admin.sidebar.bottom.user_roles.list}">Users Management</a></li>
+            <li th:classappend="${action == 'wizard' ? 'active' : ''}"><a th:href="@{/wizard/init(entity='user-roles', action='wizard')}" th:text="#{page.admin.sidebar.bottom.user_roles.assign}">Roles Management</a></li>
+            <!-- <li th:classappend="${action == 'edit' ? 'active' : ''}"><a th:href="@{/admin(entity='user', action='list')}" th:text="#{page.admin.sidebar.bottom.users.edit}">Role Assigment Management</a></li>
+            <li th:classappend="${action == 'details' ? 'active' : ''}"><a th:href="@{/admin(entity='user', action='main')}" th:text="#{page.admin.sidebar.bottom.users.details}">Persons Management</a></li> -->            
+        </ul>
+    </div>
+
+</body>
+
+</html>

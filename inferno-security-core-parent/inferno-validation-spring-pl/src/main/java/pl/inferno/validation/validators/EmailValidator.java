@@ -26,7 +26,7 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
     private static final Logger logger = LoggerFactory.getLogger(EmailValidator.class);
 
     @Value("{validation.pattern.email}")
-    private final String PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
+    private final String PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
     private final Pattern EMAIL_PATTERN = Pattern.compile(PATTERN, Pattern.CASE_INSENSITIVE);
 

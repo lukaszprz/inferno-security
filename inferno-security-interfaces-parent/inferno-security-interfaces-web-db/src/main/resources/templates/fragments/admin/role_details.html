@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/header :: header-css(pageTitle='page.title.admin')"/>
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"/>
+
+<div class="container">
+
+    <div class="starter-template" th:fragment="role-details">
+        <h4 class="text-danger"><span class="glyphicon glyphicon-cog"></span> Application Entities Administration  <small><span class="glyphicon glyphicon-wrench" th:text="${#httpServletRequest.getParameter('entity')}" th:unless="${#httpServletRequest.getParameter('entity') == null}">Test</span></small></h4>
+        <table id="rolesTable" dt:table="true" class="table table-bordered table-hover table-striped">
+            <caption>All Users List</caption>
+            <thead>
+                <tr class="info">
+                    <th th:text="#{id}">Id</th>
+                    <th th:text="#{name}">Name</th>
+                    <th th:text="#{description}">Description</th>
+                    <th th:text="#{validTo}">Valid To</th>                   
+                    <th th:text="#{actions}">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:text="${role?.id}">1</td>
+                    <td th:text="${role?.name}">1</td>
+                    <td th:text="${role?.description}">John</td>                    
+                    <td th:text="${role?.validTo}">1</td>                                         
+                    <td><div class="btn-toolbar" role="toolbar" aria-label="...">
+                            <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                                <a class="btn btn-primary btn-xs" th:href="@{/admin/roles(id=${role?.id}, entity='roles', action='edit')}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="btn btn-danger btn-xs" th:href="@{/admin/roles(id=${role?.id}, entity='roles', action='remove')}"><span class="glyphicon glyphicon-trash"></span></a>
+                            </div>
+                         </div>
+                    </td>                
+                </tr>
+            </tbody>        
+       </table>
+        
+    </div>
+
+</div>
+
+<!-- /.container -->
+
+<div th:replace="fragments/footer :: footer"/>
+
+</body>
+</html>

@@ -1,59 +1,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-<head>
-<div th:fragment="header-css">
+<head th:fragment="header-css">
+
 	<!-- this is header-css -->
 	<link rel="stylesheet" type="text/css"	href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css"></link>
 	<link rel="stylesheet" type="text/css" href="/webjars/Eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" />
 
 	<link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/main.css" />
     <title th:text="#{${pageTitle}}"></title>
-</div>
-</head>
-<body>
-	<div th:fragment="header">	
-		<!-- this is header -->
-		<nav class="navbar navbar-inverse">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" th:href="@{/}"><span class="glyphicon glyphicon-leaf"></span> <span th:text="#{brand.label}">Spring Boot</span></a>
-				</div>
-				<div id="navbar" class="collapse navbar-collapse">
-					<span sec:authorize="!isAuthenticated()"> 
-					   <a class="btn btn-success navbar-btn navbar-right" th:href="@{/login}"><span class="glyphicon glyphicon-log-in"></span> <span th:text="#{signIn}">Sign in</span></a>
-					</span> 
-					<span sec:authorize="isAuthenticated()">
-						<p class="navbar-text navbar-right"><span class="glyphicon glyphicon-user"></span> <span sec:authentication="name"></span></p> 
-						<a class="btn btn-danger navbar-btn navbar-right" th:href="@{/logout}"><span class="glyphicon glyphicon-off"></span> <span th:text="#{signOut}">Sign out</span></a>
-					</span>
-					<!-- <button type="button" class="btn btn-primary navbar-btn navbar-right">Sign in</button> -->
-					<ul class="nav navbar-nav">
-						<li th:classappend="${page == 'home' ? 'active' : ''}"><a th:href="@{/}"><span class="glyphicon glyphicon-home"></span> <span th:text="#{menu.home}">Home</span></a></li>
-						<li th:classappend="${page == 'about' ? 'active' : ''}"><a th:href="@{/about}"><span class="glyphicon glyphicon-info-sign"></span> <span th:text="#{menu.about}">About</span></a></li>
-						<li th:classappend="${page == 'user' ? 'active' : ''}" sec:authorize="hasRole('ROLE_USER')"><a th:href="@{/user}"><span class="glyphicon glyphicon-folder-open"></span> <span th:text="#{menu.user}">User</span></a></li>
-						<li class="dropdown" th:classappend="${page == 'admin' ? 'active' : ''}" sec:authorize="hasRole('ROLE_ADMIN')">
-						
-					          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-dashboard"></span> <span th:text="#{menu.admin}">Admin Management</span><span class="caret"></span></a>
-					          <ul class="dropdown-menu">
-					            <li th:classappend="${page == 'main' ? 'active' : ''}"><a th:href="@{/admin?entity=main}" th:text="#{menu.admin.main}">Admin Main</a></li>
-					            <li role="separator" class="divider"></li>
-					            <li th:classappend="${page == 'users' ? 'active' : ''}"><a th:href="@{/admin/user/create}" th:text="#{menu.admin.usersManagement}">Users Management</a></li>
-					            <li th:classappend="${page == 'roles' ? 'active' : ''}"><a th:href="@{/admin?entity=roles}" th:text="#{menu.admin.rolesManagement}">Roles Management</a></li>
-					            <li th:classappend="${page == 'user_roles' ? 'active' : ''}"><a th:href="@{/admin?entity=user_roles}" th:text="#{menu.admin.roleAssigmentManagement}">Role Assigment Management</a></li>
-					            <li th:classappend="${page == 'persons' ? 'active' : ''}"><a th:href="@{/admin?entity=persons}" th:text="#{menu.admin.personsManagement}">Persons Management</a></li>
-					            <li th:classappend="${page == 'addresses' ? 'active' : ''}"><a th:href="@{/admin?entity=addresses}" th:text="#{menu.admin.addressesManagement}">Addresses Management</a></li>
-					            <li role="separator" class="divider"></li>
-					            <li th:classappend="${page == 'utils' ? 'active' : ''}"><a th:href="@{/admin?entity=utils}" th:text="#{menu.admin.utils}">Utils</a></li>
-					            <li role="separator" class="divider"></li>
-					            <li th:classappend="${page == 'other' ? 'active' : ''}"><a th:href="@{/admin?entity=other}" th:text="#{menu.admin.futureFeatures}">Future Features</a></li>
-					          </ul>
-				        </li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-	</div>
 
+</head>
+<body>	
+    
 </body>
 </html>
