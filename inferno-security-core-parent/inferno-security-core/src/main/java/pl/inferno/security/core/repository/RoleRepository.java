@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pl.inferno.security.core.repository;
 
@@ -12,8 +12,8 @@ import pl.inferno.security.core.model.Role;
  * @author lukasz-adm
  *
  */
-@Repository("roleRepository")
+@Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-	Role findByName(String name);
+    Role findByName(String name);
 }

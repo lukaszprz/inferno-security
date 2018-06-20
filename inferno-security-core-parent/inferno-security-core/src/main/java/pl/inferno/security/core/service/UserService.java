@@ -13,20 +13,22 @@ import pl.inferno.security.core.model.User;
  */
 public interface UserService {
 
-	User getUserByUserName(String username);
+    User getUserByUserName(String username);
 
-	List<User> getAllUsers();
+    List<User> getAllUsers();
 
-	boolean isUserExist(User user);
+    boolean isUserExist(User user);
 
-	User saveUser(User user);
+    boolean isUserExists(String username);
 
-	User findById(long id);
+    User saveUser(User user);
 
-	User getCurrentUser(String username);
+    User findById(long id);
 
-	User getCurrentUser(Long id);
+    User getCurrentUser(String username);
 
-	void deleteUser(User user);
+    User getCurrentUser(Long id);
+
+    void deleteUser(User user);
 
 }
