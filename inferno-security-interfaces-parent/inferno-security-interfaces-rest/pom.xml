@@ -117,8 +117,8 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<fork>true</fork>
-					<skip>false</skip>
+					<fork>false</fork>
+					<skip>true</skip>
 				</configuration>
 				<executions>
 					<execution>
