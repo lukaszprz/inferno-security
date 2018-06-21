@@ -1,0 +1,50 @@
+image: maven:3-jdk-8
+
+variables:
+  MAVEN_OPTS: "-Djava.awt.headless=true -Dmaven.repo.local=./.m2/repository"
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
+
+cache:
+  paths:
+    - ./.m2/repository
+  # keep cache across branch
+  key: "$CI_BUILD_REF_NAME"
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  script:
+    - "mvn clean compile $MAVEN_CLI_OPTS"
+  artifacts:
+    paths:
+      - target/
+
+unittest-job:
+  stage: test
+  dependencies:
+    - build-job
+  script:
+    - "mvn package $MAVEN_CLI_OPTS"
+  artifacts:
+    paths:
+      - target/
+
+integrationtest-job:
+  stage: test
+  dependencies:
+    - build-job
+  script:
+    - "mvn verify $MAVEN_CLI_OPTS"
+  artifacts:
+    paths:
+      - target/
+
+deploy-job:
+  stage: deploy
+  artifacts:
+    paths:
+      - "target/*.jar"
