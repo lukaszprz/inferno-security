@@ -26,6 +26,23 @@
 		<module>inferno-security-interfaces-parent</module>
 		<!-- <module>inferno-security-tests-parent</module> -->
 	</modules>
+	
+	<distributionManagement>
+  <repository>
+    <id>packagecloud-travis</id>
+    <url>
+      packagecloud+https://packagecloud.io/lukaszprz/inferno-security
+    </url>
+  </repository>
+  <snapshotRepository>
+    <id>packagecloud-travis</id>
+    <url>
+      packagecloud+https://packagecloud.io/lukaszprz/inferno-security
+    </url>
+  </snapshotRepository>
+</distributionManagement>
+
+
 
 	<build>
 		<extensions>
