@@ -34,7 +34,7 @@
         </repository>
         <snapshotRepository>
             <id>packagecloud-travis</id>
-            <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url>
+            <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
         </snapshotRepository>
     </distributionManagement>
     <build>
