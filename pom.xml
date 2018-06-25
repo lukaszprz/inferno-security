@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <name>[PARENT AGGREGATOR] Inferno Security Master Parent</name>
     <description>Agregate project for Inferno Security components</description>
+    <url>https://github.com/lukaszprz/inferno-security</url>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -20,6 +21,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <inferno.security.version>1.0.0-SNAPSHOT</inferno.security.version>
+        <github.global.server>github</github.global.server>
+        <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
     <modules>
         <module>inferno-security-configs-parent</module>
@@ -29,13 +32,18 @@
     </modules>
     <distributionManagement>
         <repository>
-            <id>packagecloud-travis</id>
-            <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
         </repository>
         <snapshotRepository>
-            <id>packagecloud-travis</id>
-            <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
         </snapshotRepository>
+        <!-- <repository> <id>packagecloud-travis</id> <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
+            </repository> <snapshotRepository> <id>packagecloud-travis</id> <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
+            </snapshotRepository> -->
     </distributionManagement>
     <build>
         <extensions>
@@ -47,10 +55,25 @@
         </extensions>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.danielflower.mavenplugins</groupId>
+                <artifactId>multi-module-maven-release-plugin</artifactId>
+                <version>3.0.0</version>
                 <configuration>
-                    <skip>true</skip>
+                    <releaseGoals>
+                        <releaseGoal>deploy</releaseGoal>
+                    </releaseGoals>
                 </configuration>
             </plugin>
         </plugins>
