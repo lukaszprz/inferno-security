@@ -32,14 +32,14 @@
     </modules>
     <distributionManagement>
         <repository>
-            <id>internal.repo</id>
+            <id>repo</id>
             <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
+            <url>https://github.com/lukaszprz/maven-repo/raw/master/releases</url>
         </repository>
         <snapshotRepository>
-            <id>internal.repo</id>
+            <id>snapshot-repo</id>
             <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
+            <url>https://github.com/lukaszprz/maven-repo/raw/master/snapshots</url>
         </snapshotRepository>
         <!-- <repository> <id>packagecloud-travis</id> <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
             </repository> <snapshotRepository> <id>packagecloud-travis</id> <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
@@ -66,16 +66,12 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.github.danielflower.mavenplugins</groupId>
-                <artifactId>multi-module-maven-release-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <releaseGoals>
-                        <releaseGoal>deploy</releaseGoal>
-                    </releaseGoals>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>snapshot-repo</id>
+            <url>https://github.com/lukaszprz/maven-repo/raw/master/snapshots</url>
+        </repository>
+    </repositories>
 </project>
