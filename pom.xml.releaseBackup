@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.inferno.security</groupId>
     <artifactId>inferno-security-parent</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>[PARENT AGGREGATOR] Inferno Security Master Parent</name>
     <description>Agregate project for Inferno Security components</description>
@@ -31,22 +31,6 @@
         <developerConnection>scm:git:git@github.com:lukaszprz/inferno-security.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
-  <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>releases</id>
-      <name>TestWebApp Applications Repository Internal</name>
-      <url>file:///home/lukasz/.m2/repository</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>snapshots</id>
-      <name>TestWebApp Applications Repository Internal</name>
-      <url>file:///home/lukasz/.m2/repository</url>
-      <layout>default</layout>
-    </snapshotRepository>
-  </distributionManagement>
     <!-- <distributionManagement>
         <repository>
             <id>repo</id>
