@@ -31,7 +31,7 @@
         <developerConnection>scm:git:git@github.com:lukaszprz/inferno-security.git</developerConnection>
       <tag>HEAD</tag>
   </scm>
-    <distributionManagement>
+    <!-- <distributionManagement>
         <repository>
             <id>repo</id>
             <name>Temporary Staging Repository</name>
@@ -42,10 +42,10 @@
             <name>Temporary Staging Repository</name>
             <url>https://github.com/lukaszprz/maven-repo/raw/master/snapshots</url>
         </snapshotRepository>
-        <!-- <repository> <id>packagecloud-travis</id> <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
+        <repository> <id>packagecloud-travis</id> <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
             </repository> <snapshotRepository> <id>packagecloud-travis</id> <url>packagecloud+https://packagecloud.io/lukaszprz/inferno-security</url> 
-            </snapshotRepository> -->
-    </distributionManagement>
+            </snapshotRepository>
+    </distributionManagement> -->
     <build>
         <extensions>
             <extension>
