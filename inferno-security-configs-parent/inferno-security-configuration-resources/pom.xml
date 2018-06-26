@@ -3,7 +3,7 @@
   <parent>
     <groupId>pl.inferno.security</groupId>
     <artifactId>inferno-security-configs-parent</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>inferno-security-configuration-resources</artifactId>
   <name>Inferno Security Resources</name>
