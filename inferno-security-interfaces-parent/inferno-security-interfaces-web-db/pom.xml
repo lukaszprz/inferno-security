@@ -12,6 +12,7 @@
 	<artifactId>inferno-security-interfaces-web-db</artifactId>
 	<packaging>war</packaging>
 	<name>Inferno WEB DB Interface</name>
+    <description>Inferno WEB DB Interface.</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
