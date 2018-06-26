@@ -3,7 +3,7 @@
     <parent>
         <groupId>pl.inferno.security</groupId>
         <artifactId>inferno-security-interfaces-parent</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
     <artifactId>inferno-security-rest-proxy</artifactId>
     <name>Inferno Rest Proxy Interface</name>
