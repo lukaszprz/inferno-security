@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>pl.inferno.validation</groupId>
 			<artifactId>inferno-validation-spring-pl</artifactId>
-			<version>${inferno.security.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

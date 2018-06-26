@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>pl.inferno.security</groupId>
 			<artifactId>inferno-security-rest-proxy</artifactId>
-			<version>${inferno.security.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

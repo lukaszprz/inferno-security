@@ -18,12 +18,12 @@
 		<dependency>
 			<groupId>pl.inferno.security</groupId>
 			<artifactId>inferno-security-configuration</artifactId>
-			<version>${inferno.security.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>pl.inferno.validation</groupId>
 			<artifactId>inferno-validation-spring-pl</artifactId>
-			<version>${inferno.security.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-devtools</artifactId> 
 			</dependency> -->
