@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.inferno.security</groupId>
     <artifactId>inferno-security-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>[PARENT AGGREGATOR] Inferno Security Master Parent</name>
     <description>Agregate project for Inferno Security components</description>
@@ -29,7 +29,7 @@
         <connection>scm:git:git@github.com:lukaszprz/inferno-security.git</connection>
         <url>scm:git:git@github.com:lukaszprz/inferno-security.git</url>
         <developerConnection>scm:git:git@github.com:lukaszprz/inferno-security.git</developerConnection>
-      <tag>inferno-security-parent-1.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
     <distributionManagement>
         <repository>
